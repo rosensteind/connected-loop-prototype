@@ -1,0 +1,3647 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Connected Loop</title>
+</head>
+<body>
+<style>
+/* The Connected Loop — one stylesheet.
+ * Sized for a Windows laptop at 1280 and an iPad in either orientation.
+ * Light and dark are both selected, not flipped.
+ */
+
+:root {
+  color-scheme: light;
+
+  --plane:        #f4f4f1;
+  --surface:      #ffffff;
+  --surface-2:    #fafaf8;
+  --ink:          #14140f;
+  --ink-2:        #52514e;
+  --ink-muted:    #7d7b75;
+  --hairline:     rgba(20, 20, 15, 0.12);
+  --hairline-2:   rgba(20, 20, 15, 0.06);
+  --grid:         #e1e0d9;
+  --baseline:     #c3c2b7;
+
+  --series-1:     #2a78d6;
+  --series-2:     #eb6834;
+
+  --good:         #0ca30c;
+  --warning:      #fab219;
+  --serious:      #ec835a;
+  --critical:     #d03b3b;
+  --good-ink:     #006300;
+  --warning-ink:  #7a5400;
+  --serious-ink:  #8c3d17;
+
+  --accent:       #2a78d6;
+
+  --r:            10px;
+  --r-lg:         14px;
+  --shadow:       0 1px 2px rgba(20,20,15,.05), 0 6px 20px rgba(20,20,15,.05);
+  --font:         system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --plane:      #0d0d0d;
+    --surface:    #16181c;
+    --surface-2:  #1c1e22;
+    --ink:        #f5f5f0;
+    --ink-2:      #c3c2b7;
+    --ink-muted:  #898781;
+    --hairline:   rgba(255, 255, 255, 0.14);
+    --hairline-2: rgba(255, 255, 255, 0.07);
+    --grid:       #2c2c2a;
+    --baseline:   #383835;
+    --series-1:   #3987e5;
+    --series-2:   #d95926;
+    --good-ink:   #0ca30c;
+    --warning-ink:#fab219;
+    --serious-ink:#ec835a;
+    --accent:     #3987e5;
+    --shadow:     0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* Several components below set display, which would otherwise beat the UA
+ * rule for the hidden attribute. Keep hidden meaning hidden. */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  background: var(--plane);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* ------------------------------------------------------------------ shell */
+
+.app {
+  display: grid;
+  grid-template-columns: 268px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "brand topbar" "side main";
+  height: 100%;
+}
+
+.brand {
+  grid-area: brand;
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  border-right: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  background: var(--surface);
+}
+.brand-mark {
+  width: 26px; height: 26px; flex: none;
+  border-radius: 50%;
+  border: 2.5px solid var(--accent);
+  border-right-color: transparent;
+  transform: rotate(-35deg);
+}
+.brand h1 { font-size: .95rem; margin: 0; letter-spacing: -.01em; }
+.brand span { display: block; font-size: .72rem; color: var(--ink-muted); font-weight: 400; letter-spacing: 0; }
+
+.topbar {
+  grid-area: topbar;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+  flex-wrap: wrap;
+}
+#student-picker { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.picker-label { font-size: .78rem; color: var(--ink-muted); margin-right: 2px; }
+.topbar-spacer { flex: 1 1 auto; }
+
+.side {
+  grid-area: side;
+  background: var(--surface);
+  border-right: 1px solid var(--hairline);
+  overflow-y: auto;
+  padding: 14px 12px 24px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.side-label {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--ink-muted); padding: 0 6px; margin: 0 0 6px;
+}
+
+#role-nav { display: flex; flex-direction: column; gap: 4px; }
+.role-tab {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  width: 100%; text-align: left; cursor: pointer;
+  padding: 9px 12px; border-radius: var(--r);
+  background: transparent; border: 1px solid transparent;
+  min-height: 44px;
+}
+.role-tab strong { font-size: .9rem; font-weight: 600; }
+.role-tab span { font-size: .72rem; color: var(--ink-muted); }
+.role-tab:hover { background: var(--surface-2); }
+.role-tab.is-on {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.role-tab.is-on strong { color: var(--accent); }
+
+.accent-blue    { --accent: #2a78d6; }
+.accent-aqua    { --accent: #1baf7a; }
+.accent-violet  { --accent: #4a3aa7; }
+.accent-magenta { --accent: #d55181; }
+.accent-orange  { --accent: #eb6834; }
+.accent-green   { --accent: #008300; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .accent-blue    { --accent: #3987e5; }
+  :root:not([data-theme="light"]) .accent-violet  { --accent: #9085e9; }
+  :root:not([data-theme="light"]) .accent-orange  { --accent: #d95926; }
+  :root:not([data-theme="light"]) .accent-green   { --accent: #19a319; }
+}
+
+#role-context {
+  padding: 12px; border-radius: var(--r);
+  background: var(--surface-2); border: 1px solid var(--hairline-2);
+}
+.ctx-who strong { display: block; font-size: .88rem; }
+.ctx-who span { font-size: .75rem; color: var(--ink-muted); }
+.ctx-blurb { font-size: .78rem; color: var(--ink-2); margin: 8px 0 0; }
+
+.side-links { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+
+.main {
+  grid-area: main;
+  overflow-y: auto;
+  padding: 22px 26px 80px;
+  max-width: 1100px;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ------------------------------------------------------------------- hero */
+
+.hero { margin: 0 0 20px; }
+.hero h1 { font-size: 1.6rem; margin: 0 0 4px; letter-spacing: -.02em; }
+.hero p { margin: 0; color: var(--ink-2); font-size: .95rem; }
+
+.section-break {
+  font-size: 1.1rem; margin: 34px 0 12px; padding-top: 18px;
+  border-top: 1px solid var(--hairline);
+}
+
+/* ------------------------------------------------------------------ cards */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  margin: 0 0 18px;
+  overflow: hidden;
+}
+.card-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 15px 18px 0;
+}
+.card-head h2 { font-size: 1rem; margin: 0; letter-spacing: -.01em; }
+.card-sub { margin: 4px 18px 0; font-size: .82rem; color: var(--ink-muted); }
+.card-body { padding: 14px 18px 18px; }
+
+.grid { display: grid; gap: 14px; }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.stats-row { margin-bottom: 18px; }
+.row { display: flex; gap: 8px; align-items: center; }
+.row .text-input { flex: 1; }
+
+/* ------------------------------------------------------------------ forms */
+
+.q { margin: 0 0 16px; }
+.q > label {
+  display: block; font-size: .84rem; font-weight: 600;
+  margin: 0 0 7px; color: var(--ink);
+}
+.text-input {
+  width: 100%; padding: 10px 12px; min-height: 44px;
+  border: 1px solid var(--hairline); border-radius: var(--r);
+  background: var(--surface-2); color: var(--ink);
+  font-size: .92rem;
+}
+textarea.text-input { min-height: 76px; resize: vertical; line-height: 1.45; }
+.text-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+
+.btn {
+  padding: 10px 16px; min-height: 44px; cursor: pointer;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface-2); font-size: .88rem; font-weight: 500;
+}
+.btn:hover { background: var(--plane); }
+.btn-primary {
+  background: var(--accent); color: #fff; border-color: transparent; font-weight: 600;
+}
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-quiet { background: transparent; border-color: transparent; color: var(--ink-2); font-size: .8rem; min-height: 32px; padding: 4px 8px; }
+.btn-quiet:hover { background: var(--surface-2); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.check { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; font-size: .85rem; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.scale { display: flex; gap: 8px; }
+.scale-dot {
+  flex: 1; min-width: 48px; min-height: 48px; cursor: pointer;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface-2); font-size: 1rem; font-weight: 600; color: var(--ink-2);
+}
+.scale-dot:hover { border-color: var(--accent); }
+.scale-dot.is-on { background: var(--accent); color: #fff; border-color: transparent; }
+.scale-ends {
+  display: flex; justify-content: space-between;
+  font-size: .72rem; color: var(--ink-muted); margin-top: 5px;
+}
+
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip {
+  padding: 7px 12px; min-height: 38px; cursor: pointer;
+  border-radius: 999px; border: 1px solid var(--hairline);
+  background: var(--surface-2); font-size: .82rem;
+}
+.chip.is-on { background: var(--accent); color: #fff; border-color: transparent; }
+
+.levels { display: flex; flex-direction: column; gap: 8px; }
+.level {
+  text-align: left; cursor: pointer; padding: 11px 13px;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface-2);
+}
+.level strong { display: block; font-size: .87rem; margin-bottom: 2px; }
+.level span { font-size: .78rem; color: var(--ink-muted); }
+.level.is-on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.level.is-on strong { color: var(--accent); }
+
+/* ------------------------------------------------------------------ stats */
+
+.stat {
+  background: var(--surface); border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg); padding: 16px 18px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.stat-value { font-size: 2rem; font-weight: 650; letter-spacing: -.03em; line-height: 1.1; }
+.stat-label { font-size: .78rem; color: var(--ink-muted); }
+.stat.tone-good .stat-value { color: var(--good-ink); }
+
+.inline-stats { display: flex; gap: 6px; margin-top: 8px; }
+.lead { font-size: 1.05rem; margin: 0; }
+.note { font-size: .78rem; color: var(--ink-muted); margin: 12px 0 0; }
+.empty { color: var(--ink-muted); font-size: .87rem; margin: 4px 0; }
+
+.pill {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  font-size: .72rem; font-weight: 500; white-space: nowrap;
+  background: var(--surface-2); border: 1px solid var(--hairline); color: var(--ink-2);
+}
+.pill-muted { color: var(--ink-muted); }
+.pill-good     { color: var(--good-ink);    border-color: color-mix(in srgb, var(--good) 45%, transparent); }
+.pill-warning  { color: var(--warning-ink); border-color: color-mix(in srgb, var(--warning) 60%, transparent); }
+.pill-serious  { color: var(--serious-ink); border-color: color-mix(in srgb, var(--serious) 60%, transparent); }
+
+.flag-line {
+  margin: 0 0 8px; padding: 11px 13px; border-radius: var(--r);
+  font-size: .9rem; background: var(--surface-2);
+  border-left: 3px solid var(--baseline);
+}
+.flag-line.tone-good    { border-left-color: var(--good);    }
+.flag-line.tone-warning { border-left-color: var(--warning); }
+.flag-line.tone-info    { border-left-color: var(--series-1); }
+.flag-line:last-child { margin-bottom: 0; }
+
+/* --------------------------------------------------------------- patterns */
+
+.pattern {
+  padding: 13px 15px; border-radius: var(--r); margin: 0 0 10px;
+  background: var(--surface-2); border-left: 3px solid var(--baseline);
+}
+.pattern.tone-serious { border-left-color: var(--critical); }
+.pattern.tone-warning { border-left-color: var(--warning); }
+.pattern strong { display: block; font-size: .92rem; margin-bottom: 3px; }
+.pattern p { margin: 0 0 8px; font-size: .84rem; color: var(--ink-2); }
+.pattern-sources { display: flex; gap: 5px; flex-wrap: wrap; }
+.pattern:last-child { margin-bottom: 0; }
+
+/* --------------------------------------------------------------- timeline */
+
+.timeline { list-style: none; margin: 0; padding: 0; }
+.sig {
+  display: flex; gap: 12px; padding: 13px 0;
+  border-bottom: 1px solid var(--hairline-2);
+}
+.sig:last-child { border-bottom: none; padding-bottom: 0; }
+.sig-glyph {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center; font-size: .85rem;
+  background: var(--surface-2); border: 1px solid var(--hairline); color: var(--ink-2);
+}
+.sig.tone-warning .sig-glyph { border-color: var(--warning); color: var(--warning-ink); }
+.sig.tone-serious .sig-glyph { border-color: var(--critical); color: var(--critical); }
+.sig-main { min-width: 0; flex: 1; }
+.sig-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.sig-head { font-size: .9rem; }
+.sig-kind { font-size: .72rem; color: var(--ink-muted); }
+.sig-body { margin: 3px 0 0; font-size: .87rem; color: var(--ink-2); }
+.sig-action, .sig-guidance {
+  margin: 6px 0 0; font-size: .82rem; color: var(--ink-2);
+  padding-left: 9px; border-left: 2px solid var(--hairline);
+}
+.sig-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: .74rem; color: var(--ink-muted); flex-wrap: wrap; }
+.sig-author { font-weight: 500; }
+
+.wins { list-style: none; margin: 0 0 12px; padding: 0; }
+.wins li {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 9px 0; border-bottom: 1px solid var(--hairline-2); font-size: .88rem;
+}
+.wins li:last-child { border-bottom: none; }
+.wins em { font-style: normal; color: var(--ink-muted); font-size: .76rem; white-space: nowrap; }
+
+/* ------------------------------------------------------------- profile */
+
+.tag-row { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.profile-block h3 {
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--ink-muted); margin: 0 0 6px;
+}
+.profile-block ul { margin: 0; padding-left: 18px; }
+.profile-block li { font-size: .87rem; margin-bottom: 4px; color: var(--ink-2); }
+
+.digest-block { margin-bottom: 16px; }
+.digest-block:last-child { margin-bottom: 0; }
+.digest-block h3 {
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--ink-muted); margin: 0 0 4px;
+}
+.digest-block p { margin: 0; font-size: .95rem; }
+
+/* ------------------------------------------------------------------- roll */
+
+.roll { list-style: none; margin: 0; padding: 0; }
+.roll-item {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center;
+  padding: 13px 14px; margin-bottom: 8px; cursor: pointer;
+  border-radius: var(--r); background: var(--surface-2);
+  border: 1px solid var(--hairline-2); border-left: 3px solid var(--baseline);
+}
+.roll-item:hover { border-color: var(--accent); }
+.roll-item.tone-serious { border-left-color: var(--critical); }
+.roll-item.tone-warning { border-left-color: var(--warning); }
+.roll-item.tone-none    { border-left-color: var(--good); }
+.roll-item strong { display: block; font-size: .92rem; }
+.roll-sub { font-size: .76rem; color: var(--ink-muted); }
+.roll-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.roll-state { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; text-align: right; }
+
+/* ----------------------------------------------------------------- charts */
+
+.chart { position: relative; }
+.chart-svg { width: 100%; height: auto; display: block; overflow: visible; touch-action: pan-y; }
+.chart-grid { stroke: var(--grid); stroke-width: 1; }
+.rail { stroke: var(--baseline); stroke-width: 1; }
+.axis-label { fill: var(--ink-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.pt { stroke: var(--surface); stroke-width: 2; }
+.line.series-1, .pt.series-1 { stroke: var(--series-1); }
+.pt.series-1 { fill: var(--series-1); stroke: var(--surface); }
+.line.series-2 { stroke: var(--series-2); }
+.pt.series-2 { fill: var(--series-2); stroke: var(--surface); }
+.direct-label { font-size: 11px; font-weight: 600; }
+.series-1-ink { fill: var(--series-1); }
+.series-2-ink { fill: var(--series-2); }
+
+.marker-stem { stroke: var(--hairline); stroke-width: 1; stroke-dasharray: 2 3; }
+.marker-dot { fill: var(--surface); stroke: var(--baseline); stroke-width: 1.5; }
+.marker-glyph { fill: var(--ink-2); font-size: 9px; }
+.marker.tone-warning .marker-dot { stroke: var(--warning); }
+.marker.tone-serious .marker-dot { stroke: var(--critical); }
+.marker:hover .marker-dot { stroke: var(--accent); stroke-width: 2.5; }
+
+.crosshair { stroke: var(--baseline); stroke-width: 1; }
+.hover-layer { opacity: 0; transition: opacity .12s; pointer-events: none; }
+.hover-layer.is-on { opacity: 1; }
+
+.tooltip {
+  position: absolute; top: 8px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--r); box-shadow: var(--shadow);
+  padding: 8px 11px; font-size: .78rem; pointer-events: none;
+  display: flex; flex-direction: column; gap: 2px; max-width: 240px; z-index: 5;
+}
+.tt-row { display: flex; align-items: center; gap: 6px; }
+.tt-note { color: var(--ink-muted); font-style: italic; margin-top: 3px; }
+.sw, i.sw { width: 9px; height: 9px; border-radius: 2px; display: inline-block; flex: none; }
+.sw.series-1 { background: var(--series-1); }
+.sw.series-2 { background: var(--series-2); }
+
+.chart-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; margin-top: 10px; flex-wrap: wrap;
+}
+.legend { display: flex; gap: 14px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--ink-2); }
+
+.streak-strip { display: flex; gap: 4px; margin-bottom: 18px; }
+.streak-cell {
+  flex: 1; height: 26px; border-radius: 4px;
+  background: var(--surface-2); border: 1px solid var(--hairline-2);
+}
+.streak-cell.is-on { background: var(--good); border-color: transparent; }
+
+/* ----------------------------------------------------------------- tables */
+
+.table-scroll { overflow-x: auto; }
+.chart-table { overflow-x: auto; margin-top: 12px; }
+.data-table { border-collapse: collapse; width: 100%; font-size: .82rem; }
+.data-table th, .data-table td {
+  text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--hairline-2);
+  white-space: nowrap;
+}
+.data-table th { color: var(--ink-muted); font-weight: 600; font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; }
+.data-table td:last-child { white-space: normal; }
+.matrix td { font-size: .76rem; }
+.matrix .cell-full { color: var(--good-ink); font-weight: 600; }
+.matrix .cell-none { color: var(--ink-muted); }
+.matrix .cell-part { color: var(--ink-2); }
+
+/* ----------------------------------------------------------------- panels */
+
+#panel-host { position: fixed; inset: 0; z-index: 40; }
+.panel-scrim { position: absolute; inset: 0; background: rgba(10,10,8,.45); }
+.panel {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: min(880px, 100%);
+  background: var(--surface); box-shadow: var(--shadow);
+  display: flex; flex-direction: column;
+}
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--hairline);
+}
+.panel-head h2 { margin: 0; font-size: 1.05rem; }
+.panel-close {
+  border: none; background: transparent; cursor: pointer;
+  font-size: 1.6rem; line-height: 1; width: 44px; height: 44px; color: var(--ink-2);
+}
+.panel-body { padding: 20px; overflow-y: auto; }
+.panel-actions { margin-top: 20px; }
+.prose h3 { font-size: .9rem; margin: 20px 0 6px; }
+.prose h3:first-child { margin-top: 0; }
+.prose p, .prose li { font-size: .88rem; color: var(--ink-2); margin: 0 0 8px; }
+.prose ul { padding-left: 18px; }
+
+/* ----------------------------------------------------------------- toasts */
+
+#toast-host {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
+  z-index: 60; display: flex; flex-direction: column; gap: 8px; align-items: center;
+  pointer-events: none;
+}
+.toast {
+  background: var(--ink); color: var(--plane);
+  padding: 11px 18px; border-radius: 999px; font-size: .86rem;
+  box-shadow: var(--shadow); transition: opacity .4s, transform .4s;
+  max-width: 90vw; text-align: center;
+}
+.toast.is-out { opacity: 0; transform: translateY(6px); }
+
+/* ------------------------------------------------------------- responsive
+ * iPad landscape keeps the sidebar. iPad portrait and below moves the role
+ * switcher to a horizontal strip so the content gets the full width. */
+
+@media (max-width: 1024px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-areas: "brand" "side" "topbar" "main";
+  }
+  .brand { border-right: none; }
+  .side {
+    border-right: none; border-bottom: 1px solid var(--hairline);
+    padding: 10px 12px; gap: 10px; overflow: visible;
+  }
+  .side-label { display: none; }
+  #role-nav {
+    flex-direction: row; gap: 6px;
+    overflow-x: auto; padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .role-tab { width: auto; flex: none; white-space: nowrap; }
+  #role-context { display: none; }
+  .side-links { flex-direction: row; margin-top: 0; }
+  .main { padding: 18px 18px 80px; max-width: none; }
+}
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.3rem; }
+  .main { padding: 14px 13px 80px; }
+  .card-body { padding: 12px 14px 15px; }
+  .card-head, .card-sub { padding-left: 14px; padding-right: 14px; }
+  .roll-item { grid-template-columns: 1fr; gap: 6px; }
+  .roll-state { align-items: flex-start; text-align: left; }
+  .panel { width: 100%; }
+  .scale-dot { min-width: 0; }
+}
+
+@media print {
+  .side, .topbar, .brand, #panel-host, #toast-host { display: none; }
+  .app { display: block; }
+  .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+}
+
+/* -------------------------------------------------------------- sign-in
+ * A separate surface from the app shell: nobody is signed in yet, so there
+ * is no role, no accent, and nothing to be careful about revealing. */
+
+#signin-host { min-height: 100%; }
+.signin {
+  min-height: 100vh; min-height: 100dvh;
+  display: grid; place-items: center; padding: 24px;
+  background: var(--plane);
+}
+.signin-card {
+  width: min(420px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  padding: 32px 28px;
+  text-align: center;
+}
+.brand-mark-lg {
+  width: 40px; height: 40px; margin: 0 auto 14px;
+  border-width: 3px; display: block;
+}
+.signin-card h1 { font-size: 1.25rem; margin: 0 0 4px; letter-spacing: -.02em; }
+.signin-sub { margin: 0 0 24px; color: var(--ink-muted); font-size: .88rem; }
+.signin-form { text-align: left; display: flex; flex-direction: column; gap: 8px; }
+.signin-form label { font-size: .84rem; font-weight: 600; }
+.btn-block { width: 100%; justify-content: center; margin-top: 4px; }
+.signin-note { font-size: .76rem; color: var(--ink-muted); margin: 10px 0 0; line-height: 1.45; }
+.form-error {
+  font-size: .82rem; color: var(--critical); margin: 0;
+  padding: 8px 10px; border-radius: var(--r);
+  background: color-mix(in srgb, var(--critical) 10%, transparent);
+}
+.booting { padding: 60px; text-align: center; color: var(--ink-muted); }
+
+.dev-note {
+  margin: 14px 0; padding: 12px 14px; text-align: left;
+  border-radius: var(--r); border: 1px dashed var(--warning);
+  background: color-mix(in srgb, var(--warning) 8%, transparent);
+}
+.dev-note strong { display: block; font-size: .78rem; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--warning-ink); margin-bottom: 4px; }
+.dev-note p { font-size: .8rem; margin: 0 0 8px; color: var(--ink-2); }
+.token {
+  display: block; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: .72rem; word-break: break-all; padding: 8px;
+  background: var(--surface-2); border-radius: 6px; color: var(--ink-2);
+}
+
+/* Demo account picker. Development only — the server does not serve the list
+   in production, so this never renders there. */
+.demo-accounts { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.demo-account {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  width: 100%; min-height: 40px; padding: 7px 11px; cursor: pointer;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface); text-align: left;
+}
+.demo-account:hover { border-color: var(--accent); }
+.demo-account strong {
+  font-size: .84rem; font-weight: 600;
+  /* .dev-note strong is a small-caps heading; a person's name is not. */
+  text-transform: none; letter-spacing: 0; color: var(--ink); margin: 0;
+}
+.demo-account span { font-size: .74rem; color: var(--ink-muted); }
+
+/* ------------------------------------------------------- safeguarding UI
+ * Talk to someone, and the queue of boys who have used it. Both are given
+ * more visual weight than anything else on their page, on purpose. */
+
+.card-help { border-color: color-mix(in srgb, var(--good) 35%, transparent); }
+.card-urgent { border-color: color-mix(in srgb, var(--critical) 45%, transparent); }
+.card-urgent .card-head h2 { color: var(--critical); }
+
+.help-emergency {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px;
+  padding: 12px 14px; margin-bottom: 12px; border-radius: var(--r);
+  background: color-mix(in srgb, var(--critical) 8%, transparent);
+  border-left: 3px solid var(--critical);
+}
+.help-emergency strong { font-size: .88rem; }
+.help-action { font-size: 1.05rem; font-weight: 700; color: var(--critical); }
+.help-emergency .help-detail { flex-basis: 100%; }
+.help-detail { font-size: .78rem; color: var(--ink-muted); display: block; }
+
+.help-ask { margin: 0 0 14px; border-radius: var(--r); background: var(--surface-2); border: 1px solid var(--hairline); }
+.help-ask summary {
+  cursor: pointer; padding: 12px 14px; font-size: .92rem; font-weight: 600;
+  min-height: 44px; display: flex; align-items: center;
+}
+.help-ask summary::marker { color: var(--ink-muted); }
+.help-ask-body { padding: 0 14px 14px; }
+.help-ask-body .q { margin-top: 12px; }
+
+.help-lead { font-size: .84rem; color: var(--ink-2); margin: 0 0 8px; }
+.help-list { list-style: none; margin: 0; padding: 0; }
+.help-list li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--hairline-2);
+}
+.help-list li:last-child { border-bottom: none; }
+.help-list strong { font-size: .88rem; }
+.help-contact {
+  font-size: .88rem; font-weight: 600; color: var(--accent);
+  white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+
+.concern {
+  padding: 13px 15px; margin: 0 0 10px; border-radius: var(--r);
+  background: var(--surface-2); border-left: 3px solid var(--critical);
+}
+.concern:last-child { margin-bottom: 0; }
+.concern-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.concern-top strong { font-size: .95rem; }
+.concern-note { margin: 0 0 10px; font-size: .89rem; }
+.concern-note.empty { color: var(--ink-muted); font-style: italic; }
+
+@media (max-width: 600px) {
+  .help-list li { flex-direction: column; gap: 2px; }
+  .concern .row { flex-direction: column; align-items: stretch; }
+}
+
+/* --------------------------------------------------------------- the tour
+ * A guide for somebody who did not build this. Sits beside the app rather
+ * than over it: the interface stays visible and usable behind it, because
+ * the point is to look at the thing being described. */
+
+#tour-host {
+  position: fixed; z-index: 50;
+  right: 20px; bottom: 20px; width: min(400px, calc(100vw - 40px));
+}
+.tour {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  box-shadow: 0 4px 12px rgba(20,20,15,.10), 0 16px 48px rgba(20,20,15,.16);
+  padding: 18px 20px 16px;
+  max-height: min(70vh, 620px);
+  display: flex; flex-direction: column;
+}
+.tour-head { display: flex; align-items: center; justify-content: space-between; }
+.tour-count {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink-muted); font-weight: 600;
+}
+.tour-close {
+  border: none; background: transparent; cursor: pointer; color: var(--ink-muted);
+  font-size: 1.4rem; line-height: 1; width: 32px; height: 32px; margin: -6px -8px 0 0;
+}
+.tour-close:hover { color: var(--ink); }
+.tour h2 { font-size: 1.05rem; margin: 6px 0 10px; letter-spacing: -.01em; }
+.tour-body { overflow-y: auto; margin-bottom: 14px; }
+.tour-body p { font-size: .89rem; line-height: 1.55; color: var(--ink-2); margin: 0 0 10px; }
+.tour-body p:last-child { margin-bottom: 0; }
+.tour-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+
+@media (max-width: 700px) {
+  #tour-host { right: 10px; left: 10px; bottom: 10px; width: auto; }
+  .tour { max-height: 60vh; }
+}
+
+/* ------------------------------------------------------------- feedback
+ * Two questions the software should not answer for itself. */
+
+.fb-q { margin: 0 0 1.75rem; }
+.fb-q h3 { font-size: .98rem; margin: 0 0 .35rem; color: var(--ink); }
+.fb-context { font-size: .85rem; color: var(--ink-muted); margin: 0 0 .75rem; line-height: 1.55; }
+.fb-options { display: grid; gap: 6px; margin-bottom: 10px; }
+.fb-option {
+  text-align: left; cursor: pointer; padding: 10px 13px; min-height: 44px;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface-2); font-size: .88rem;
+}
+.fb-option:hover { border-color: var(--accent); }
+.fb-option.is-on {
+  border-color: var(--accent); color: var(--accent); font-weight: 600;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.fb-out {
+  margin-top: 12px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: .76rem; line-height: 1.5;
+}
+
+
+/* Packaged as a single file for sharing. */
+html, body { height: 100%; }
+.app { min-height: 100%; }
+
+</style>
+<div class="app">
+
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <h1>The Connected Loop<span>Shared visibility, one boy at the centre</span></h1>
+  </div>
+
+  <div class="topbar">
+    <div id="student-picker"></div>
+    <span class="topbar-spacer"></span>
+  </div>
+
+  <aside class="side">
+    <div>
+      <p class="side-label">Sign in as</p>
+      <nav id="role-nav" aria-label="Role"></nav>
+    </div>
+    <div id="role-context"></div>
+    <div class="side-links">
+      <button class="btn btn-quiet" type="button" id="btn-tour">Walk me through it</button>
+      <button class="btn btn-quiet" type="button" id="btn-feedback">Two questions for you</button>
+      <button class="btn btn-quiet" type="button" id="btn-permissions">Who sees what</button>
+      <button class="btn btn-quiet" type="button" id="btn-about">About this build</button>
+    </div>
+  </aside>
+
+  <main class="main" id="main" tabindex="-1"></main>
+
+</div>
+
+<div id="tour-host" hidden></div>
+<div id="panel-host" hidden></div>
+<div id="toast-host"></div>
+
+<script>
+/* ---- js/model.js ---- */
+/* The Connected Loop — domain model, roles, signal types, permissions.
+ *
+ * This file is the single source of truth for WHO CAN SEE WHAT. Every view
+ * reads signals through project(), never off the raw store, so a redaction
+ * rule written here holds everywhere in the app.
+ */
+/* Runs unchanged in the browser AND in Node. The server imports this exact
+ * file and projects every response through it, so there is one definition of
+ * who can read what rather than two that drift apart. Never add a DOM or a
+ * Node-only dependency to this file. */
+(function (global) {
+  'use strict';
+
+  /* ================================================================ PURPOSE
+   *
+   * What this system is, and is not. These strings are rendered in the
+   * interface rather than kept in a policy document, because the boundary
+   * only protects anyone if the people using it can see it.
+   *
+   * The distinction is not decorative. Software intended to diagnose,
+   * prevent, monitor, treat or alleviate disease can be a medical device
+   * under the UK Medical Devices Regulations 2002, with UKCA marking and MHRA
+   * obligations attached. This platform stays outside that regime by design:
+   * it moves information between people who already know the child, and it
+   * makes no clinical claim of any kind. Nothing in it scores, screens,
+   * classifies, or advises on treatment.
+   */
+  var PURPOSE = {
+    is: [
+      'A way for the people around one {pupil} to share what they each already see.',
+      'A record of what has been noticed, by whom, and what was done about it.',
+      'A tool the {pupil} owns, so their own week is visible to them.'
+    ],
+    isNot: [
+      'Not a diagnostic tool. Nothing here identifies, screens for, or rules out any condition.',
+      'Not a treatment. It delivers no therapy, no intervention, and no clinical advice.',
+      'Not a monitoring or surveillance system. It does not watch, score, or rank anybody.',
+      'Not an emergency service. Nobody is reading it at three in the morning.'
+    ],
+    /* Shown wherever a pupil could mistake the tool for a way of getting help
+     * urgently. Load-bearing: the honest answer to "who sees this and when" is
+     * the difference between a tool that is safe for a child and one that is
+     * not. */
+    notMonitored:
+      'Nobody reads this as it arrives. Your {pastoralLead} and the {coordinator} see it when they next look. ' +
+      'If something is wrong now, use Talk to someone below, or find an adult.',
+    /* The single sentence that should appear anywhere a clinical reading might
+     * be inferred: charts, patterns, profiles. */
+    noClinicalClaim:
+      'This is a record of what people have noticed. It is not a clinical assessment and means nothing on its own.'
+  };
+
+  /* ============================================================ TERMINOLOGY
+   *
+   * Nothing in this system is Eton. A school configures what its own people
+   * are called, and every piece of user-facing copy is built from these
+   * rather than hardcoded — because software that says "boy" and
+   * "housemaster" cannot be handed to a co-ed comprehensive, and software
+   * that has to be forked to change a noun is not portable software.
+   *
+   * Defaults are deliberately neutral. Eton sets its own in the organisation
+   * settings; the seed does exactly that, so the worked example still reads
+   * as Eton without a line of Eton in the code.
+   */
+  var DEFAULT_TERMS = {
+    pupil: 'pupil',
+    pupils: 'pupils',
+    pupilPossessive: "pupil's",
+    /* Whoever holds the pastoral picture: housemaster, head of year, form
+     * tutor, head of house, guidance teacher. */
+    pastoralLead: 'pastoral lead',
+    pastoralLeads: 'pastoral leads',
+    /* The grouping a pastoral lead is responsible for. */
+    house: 'house',
+    /* Where the pupil sits in the school: Block, Year, Grade, Form. */
+    yearGroup: 'year group',
+    /* The in-house clinical service. */
+    clinicalService: 'wellbeing service',
+    /* What the school calls scheduled independent study. */
+    studyPeriod: 'prep',
+    coordinator: 'coordinator',
+    organisation: 'the school'
+  };
+
+  /* Per-pupil pronouns.
+   *
+   * A system whose whole purpose is seeing one child properly should not
+   * guess how to refer to them. Recorded on the pupil's own record, they/them
+   * until somebody who knows says otherwise — a wrong guess misgenders a real
+   * child in a way the neutral default never does.
+   */
+  var PRONOUN_SETS = {
+    they: { id: 'they', label: 'they/them', subject: 'they', object: 'them',
+            possessive: 'their', possessivePronoun: 'theirs', reflexive: 'themselves',
+            plural: true },
+    he:   { id: 'he', label: 'he/him', subject: 'he', object: 'him',
+            possessive: 'his', possessivePronoun: 'his', reflexive: 'himself',
+            plural: false },
+    she:  { id: 'she', label: 'she/her', subject: 'she', object: 'her',
+            possessive: 'her', possessivePronoun: 'hers', reflexive: 'herself',
+            plural: false }
+  };
+
+  var PRONOUN_ORDER = ['they', 'he', 'she'];
+
+  /* Build the copy helper for one organisation, and optionally one pupil.
+   *
+   *   var t = CL.terms(org.terms, student.pronouns);
+   *   t('Everything the loop holds on {them}, in one place.')
+   *   t.cap('{pastoralLead}')          -> 'Housemaster'
+   *   t.verb('is', 'are')              -> agrees with the pronoun set
+   */
+  function terms(overrides, pronounId) {
+    var T = {};
+    var k;
+    for (k in DEFAULT_TERMS) T[k] = DEFAULT_TERMS[k];
+    if (overrides) for (k in overrides) if (overrides[k]) T[k] = overrides[k];
+
+    var P = PRONOUN_SETS[pronounId] || PRONOUN_SETS.they;
+    var vocab = {
+      they: P.subject, them: P.object, their: P.possessive,
+      theirs: P.possessivePronoun, themselves: P.reflexive
+    };
+    for (k in T) vocab[k] = T[k];
+
+    function fill(str) {
+      return String(str).replace(/\{(\w+)\}/g, function (m, key) {
+        if (vocab[key] != null) return vocab[key];
+        /* {They} at the start of a sentence: capitalise the lower-case term
+         * rather than making every caller write two placeholders. */
+        var lower = key.charAt(0).toLowerCase() + key.slice(1);
+        if (vocab[lower] != null) {
+          var v = vocab[lower];
+          return v.charAt(0).toUpperCase() + v.slice(1);
+        }
+        return m;
+      });
+    }
+    fill.cap = function (str) {
+      var out = fill(str);
+      return out.charAt(0).toUpperCase() + out.slice(1);
+    };
+    /* "they have" but "he has". Agreement is the thing that makes neutral
+     * pronouns read as written rather than retrofitted. */
+    fill.verb = function (singular, plural) { return P.plural ? plural : singular; };
+    fill.pronouns = P;
+    fill.T = T;
+    return fill;
+  }
+
+  /* ---------------------------------------------------------------- roles */
+
+  var ROLES = {
+    student: {
+      id: 'student',
+      label: '{Pupil}',
+      blurb: 'Their own check-in, streak and wins',
+      cadence: 'Daily',
+      accent: 'blue'
+    },
+    teacher: {
+      id: 'teacher',
+      label: 'Teacher',
+      blurb: 'One-page profile, morning flag, recent pastoral headline',
+      cadence: 'Weekly',
+      accent: 'aqua'
+    },
+    housemaster: {
+      id: 'housemaster',
+      label: '{PastoralLead}',
+      blurb: 'Full pastoral picture, pattern view, flags',
+      cadence: 'Real-time',
+      accent: 'violet'
+    },
+    clinician: {
+      id: 'clinician',
+      label: 'Clinician',
+      blurb: 'Wellbeing trend, clinical record, milestone bridge',
+      cadence: 'Monthly',
+      accent: 'magenta'
+    },
+    parent: {
+      id: 'parent',
+      label: 'Parent',
+      blurb: 'Weekly digest, home focus, what is going well',
+      cadence: 'Weekly',
+      accent: 'orange'
+    },
+    therapist: {
+      id: 'therapist',
+      label: 'Therapist',
+      blurb: 'Their own therapeutic record, and the school context around it',
+      cadence: 'Weekly',
+      accent: 'aqua'
+    },
+    coordinator: {
+      id: 'coordinator',
+      label: 'Coordinator',
+      blurb: 'The pastoral loop. Not the clinical record',
+      cadence: 'Real-time',
+      accent: 'green'
+    },
+    /* Runs the system, and is deliberately blind to what is in it.
+     * Whoever administers accounts does not need to read a child's pastoral
+     * record to do that job, and every additional pair of eyes on a
+     * safeguarding record is a risk with no matching benefit. */
+    admin: {
+      id: 'admin',
+      label: 'Administrator',
+      blurb: 'Accounts and access. Sees no pupil content at all',
+      cadence: 'As needed',
+      accent: 'violet'
+    }
+  };
+
+  var ROLE_ORDER = ['student', 'teacher', 'housemaster', 'clinician', 'therapist',
+                    'parent', 'coordinator', 'admin'];
+
+  /* Roles that hold a clinical confidence. Raw clinical detail never leaves
+   * this circle, not even to the coordinator who routes the summary. */
+  var CLINICAL_ROLES = ['clinician', 'therapist'];
+
+  /* Roles that may never read pupil content, whatever they are attached to. */
+  var CONTENT_BLIND_ROLES = ['admin'];
+
+  /* -------------------------------------------------------- signal types */
+
+  var SIGNAL_TYPES = {
+    checkin: { id: 'checkin', label: 'Daily check-in', source: 'student', glyph: '◍' },
+    observation: { id: 'observation', label: 'Teaching observation', source: 'teacher', glyph: '▤' },
+    pastoral: { id: 'pastoral', label: 'Pastoral note', source: 'housemaster', glyph: '❖' },
+    clinical: { id: 'clinical', label: 'Clinical milestone', source: 'clinician', glyph: '✚' },
+    home: { id: 'home', label: 'Home signal', source: 'parent', glyph: '⌂' },
+    bridge: { id: 'bridge', label: 'Bridge note', source: 'coordinator', glyph: '⇄' },
+    flag: { id: 'flag', label: 'Flag', source: 'any', glyph: '⚑' },
+    /* A boy asking to speak to someone. Deliberately its own type rather than
+     * a severe check-in: it is a request for a person, not a data point, and
+     * it must never be averaged into a trend or fed to pattern detection. */
+    concern: { id: 'concern', label: 'Asked to talk to someone', source: 'student', glyph: '☎' }
+  };
+
+  /* Who a pupil can reach, and how. Seeded per school by the coordinator; the
+   * external services are UK-wide and always present so a boy is never left
+   * with nobody at 2am. Never make these configurable away to nothing. */
+  var HELP_ROUTES = {
+    emergency: {
+      label: 'If you are in danger right now',
+      action: 'Call 999',
+      detail: 'Police, ambulance, fire. Any time.'
+    },
+    external: [
+      { name: 'Childline', contact: '0800 1111', detail: 'Free, 24 hours, confidential. You do not have to give your name.' },
+      { name: 'Shout', contact: 'Text SHOUT to 85258', detail: 'Free, 24 hours, by text if talking is hard.' },
+      { name: 'Samaritans', contact: '116 123', detail: 'Free, 24 hours, any reason at all.' },
+      { name: 'Papyrus HOPELINE247', contact: '0800 068 4141', detail: 'For anyone under 35 having thoughts of suicide.' }
+    ]
+  };
+
+  /* ============================================== check-in lenses
+   *
+   * The standard check-in asks about fuel and load. That is a reasonable
+   * default and a poor fit for a lot of neurodivergent boys, because it
+   * measures the wrong thing: a boy can be well rested and still unable to
+   * start, or have a light day that happens to contain the one transition he
+   * cannot manage.
+   *
+   * A lens swaps the three questions for ones that track what actually varies
+   * for him. Each is chosen WITH the boy, never assigned to him, and is
+   * changeable whenever it stops fitting.
+   *
+   * Design rules these follow, and must keep following:
+   *  - The tool must not itself be a demand. Wording is invitational; nothing
+   *    is compulsory; a skipped day is not a failure.
+   *  - Ask about the environment, not the deficit. "How much noise was there"
+   *    rather than "how badly did you cope".
+   *  - Never name a condition in a question a boy reads.
+   *  - No item is a screening question and none of them sum to anything. They
+   *    are prompts for a conversation, not an instrument. (See COMPLIANCE §0.)
+   */
+  var LENSES = {
+    standard: {
+      id: 'standard',
+      label: 'Standard',
+      blurb: 'How charged you feel, and how heavy the day looks.',
+      items: [
+        { key: 'fuel', short: 'Fuel', label: 'How charged are you today?', ends: ['Running on empty', 'Fully charged'] },
+        { key: 'load', short: 'Load', label: 'How heavy does today feel?', ends: ['Light', 'A lot on'], reverse: true }
+      ]
+    },
+
+    /* For boys whose difficulty is demand and autonomy rather than capacity.
+     * Deliberately invitational: a demand-sensitive boy cannot be helped by a
+     * tool that is itself another instruction. */
+    autonomy: {
+      id: 'autonomy',
+      label: 'Autonomy and pressure',
+      blurb: 'How much of today is yours, and how much is being asked of you.',
+      items: [
+        { key: 'autonomy', short: 'Own choice', label: 'How much of today feels like your own choice?', ends: ['None of it', 'Most of it'] },
+        { key: 'pressure', short: 'Pressure', label: 'How much is being asked of you today?', ends: ['Not much', 'A great deal'], reverse: true },
+        { key: 'onterms', short: 'On my terms', label: 'Is there anything today you can do on your own terms?', ends: ['Nothing', 'Plenty'] }
+      ]
+    },
+
+    /* Sensory environment. Asks about the room, not about him. */
+    sensory: {
+      id: 'sensory',
+      label: 'Sensory load',
+      blurb: 'What the environment is doing to you today.',
+      items: [
+        { key: 'sensory', short: 'Sensory load', label: 'How much is the noise, light or crowding getting to you?', ends: ['Not at all', 'A lot'], reverse: true },
+        { key: 'recovery', short: 'Somewhere to go', label: 'Have you had anywhere to get away from it?', ends: ['Nowhere', 'Enough'] },
+        { key: 'fuel', short: 'Fuel', label: 'How charged are you today?', ends: ['Running on empty', 'Fully charged'] }
+      ]
+    },
+
+    /* Predictability and change. The commonest avoidable bad day. */
+    transitions: {
+      id: 'transitions',
+      label: 'Change and predictability',
+      blurb: 'How much of today you can see coming.',
+      items: [
+        { key: 'predictable', short: 'Predictable', label: 'How much of today do you already know the shape of?', ends: ['None of it', 'All of it'] },
+        { key: 'change', short: 'Change', label: 'Has anything changed at short notice?', ends: ['Nothing', 'A lot'], reverse: true },
+        { key: 'prepared', short: 'Ready', label: 'Do you feel ready for the parts you know about?', ends: ['Not at all', 'Ready'] }
+      ]
+    },
+
+    /* Getting started, which is not the same thing as motivation. */
+    starting: {
+      id: 'starting',
+      label: 'Getting started',
+      blurb: 'The gap between meaning to and doing.',
+      items: [
+        { key: 'startup', short: 'Starting', label: 'How hard is it to start things today?', ends: ['Easy', 'Very hard'], reverse: true },
+        { key: 'clarity', short: 'First step clear', label: 'Do you know what the first step actually is?', ends: ['No idea', 'Completely clear'] },
+        { key: 'followthrough', short: 'Staying with it', label: 'Once started, are you staying with it?', ends: ['Not at all', 'Staying with it'] }
+      ]
+    },
+
+    /* Being around people, without pathologising either answer. */
+    social: {
+      id: 'social',
+      label: 'People and masking',
+      blurb: 'How much of today is spent being a version of yourself.',
+      items: [
+        { key: 'socialload', short: 'People', label: 'How tiring have people been today?', ends: ['Not tiring', 'Exhausting'], reverse: true },
+        { key: 'masking', short: 'Holding it together', label: 'How much have you been holding a version of yourself together?', ends: ['Not at all', 'Constantly'], reverse: true },
+        { key: 'belonging', short: 'Felt like myself', label: 'Has there been anywhere you felt like yourself?', ends: ['Nowhere', 'Yes'] }
+      ]
+    }
+  };
+
+  var LENS_ORDER = ['standard', 'autonomy', 'sensory', 'transitions', 'starting', 'social'];
+
+  /* Context tags: what was going on, not what is wrong with him.
+   *
+   * Deliberately about circumstance, because circumstance is what the school
+   * can change. Ten years of "he struggled again" is worth less than one term
+   * of "it is always double periods after games".
+   */
+  var CONTEXTS = {
+    when: ['Before school', 'Morning lessons', 'Afternoon lessons', 'Games', 'Prep', 'Evening', 'Weekend'],
+    where: ['Classroom', 'House', 'Dining hall', 'Sports', 'Corridors', 'Off site'],
+    what: ['Timed assessment', 'Group work', 'Unstructured time', 'Something changed',
+           'Somewhere loud', 'Reading aloud', 'A new person', 'Back-to-back periods'],
+    withWhom: ['On my own', 'Small group', 'Whole class', 'With friends', 'With staff']
+  };
+
+  /* Clinical share levels. The clinician, not the platform, chooses this. */
+  var SHARE_LEVELS = {
+    coordinator: {
+      id: 'coordinator',
+      label: 'Coordinator only',
+      note: 'Nothing leaves the clinical record except the fact that something changed.'
+    },
+    pastoral: {
+      id: 'pastoral',
+      label: 'Coordinator + pastoral team',
+      note: 'Housemaster sees your written summary. Teachers see the adjustment line only.'
+    },
+    parent: {
+      id: 'parent',
+      label: 'Coordinator + pastoral team + parents',
+      note: 'Parents also see your written summary in their weekly digest.'
+    }
+  };
+
+  /* ------------------------------------------------------------- redaction
+   *
+   * project(signal, viewer) returns either null (not visible at all) or a
+   * VIEW of the signal: { ...signal, headline, body, grain }.
+   *
+   *   grain 'full'      the viewer sees what the author wrote
+   *   grain 'summary'   the viewer sees a deliberately reduced version
+   *   grain 'existence' the viewer sees only that something happened
+   *
+   * viewer = { role, personId, studentIds }
+   *
+   * The projection NEVER carries the raw payload. A view object holds only
+   * fields its projector put there on purpose, so a role that is not entitled
+   * to a piece of text does not hold that text in memory at all. Copying
+   * sig.data through and relying on the UI not to render it would leave the
+   * content one devtools panel, one console.log or one future serialisation
+   * away from the wrong person.
+   */
+
+  function project(sig, viewer) {
+    var role = viewer.role;
+
+    /* Content-blind roles are refused before any projector runs, so a new
+     * signal type cannot accidentally become readable by an administrator by
+     * forgetting a case. Deny by default, at the top. */
+    if (CONTENT_BLIND_ROLES.indexOf(role) > -1) return null;
+
+    var fn = PROJECTORS[sig.type];
+    if (!fn) return null;
+    var v = fn(sig, role, viewer);
+    if (!v) return null;
+    v.id = sig.id;
+    v.type = sig.type;
+    v.studentId = sig.studentId;
+    v.authorId = sig.authorId;
+    v.authorRole = sig.authorRole;
+    v.at = sig.at;
+    v.severity = sig.severity || 'none';
+    return v;
+  }
+
+  function view(grain, headline, body, extra) {
+    var o = { grain: grain, headline: headline, body: body || '' };
+    if (extra) for (var k in extra) o[k] = extra[k];
+    return o;
+  }
+
+  /* Does today's check-in warrant a heads-up to the people teaching him?
+   *
+   * A single 1-5 answer at the hard end, on whichever items this lens asks.
+   * Deliberately crude: it is a nudge to read a slow start correctly, not an
+   * assessment, and it carries no number and no severity to the teacher.
+   */
+  function flaggedToday(d, lens) {
+    return (lens.items || []).some(function (item) {
+      var v = d[item.key];
+      if (v == null) return false;
+      return item.reverse ? v >= 4 : v <= 2;
+    });
+  }
+
+  var PROJECTORS = {
+
+    /* The pupil's own check-in. They own it.
+     *
+     * The numbers travel further than the words. His named care team (house-
+     * master, clinician, coordinator) sees the intention he wrote because
+     * that is the pastoral picture. Parents get the scores and not the text:
+     * a pupil who believes a parent reads every line stops writing true ones,
+     * and the tool is worth nothing the moment that happens. */
+    checkin: function (s, role) {
+      var d = s.data;
+      var lens = LENSES[d.lens] || LENSES.standard;
+
+      /* A lens changes which three things were asked, so the summary line and
+       * the chart series are built from the lens rather than hardcoded. */
+      var metrics = {};
+      var parts = [];
+      lens.items.forEach(function (item) {
+        if (d[item.key] == null) return;
+        metrics[item.key] = d[item.key];
+        parts.push((item.short || item.key) + ' ' + d[item.key] + '/5');
+      });
+      var line = parts.join(' · ') || 'Checked in';
+      metrics.lens = lens.id;
+      switch (role) {
+        case 'student':
+          return view('full', 'Your check-in', d.intention,
+            { own: true, metrics: metrics, intention: d.intention });
+        case 'housemaster':
+        case 'coordinator':
+        case 'clinician':
+        case 'therapist':
+          return view('full', line, d.intention,
+            { metrics: metrics, intention: d.intention });
+        case 'teacher':
+          /* Teachers get a traffic signal for today, not a data feed.
+           * Computed from the lens rather than from fuel and load, so
+           * choosing a different lens cannot silently turn the flag off. */
+          return flaggedToday(d, lens)
+            ? view('summary', 'Harder morning than usual', '')
+            : null;
+        case 'parent':
+          return view('summary', line, '', { metrics: metrics, intention: null });
+        default:
+          return null;
+      }
+    },
+
+    observation: function (s, role, viewer) {
+      var d = s.data;
+      var head = d.subject + ' · engagement ' + d.engagement + '/5';
+      switch (role) {
+        case 'teacher':
+          if (s.authorId === viewer.personId) return view('full', head, d.note, { own: true });
+          return view('summary', head, '');
+        case 'housemaster':
+        case 'coordinator':
+          return view('full', head, d.note);
+        case 'clinician':
+        case 'therapist':
+          return view('summary', head, d.note);
+        case 'parent':
+          return view('summary', d.subject, d.engagement >= 4 ? 'Going well this week.' : '');
+        default:
+          return null;
+      }
+    },
+
+    pastoral: function (s, role) {
+      var d = s.data;
+      switch (role) {
+        case 'housemaster':
+        case 'coordinator':
+          return view('full', d.category, d.note, { action: d.action });
+        case 'clinician':
+        case 'therapist':
+          return view('summary', d.category, d.note);
+        case 'teacher':
+          /* Teachers get the headline so they are not blindsided, never the note. */
+          return view('existence', d.category, '');
+        case 'parent':
+          return d.shareWithParent ? view('summary', d.category, d.note) : null;
+        default:
+          return null;
+      }
+    },
+
+    /* The clinical bridge. This is the rule the whole proposal turns on. */
+    clinical: function (s, role, viewer) {
+      var d = s.data;
+      var lvl = d.shareLevel || 'coordinator';
+      switch (role) {
+        case 'clinician':
+        case 'therapist':
+          /* The clinical circle, and only within its own discipline. A
+           * therapist does not automatically read the SCW clinician's record,
+           * or the reverse: a boy who tells his therapist something has not
+           * thereby told the school's doctor. Sharing between them is a
+           * decision somebody makes, not a default. */
+          if (s.authorRole !== role && !d.shareWithClinicalPeers) {
+            return view('summary', d.kind, d.pastoralSummary || 'A clinical update was recorded by a colleague.',
+              { shareLevel: lvl });
+          }
+          return view('full', d.kind, d.clinicalDetail, {
+            pastoralSummary: d.pastoralSummary,
+            teacherGuidance: d.teacherGuidance,
+            shareLevel: lvl
+          });
+        case 'coordinator':
+          /* Routes the bridge without reading what is inside it. The
+           * coordinator needs the summary the clinician WROTE for the school,
+           * never the clinical detail behind it. */
+          if (lvl === 'coordinator') {
+            return view('summary', d.kind,
+              d.pastoralSummary || 'A clinical update was recorded and is held with the clinician.',
+              { shareLevel: lvl, teacherGuidance: d.teacherGuidance });
+          }
+          return view('summary', d.kind, d.pastoralSummary, {
+            teacherGuidance: d.teacherGuidance, shareLevel: lvl
+          });
+        case 'housemaster':
+          if (lvl === 'coordinator') {
+            return view('existence', 'Clinical update logged', 'Held with the coordinator. Ask if you need context.');
+          }
+          return view('summary', d.kind, d.pastoralSummary, { teacherGuidance: d.teacherGuidance });
+        case 'teacher':
+          if (lvl === 'coordinator' || !d.teacherGuidance) return null;
+          return view('summary', 'Support adjustment', d.teacherGuidance);
+        case 'parent':
+          if (lvl !== 'parent') return null;
+          return view('summary', d.kind, d.pastoralSummary);
+        default:
+          return null;
+      }
+    },
+
+    home: function (s, role) {
+      var d = s.data;
+      switch (role) {
+        case 'parent':
+          return view('full', d.kind, d.note, { own: true });
+        case 'coordinator':
+        case 'housemaster':
+          return view('full', d.kind, d.note);
+        case 'clinician':
+        case 'therapist':
+          return view('summary', d.kind, d.note);
+        case 'teacher':
+          /* A subject teacher is not pastoral staff. They are told to expect
+           * a harder week so they read the behaviour correctly; the family's
+           * own words stay with the coordinator and the housemaster. */
+          if (d.kind !== 'Early signal') return null;
+          return view('existence', 'Early signal from home',
+            'Their family has flagged something this week. Read a slow start as that, not as attitude.');
+        default:
+          return null;
+      }
+    },
+
+    bridge: function (s, role) {
+      var d = s.data;
+      if (role === 'coordinator') return view('full', d.title, d.note, { own: true });
+      if (d.to && d.to.indexOf(role) === -1) return null;
+      if (role === 'student' || role === 'parent') return null;
+      return view('full', d.title, d.note);
+    },
+
+    /* A pupil asking for a person.
+     *
+     * It reaches their pastoral leads immediately and in full, because that is
+     * the entire point. It reaches their TEACHERS never: a pupil who thinks the
+     * room will know stops asking. And it reaches their parents only if they
+     * said it could, because for some children the thing they need to talk
+     * about is home, and a tool that tells a parent they asked for help is a
+     * tool they will never use twice. */
+    concern: function (s, role) {
+      var d = s.data;
+      switch (role) {
+        case 'student':
+          return view('full', 'You asked to talk to someone', d.note, { own: true });
+        case 'housemaster':
+        case 'coordinator':
+          return view('full', 'Asked to talk to someone', d.note, { urgency: d.urgency });
+        case 'clinician':
+        case 'therapist':
+          return view('full', 'Asked to talk to someone', d.note, { urgency: d.urgency });
+        case 'parent':
+          if (!d.tellParents) return null;
+          return view('summary', 'They asked to talk to someone at school',
+            'They have asked to speak to a member of staff. {Organisation} knows and is following it up.');
+        case 'teacher':
+          return null;
+        default:
+          return null;
+      }
+    },
+
+    flag: function (s, role) {
+      var d = s.data;
+      if (role === 'student') return null;
+      if (role === 'parent') return d.shareWithParent ? view('summary', d.title, d.note) : null;
+      if (role === 'teacher') return view('existence', d.title, '');
+      return view('full', d.title, d.note);
+    }
+  };
+
+  /* --------------------------------------------------- permission summary
+   * Rendered in the "Who sees what" panel. Kept beside the projectors on
+   * purpose: if one changes, the other is right there. */
+
+  var MATRIX = [
+    { type: 'checkin', therapist: 'full', admin: 'none', student: 'own full', teacher: 'flag only', housemaster: 'full', clinician: 'full', parent: 'scores only', coordinator: 'full' },
+    { type: 'observation', therapist: 'summary', admin: 'none', student: 'none', teacher: 'own full', housemaster: 'full', clinician: 'summary', parent: 'digest line', coordinator: 'full' },
+    { type: 'pastoral', therapist: 'summary', admin: 'none', student: 'none', teacher: 'headline', housemaster: 'full', clinician: 'summary', parent: 'if shared', coordinator: 'full' },
+    { type: 'clinical', student: 'none', teacher: 'adjustment', housemaster: 'by level', clinician: 'own full', therapist: 'own full', parent: 'by level', coordinator: 'summary', admin: 'none' },
+    { type: 'home', therapist: 'summary', admin: 'none', student: 'none', teacher: 'warned only', housemaster: 'full', clinician: 'summary', parent: 'own full', coordinator: 'full' },
+    { type: 'bridge', therapist: 'if named', admin: 'none', student: 'none', teacher: 'if named', housemaster: 'full', clinician: 'if named', parent: 'none', coordinator: 'full' },
+    { type: 'flag', therapist: 'full', admin: 'none', student: 'none', teacher: 'headline', housemaster: 'full', clinician: 'full', parent: 'if shared', coordinator: 'full' },
+    { type: 'concern', therapist: 'full', admin: 'none', student: 'own full', teacher: 'none', housemaster: 'full', clinician: 'full', parent: 'by choice', coordinator: 'full' }
+  ];
+
+  var api = {
+    PURPOSE: PURPOSE,
+    DEFAULT_TERMS: DEFAULT_TERMS,
+    PRONOUN_SETS: PRONOUN_SETS,
+    PRONOUN_ORDER: PRONOUN_ORDER,
+    terms: terms,
+    CLINICAL_ROLES: CLINICAL_ROLES,
+    LENSES: LENSES,
+    LENS_ORDER: LENS_ORDER,
+    CONTEXTS: CONTEXTS,
+    CONTENT_BLIND_ROLES: CONTENT_BLIND_ROLES,
+    HELP_ROUTES: HELP_ROUTES,
+    ROLES: ROLES,
+    ROLE_ORDER: ROLE_ORDER,
+    SIGNAL_TYPES: SIGNAL_TYPES,
+    SHARE_LEVELS: SHARE_LEVELS,
+    MATRIX: MATRIX,
+    project: project
+  };
+
+  global.CL = global.CL || {};
+  for (var key in api) global.CL[key] = api[key];
+
+  /* Node: `import CL from '../../js/model.js'` after the loader shim. */
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+
+/* ---- js/ui.js ---- */
+/* The Connected Loop — small DOM helpers and shared components. */
+(function (global) {
+  'use strict';
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      for (var k in attrs) {
+        if (k === 'class') n.className = attrs[k];
+        else if (k === 'html') n.innerHTML = attrs[k];
+        else if (k === 'text') n.textContent = attrs[k];
+        else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), attrs[k]);
+        else if (attrs[k] != null && attrs[k] !== false) n.setAttribute(k, attrs[k]);
+      }
+    }
+    (kids || []).forEach(function (c) {
+      if (c == null || c === false) return;
+      n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); return n; }
+
+  /* ---------------------------------------------------------------- time */
+
+  var DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  function ago(isoStr) {
+    var ms = Date.now() - new Date(isoStr).getTime();
+    var mins = Math.round(ms / 6e4);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + ' min ago';
+    var hrs = Math.round(mins / 60);
+    if (hrs < 24) return hrs + (hrs === 1 ? ' hour ago' : ' hours ago');
+    var d = Math.round(hrs / 24);
+    if (d === 1) return 'yesterday';
+    if (d < 14) return d + ' days ago';
+    return dateShort(isoStr);
+  }
+
+  function dateShort(isoStr) {
+    var d = new Date(isoStr);
+    return d.getDate() + ' ' + MON[d.getMonth()];
+  }
+
+  function dayName(isoStr) { return DAY[new Date(isoStr).getDay()]; }
+
+  /* ---------------------------------------------------------- components */
+
+  function card(opts, kids) {
+    opts = opts || {};
+    return el('section', { class: 'card ' + (opts.class || ''), id: opts.id }, [
+      opts.title ? el('header', { class: 'card-head' }, [
+        el('h2', { text: opts.title }),
+        opts.action || null
+      ]) : null,
+      opts.sub ? el('p', { class: 'card-sub', text: opts.sub }) : null,
+      el('div', { class: 'card-body' }, kids || [])
+    ]);
+  }
+
+  function pill(text, tone) {
+    return el('span', { class: 'pill pill-' + (tone || 'neutral'), text: text });
+  }
+
+  function empty(text) { return el('p', { class: 'empty', text: text }); }
+
+  function button(label, onclick, variant) {
+    return el('button', { class: 'btn ' + (variant ? 'btn-' + variant : ''), type: 'button', onclick: onclick }, [label]);
+  }
+
+  /* A 1-5 tap scale. Big targets, works with a finger on an iPad. */
+  function scale(name, value, onpick, labels) {
+    var wrap = el('div', { class: 'scale', role: 'radiogroup', 'aria-label': name });
+    for (var i = 1; i <= 5; i++) {
+      (function (v) {
+        var b = el('button', {
+          type: 'button',
+          class: 'scale-dot' + (value === v ? ' is-on' : ''),
+          role: 'radio',
+          'aria-checked': value === v ? 'true' : 'false',
+          'aria-label': name + ' ' + v + ' of 5',
+          onclick: function () { onpick(v); }
+        }, [String(v)]);
+        wrap.appendChild(b);
+      })(i);
+    }
+    if (labels) {
+      return el('div', {}, [
+        wrap,
+        el('div', { class: 'scale-ends' }, [
+          el('span', { text: labels[0] }), el('span', { text: labels[1] })
+        ])
+      ]);
+    }
+    return wrap;
+  }
+
+  /* Timeline entry, rendered from a projected view (never a raw signal). */
+  function signalRow(v, store) {
+    var T = global.CL.SIGNAL_TYPES[v.type];
+    var author = store.person(v.authorId);
+    var tone = v.severity === 'serious' ? 'serious' : v.severity === 'warning' ? 'warning' : 'neutral';
+
+    var meta = [
+      el('span', { class: 'sig-author', text: author ? author.name : 'Unknown' }),
+      el('span', { class: 'sig-dot', text: '·' }),
+      el('span', { class: 'sig-when', text: ago(v.at) })
+    ];
+    if (v.grain === 'summary') meta.push(pill('summary', 'muted'));
+    if (v.grain === 'existence') meta.push(pill('restricted', 'muted'));
+
+    return el('li', { class: 'sig sig-' + v.type + ' tone-' + tone }, [
+      el('span', { class: 'sig-glyph', 'aria-hidden': 'true', text: T.glyph }),
+      el('div', { class: 'sig-main' }, [
+        el('div', { class: 'sig-top' }, [
+          el('strong', { class: 'sig-head', text: v.headline }),
+          el('span', { class: 'sig-kind', text: T.label })
+        ]),
+        v.body ? el('p', { class: 'sig-body', text: v.body }) : null,
+        v.action ? el('p', { class: 'sig-action', text: 'Action: ' + v.action }) : null,
+        v.teacherGuidance && v.grain === 'full'
+          ? el('p', { class: 'sig-guidance', text: 'To teachers: ' + v.teacherGuidance }) : null,
+        el('div', { class: 'sig-meta' }, meta)
+      ])
+    ]);
+  }
+
+  function timelineList(views, store, emptyText) {
+    if (!views.length) return empty(emptyText || 'Nothing in this window.');
+    return el('ul', { class: 'timeline' }, views.map(function (v) { return signalRow(v, store); }));
+  }
+
+  /* Toast confirmation. Feedback that something reached the loop matters more
+   * here than in most apps: the whole point is that contributions land. */
+  function toast(msg) {
+    var host = document.getElementById('toast-host');
+    var t = el('div', { class: 'toast', role: 'status', text: msg });
+    host.appendChild(t);
+    setTimeout(function () { t.classList.add('is-out'); }, 2600);
+    setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 3100);
+  }
+
+  /* Writes are synchronous offline and a promise when connected. Views call
+   * this so one piece of view code serves both, and so a rejected write says
+   * so instead of failing silently — which in this app would mean a parent
+   * believing a note reached the school when it did not. */
+  function after(result, onDone) {
+    if (result && typeof result.then === 'function') {
+      result.then(function (v) { onDone(v); }, function (err) {
+        toast(err && err.code === 401
+          ? 'Your session has expired. Sign in again.'
+          : 'Not saved: ' + (err && err.message ? err.message : 'unknown error'));
+      });
+    } else {
+      onDone(result);
+    }
+  }
+
+  global.CL = global.CL || {};
+  global.CL.ui = {
+    after: after,
+    el: el, clear: clear, card: card, pill: pill, empty: empty, button: button,
+    scale: scale, signalRow: signalRow, timelineList: timelineList, toast: toast,
+    ago: ago, dateShort: dateShort, dayName: dayName
+  };
+
+})(window);
+
+
+/* ---- js/store.js ---- */
+/* The Connected Loop — data layer.
+ *
+ * One adapter, one seam. Today it persists to localStorage so the app runs
+ * from a file on a Windows laptop or an iPad with no server behind it. To go
+ * multi-user, replace read()/write() with fetch() against an API and nothing
+ * above this file changes.
+ */
+(function (global) {
+  'use strict';
+
+  var KEY = 'connected-loop:v1';
+  var db = null;
+  var listeners = [];
+
+  /* ------------------------------------------------------------- calendar */
+
+  function dayKey(d) {
+    var y = d.getFullYear(), m = d.getMonth() + 1, dd = d.getDate();
+    return y + '-' + (m < 10 ? '0' : '') + m + '-' + (dd < 10 ? '0' : '') + dd;
+  }
+  function daysAgo(n) {
+    var d = new Date();
+    d.setHours(9, 0, 0, 0);
+    d.setDate(d.getDate() - n);
+    return d;
+  }
+  /* Window filters use midnight so "last 14 days" includes all of day 14
+   * rather than clipping whatever happened before 9am on it. */
+  function startOfDaysAgo(n) {
+    var d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - n);
+    return d;
+  }
+  function iso(n, hour) {
+    var d = daysAgo(n);
+    if (hour != null) d.setHours(hour, 0, 0, 0);
+    return d.toISOString();
+  }
+
+  /* ---------------------------------------------------------------- seed */
+
+  function seed() {
+    var people = [
+      { id: 'p-theo', name: 'Theo M.', role: 'student', detail: 'F Block · Godolphin' },
+      { id: 'p-ade', name: 'Ade Okonjo', role: 'student', detail: 'E Block · Godolphin' },
+      { id: 'p-rafi', name: 'Rafi S.', role: 'student', detail: 'D Block · Godolphin' },
+      { id: 'p-hart', name: 'Mr Hartley', role: 'teacher', detail: 'Mathematics' },
+      { id: 'p-vane', name: 'Ms Vane', role: 'teacher', detail: 'English' },
+      { id: 'p-brom', name: 'Mr Bromley', role: 'housemaster', detail: 'Godolphin' },
+      { id: 'p-nadi', name: 'Dr Nadia Rahim', role: 'clinician', detail: 'Stephenson Centre for Wellbeing' },
+      { id: 'p-mum', name: 'Mrs M.', role: 'parent', detail: "Theo's mother" },
+      { id: 'p-coord', name: 'Ms Aluko', role: 'coordinator', detail: 'Connected Loop coordinator' }
+    ];
+
+    var students = [
+      {
+        id: 'p-theo',
+        name: 'Theo M.',
+        year: 'F Block',
+        house: 'Godolphin',
+        parentId: 'p-mum',
+        clinicianId: 'p-nadi',
+        housemasterId: 'p-brom',
+        tags: ['ADHD', 'Under SCW'],
+        profile: {
+          strengths: [
+            'Very strong verbally. Talks his way into an idea before he can write it.',
+            'Reliable in small groups and one to one.',
+            'Rows. Trains four mornings a week and rarely misses.'
+          ],
+          whatHelps: [
+            'The task broken into first step, not the whole task.',
+            'Written instruction on the board as well as spoken.',
+            'A five minute start-up delay treated as normal, not as defiance.'
+          ],
+          earlySigns: [
+            'Stops asking questions in class.',
+            'Handwriting compresses and slopes.',
+            'Skips the second half of prep and says it was finished.'
+          ],
+          pressureFit: {
+            suits: ['Deadlines he set himself', 'Physical load', 'Being given a role'],
+            avoid: ['Surprise timed assessment', 'Public correction', 'Back-to-back unstructured periods']
+          },
+          adjustments: [
+            'Extra time in timed assessments.',
+            'Prep handed in by photo if handwriting has gone.',
+            'Movement break between double periods.'
+          ]
+        }
+      },
+      {
+        id: 'p-ade', name: 'Ade Okonjo', year: 'E Block', house: 'Godolphin',
+        parentId: null, clinicianId: 'p-nadi', housemasterId: 'p-brom',
+        tags: ['Autistic', 'Learning Support'],
+        profile: {
+          strengths: ['Exceptional recall for detail.', 'Deeply reliable once a routine is set.'],
+          whatHelps: ['Advance notice of any change to the timetable.', 'Written over spoken.'],
+          earlySigns: ['Goes quiet at meals.', 'Arrives very early to everything.'],
+          pressureFit: { suits: ['Predictable structure'], avoid: ['Unannounced room changes', 'Noise'] },
+          adjustments: ['Quiet room for assessments.', 'Advance timetable notice.']
+        }
+      },
+      {
+        id: 'p-rafi', name: 'Rafi S.', year: 'D Block', house: 'Godolphin',
+        parentId: null, clinicianId: null, housemasterId: 'p-brom',
+        tags: ['Dyslexia'],
+        profile: {
+          strengths: ['Strong spatial reasoning.', 'Good humoured under correction.'],
+          whatHelps: ['Text to speech for long reading.', 'Marking on content not spelling.'],
+          earlySigns: ['Avoids reading aloud.', 'Late to English specifically.'],
+          pressureFit: { suits: ['Practical work'], avoid: ['Reading aloud cold'] },
+          adjustments: ['Extra time.', 'Laptop for extended writing.']
+        }
+      }
+    ];
+
+    /* Fourteen days of Theo. A dip mid-window that three different people
+     * each see a fragment of. This is the demo's whole argument. */
+    var fuel = [4, 4, 3, 4, 4, 3, 3, 2, 2, 2, 3, 3, 4, 4];
+    var load = [2, 2, 3, 2, 3, 3, 4, 4, 5, 4, 4, 3, 2, 2];
+    var intents = [
+      'Get the maths prep done before rowing.',
+      'Ask Mr Hartley the thing I did not get.',
+      'Actually start prep at 7, not 8.',
+      'Be on time to everything today.',
+      'Finish the English essay plan.',
+      'Do the reading before games.',
+      'Just get through the assessment.',
+      'Hand in something even if it is rough.',
+      'Ask for help instead of sitting on it.',
+      'One thing at a time today.',
+      'Get to bed before 11.',
+      'Talk to Mr Bromley about the timetable.',
+      'Back to the 7pm prep start.',
+      'Row well and keep the prep routine.'
+    ];
+
+    var signals = [];
+    var n = 0;
+    function add(type, studentId, authorId, authorRole, at, data, severity) {
+      signals.push({
+        id: 's' + (++n), type: type, studentId: studentId, authorId: authorId,
+        authorRole: authorRole, at: at, data: data, severity: severity || 'none'
+      });
+    }
+
+    for (var i = 14; i >= 1; i--) {
+      var k = 14 - i;
+      add('checkin', 'p-theo', 'p-theo', 'student', iso(i, 7), {
+        fuel: fuel[k], load: load[k], intention: intents[k],
+        tags: load[k] >= 4 ? ['deadline', 'sleep'] : ['ok']
+      });
+    }
+    /* Ade and Rafi get a lighter trace so the coordinator view has a roll. */
+    [4, 4, 5, 4, 3, 4, 4].forEach(function (f, j) {
+      add('checkin', 'p-ade', 'p-ade', 'student', iso(7 - j, 7),
+        { fuel: f, load: 5 - f + 1, intention: 'Stick to the plan.', tags: ['ok'] });
+    });
+
+    add('observation', 'p-theo', 'p-hart', 'teacher', iso(11, 11), {
+      subject: 'Mathematics', engagement: 4,
+      note: 'Asked two good questions unprompted. Started the problem set without a nudge.'
+    });
+    add('observation', 'p-theo', 'p-vane', 'teacher', iso(8, 14), {
+      subject: 'English', engagement: 2,
+      note: 'Very quiet. Did not ask anything all lesson, which is not him. Essay plan not handed in.'
+    }, 'warning');
+    add('observation', 'p-theo', 'p-hart', 'teacher', iso(7, 11), {
+      subject: 'Mathematics', engagement: 2,
+      note: 'Handwriting has gone small and sloped. Prep half done and he told me it was finished.'
+    }, 'warning');
+    add('observation', 'p-theo', 'p-vane', 'teacher', iso(1, 14), {
+      subject: 'English', engagement: 4,
+      note: 'Back to arguing with me about the text, which is a very good sign.'
+    });
+
+    add('home', 'p-theo', 'p-mum', 'parent', iso(9, 20), {
+      kind: 'Early signal',
+      note: 'He rang on Sunday and was flat in a way I recognise. Two of the three things on his early-signs list. Nothing has gone wrong yet but this is usually about ten days ahead of it.'
+    }, 'warning');
+    add('home', 'p-theo', 'p-mum', 'parent', iso(2, 19), {
+      kind: 'What is working',
+      note: 'He said the movement break between doubles has made a real difference. Please keep it.'
+    });
+
+    add('pastoral', 'p-theo', 'p-brom', 'housemaster', iso(6, 21), {
+      category: 'Check-in conversation', shareWithParent: true,
+      note: 'Sat with him after prep. Assessment week has stacked up and he has been starting prep at 9 instead of 7. Not distressed, but running on empty.',
+      action: 'Moved his prep slot earlier and told him the movement break stands.'
+    });
+
+    add('clinical', 'p-theo', 'p-nadi', 'clinician', iso(5, 16), {
+      kind: 'Treatment change', shareLevel: 'pastoral',
+      clinicalDetail: 'Reviewed at SCW. Titration adjusted; expect a settling period of two to three weeks with possible afternoon dip. Sleep onset to be monitored. Next review in four weeks.',
+      pastoralSummary: 'A change to his treatment was made this week. Expect a two to three week settling period, with the afternoon the harder part of the day. No change to his adjustments.',
+      teacherGuidance: 'Afternoons may be harder for the next fortnight. Keep the start-up delay tolerance and give written instruction alongside spoken.'
+    });
+
+    add('bridge', 'p-theo', 'p-coord', 'coordinator', iso(5, 17), {
+      title: 'Clinical update relayed to pastoral team', to: ['housemaster', 'teacher', 'clinician'],
+      note: 'SCW treatment change logged. Pastoral summary released to Mr Bromley; adjustment line released to Mr Hartley and Ms Vane. Parents notified that a review took place.'
+    });
+
+    add('flag', 'p-theo', 'p-coord', 'coordinator', iso(8, 9), {
+      title: 'Converging signals', shareWithParent: true,
+      note: 'Three independent sources within six days: load 4+ on four consecutive check-ins, an English engagement drop, and an early-signal note from home. Raised with Mr Bromley and SCW the same morning.'
+    }, 'serious');
+
+    add('observation', 'p-ade', 'p-hart', 'teacher', iso(3, 11), {
+      subject: 'Mathematics', engagement: 4, note: 'Steady. Notice given about Friday room change and it was fine.'
+    });
+    add('pastoral', 'p-ade', 'p-brom', 'housemaster', iso(4, 20), {
+      category: 'Routine change', shareWithParent: false,
+      note: 'Timetable change next week. Walked him through it in advance rather than letting him find out on the day.',
+      action: 'Printed timetable given Thursday.'
+    });
+
+    return {
+      version: 1,
+      people: people,
+      students: students,
+      signals: signals,
+      wins: {
+        'p-theo': [
+          { at: iso(1, 18), text: 'Ten check-ins in a row.' },
+          { at: iso(2, 18), text: 'Handed in the English plan, late but handed in.' },
+          { at: iso(6, 18), text: 'Asked for help before it went wrong.' }
+        ]
+      },
+      organisation: {
+        name: 'Eton College',
+        terms: { pupil: 'boy', pupils: 'boys', pupilPossessive: "boy's",
+                 pastoralLead: 'housemaster', pastoralLeads: 'housemasters',
+                 house: 'house', yearGroup: 'block',
+                 clinicalService: 'the Stephenson Centre', organisation: 'Eton' }
+      },
+      digestFocus: {
+        'p-theo': {
+          week: 'This week',
+          schoolFocus: 'Getting prep started at 7pm rather than 9pm.',
+          homeReinforce: 'If he rings, ask what time he started prep, not whether he finished it.',
+          goingWell: 'Rowing attendance is unbroken and he is asking questions in class again.'
+        }
+      }
+    };
+  }
+
+  /* ------------------------------------------------------------ lifecycle */
+
+  function read() {
+    try {
+      var raw = global.localStorage.getItem(KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && parsed.version === 1) return parsed;
+      }
+    } catch (e) { /* private browsing, file:// restrictions */ }
+    return null;
+  }
+
+  function write() {
+    try { global.localStorage.setItem(KEY, JSON.stringify(db)); }
+    catch (e) { /* keep working in memory */ }
+  }
+
+  function load() {
+    db = read() || seed();
+    return db;
+  }
+
+  function reset() {
+    db = seed();
+    write();
+    emit();
+  }
+
+  function onChange(fn) { listeners.push(fn); }
+  function emit() { listeners.forEach(function (f) { f(); }); }
+
+  /* --------------------------------------------------------------- reads */
+
+  function people() { return db.people; }
+  function person(id) { return db.people.filter(function (p) { return p.id === id; })[0]; }
+  function students() { return db.students; }
+  function student(id) { return db.students.filter(function (s) { return s.id === id; })[0]; }
+
+  function rawSignals(studentId) {
+    return db.signals
+      .filter(function (s) { return !studentId || s.studentId === studentId; })
+      .sort(function (a, b) { return new Date(b.at) - new Date(a.at); });
+  }
+
+  /* The only way a view should ever get signals. */
+  function timeline(studentId, viewer, opts) {
+    opts = opts || {};
+    var out = [];
+    rawSignals(studentId).forEach(function (s) {
+      var v = global.CL.project(s, viewer);
+      if (!v) return;
+      if (opts.types && opts.types.indexOf(v.type) === -1) return;
+      if (opts.sinceDays != null && new Date(v.at) < startOfDaysAgo(opts.sinceDays)) return;
+      out.push(v);
+    });
+    if (opts.limit) out = out.slice(0, opts.limit);
+    return out;
+  }
+
+  function checkins(studentId, days) {
+    var since = startOfDaysAgo(days == null ? 14 : days);
+    return db.signals
+      .filter(function (s) {
+        return s.type === 'checkin' && s.studentId === studentId && new Date(s.at) >= since;
+      })
+      .sort(function (a, b) { return new Date(a.at) - new Date(b.at); });
+  }
+
+  /* The only thing a chart is ever handed. Points carry the metrics the
+   * viewer is entitled to and the intention text only if their role may read
+   * it, so a parent's tooltip cannot show what a housemaster's does. */
+  function checkinSeries(studentId, viewer, days) {
+    return checkins(studentId, days).map(function (s) {
+      var v = global.CL.project(s, viewer);
+      if (!v || !v.metrics) return null;
+      return { at: s.at, fuel: v.metrics.fuel, load: v.metrics.load, intention: v.intention || null };
+    }).filter(Boolean);
+  }
+
+  function streak(studentId) {
+    var byDay = {};
+    db.signals.forEach(function (s) {
+      if (s.type === 'checkin' && s.studentId === studentId) byDay[dayKey(new Date(s.at))] = true;
+    });
+    var count = 0, d = new Date();
+    if (!byDay[dayKey(d)]) d.setDate(d.getDate() - 1); /* today not done yet is fine */
+    while (byDay[dayKey(d)]) { count++; d.setDate(d.getDate() - 1); }
+    return count;
+  }
+
+  function checkedInToday(studentId) {
+    var today = dayKey(new Date());
+    return db.signals.some(function (s) {
+      return s.type === 'checkin' && s.studentId === studentId && dayKey(new Date(s.at)) === today;
+    });
+  }
+
+  function wins(studentId) { return (db.wins[studentId] || []).slice(); }
+  function digest(studentId) { return db.digestFocus[studentId] || null; }
+  function organisation() { return db.organisation || { name: 'The school', terms: {} }; }
+
+  /* -------------------------------------------------- pattern recognition
+   *
+   * "Patterns go unrecognised." The loop's job is to notice when independent
+   * sources agree inside one window, which is exactly what no single person
+   * in the current arrangement can see.
+   */
+  function patterns(studentId) {
+    var found = [];
+    var win = 7;
+    var since = startOfDaysAgo(win);
+    var recent = db.signals.filter(function (s) {
+      return s.studentId === studentId && new Date(s.at) >= since;
+    });
+
+    var sources = {};
+    var evidence = [];
+
+    var heavy = recent.filter(function (s) { return s.type === 'checkin' && (s.data.load >= 4 || s.data.fuel <= 2); });
+    if (heavy.length >= 3) {
+      sources.student = true;
+      evidence.push(heavy.length + ' check-ins at high load or low fuel');
+    }
+    var lowObs = recent.filter(function (s) { return s.type === 'observation' && s.data.engagement <= 2; });
+    if (lowObs.length >= 1) {
+      sources.teacher = true;
+      evidence.push('engagement drop in ' + lowObs.map(function (s) { return s.data.subject; }).join(', '));
+    }
+    var homeFlag = recent.filter(function (s) { return s.type === 'home' && s.data.kind === 'Early signal'; });
+    if (homeFlag.length >= 1) {
+      sources.parent = true;
+      evidence.push('early signal from home');
+    }
+    var clin = recent.filter(function (s) { return s.type === 'clinical'; });
+    if (clin.length >= 1) {
+      sources.clinician = true;
+      evidence.push('clinical change in the same window');
+    }
+
+    var count = Object.keys(sources).length;
+    if (count >= 3) {
+      found.push({
+        kind: 'converging',
+        severity: 'serious',
+        title: 'Converging signals from ' + count + ' independent sources',
+        detail: evidence.join(' · '),
+        sources: Object.keys(sources)
+      });
+    } else if (count === 2) {
+      found.push({
+        kind: 'watch',
+        severity: 'warning',
+        title: 'Two sources agreeing',
+        detail: evidence.join(' · '),
+        sources: Object.keys(sources)
+      });
+    }
+
+    /* Silence is also a signal. */
+    var last = db.signals
+      .filter(function (s) { return s.studentId === studentId && s.type === 'checkin'; })
+      .sort(function (a, b) { return new Date(b.at) - new Date(a.at); })[0];
+    if (!last) {
+      found.push({
+        kind: 'quiet', severity: 'warning',
+        title: 'Never checked in',
+        detail: 'He has not started using his own tool. Worth a conversation before it is worth a chase.',
+        sources: ['student']
+      });
+    } else if ((Date.now() - new Date(last.at)) > 3 * 864e5) {
+      found.push({
+        kind: 'quiet', severity: 'warning',
+        title: 'No check-in for three days',
+        detail: 'The boy has stopped using his own tool, which is usually the first thing to go.',
+        sources: ['student']
+      });
+    }
+    return found;
+  }
+
+  /* -------------------------------------------------------------- writes */
+
+  function addSignal(type, studentId, authorId, authorRole, data, severity) {
+    var sig = {
+      id: 's' + Date.now() + Math.floor(Math.random() * 1000),
+      type: type, studentId: studentId, authorId: authorId, authorRole: authorRole,
+      at: new Date().toISOString(), data: data, severity: severity || 'none'
+    };
+    db.signals.push(sig);
+    write();
+    emit();
+    return sig;
+  }
+
+  /* The offline prototype keeps the same surface so views.js never has to ask
+   * which build it is running in. */
+  /* Writes without emitting, so the boy's confirmation is not torn down by a
+   * re-render. Mirrors the connected store deliberately. */
+  function raiseConcern(studentId, body) {
+    db.signals.push({
+      id: 's' + Date.now() + Math.floor(Math.random() * 1000),
+      type: 'concern', studentId: studentId, authorId: studentId, authorRole: 'student',
+      at: new Date().toISOString(),
+      data: { note: body.note, urgency: body.urgency, tellParents: !!body.tellParents, acknowledgedAt: null },
+      severity: body.urgency === 'today' ? 'serious' : 'warning'
+    });
+    write();
+    return { seenBy: ['Mr Bromley', 'Ms Aluko'], whenSeen: 'when they next look',
+      reminder: 'If you need someone now, do not wait for this. Use a number below or find any adult.' };
+  }
+
+  function concerns() {
+    return db.signals
+      .filter(function (s) { return s.type === 'concern'; })
+      .sort(function (a, b) { return new Date(b.at) - new Date(a.at); })
+      .map(function (s) {
+        var st = student(s.studentId);
+        return { id: s.id, at: s.at, body: s.data.note, urgency: s.data.urgency,
+          studentName: st ? st.name : s.studentId, acknowledgedAt: s.data.acknowledgedAt };
+      });
+  }
+
+  function acknowledgeConcern(id, outcome) {
+    db.signals.forEach(function (s) {
+      if (s.id === id) { s.data.acknowledgedAt = new Date().toISOString(); s.data.outcome = outcome; }
+    });
+    write(); emit();
+  }
+
+  function help() { return null; }
+
+  function addWin(studentId, text) {
+    if (!db.wins[studentId]) db.wins[studentId] = [];
+    db.wins[studentId].unshift({ at: new Date().toISOString(), text: text });
+    write();
+    emit();
+  }
+
+  function saveDigest(studentId, obj) {
+    db.digestFocus[studentId] = obj;
+    write();
+    emit();
+  }
+
+  global.CL = global.CL || {};
+  global.CL.store = {
+    load: load, reset: reset, onChange: onChange,
+    people: people, person: person, students: students, student: student,
+    timeline: timeline, rawSignals: rawSignals,
+    checkins: checkins, checkinSeries: checkinSeries, streak: streak, checkedInToday: checkedInToday,
+    wins: wins, digest: digest, patterns: patterns,
+    concerns: concerns, help: help, organisation: organisation,
+    raiseConcern: raiseConcern, acknowledgeConcern: acknowledgeConcern,
+    addSignal: addSignal, addWin: addWin, saveDigest: saveDigest,
+    dayKey: dayKey, daysAgo: daysAgo
+  };
+
+})(window);
+
+
+/* ---- js/charts.js ---- */
+/* The Connected Loop — charts.
+ *
+ * Two series on one 1-5 axis (never a second y-scale), legend plus direct
+ * labels so identity is not carried by colour alone, a crosshair tooltip, and
+ * a table view behind a toggle for the accessibility case.
+ * Palette slots 1 and 2 from the validated categorical order.
+ */
+(function (global) {
+  'use strict';
+
+  var el = global.CL.ui.el;
+  var NS = 'http://www.w3.org/2000/svg';
+
+  function s(tag, attrs) {
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+
+  /* Signal-strength chart: fuel and load over the window, with a marker rail
+   * underneath showing when other people contributed. The rail is the point:
+   * it puts the boy's own trace and everyone else's fragments on one time base. */
+  function trend(checkins, markers, opts) {
+    opts = opts || {};
+    /* r leaves room for the two direct labels sitting past the last point. */
+    var W = 720, H = 260, PAD = { t: 18, r: 52, b: 54, l: 34 };
+    var railY = H - 34;
+    var plotW = W - PAD.l - PAD.r;
+    var plotH = railY - PAD.t - 14;
+
+    var wrap = el('div', { class: 'chart' });
+    if (!checkins.length) {
+      wrap.appendChild(el('p', { class: 'empty', text: 'No check-ins in this window yet.' }));
+      return wrap;
+    }
+
+    var n = checkins.length;
+    var x = function (i) { return PAD.l + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW); };
+    var y = function (v) { return PAD.t + plotH - ((v - 1) / 4) * plotH; };
+
+    var svg = s('svg', {
+      viewBox: '0 0 ' + W + ' ' + H, class: 'chart-svg',
+      role: 'img', 'aria-label': 'Fuel and load over the last ' + n + ' check-ins, each rated 1 to 5'
+    });
+
+    /* gridlines + axis */
+    [1, 2, 3, 4, 5].forEach(function (v) {
+      svg.appendChild(s('line', { x1: PAD.l, x2: W - PAD.r, y1: y(v), y2: y(v), class: 'chart-grid' }));
+      var t = s('text', { x: PAD.l - 8, y: y(v) + 4, class: 'axis-label', 'text-anchor': 'end' });
+      t.textContent = v;
+      svg.appendChild(t);
+    });
+
+    function path(key) {
+      var d = '';
+      checkins.forEach(function (c, i) { d += (i ? ' L' : 'M') + x(i) + ' ' + y(c[key]); });
+      return d;
+    }
+
+    ['fuel', 'load'].forEach(function (key, si) {
+      svg.appendChild(s('path', { d: path(key), class: 'line series-' + (si + 1) }));
+      checkins.forEach(function (c, i) {
+        svg.appendChild(s('circle', { cx: x(i), cy: y(c[key]), r: 4.5, class: 'pt series-' + (si + 1) }));
+      });
+      /* direct label at the last point */
+      var last = checkins[n - 1];
+      var lab = s('text', {
+        x: x(n - 1) + 8, y: y(last[key]) + 4,
+        class: 'direct-label series-' + (si + 1) + '-ink'
+      });
+      lab.textContent = key === 'fuel' ? 'Fuel' : 'Load';
+      svg.appendChild(lab);
+    });
+
+    /* date ticks, thinned so they never collide */
+    var every = Math.max(1, Math.ceil(n / 7));
+    checkins.forEach(function (c, i) {
+      if (i % every && i !== n - 1) return;
+      var t = s('text', { x: x(i), y: railY + 24, class: 'axis-label', 'text-anchor': 'middle' });
+      t.textContent = global.CL.ui.dateShort(c.at);
+      svg.appendChild(t);
+    });
+
+    /* contribution rail */
+    svg.appendChild(s('line', { x1: PAD.l, x2: W - PAD.r, y1: railY, y2: railY, class: 'rail' }));
+    (markers || []).forEach(function (m) {
+      var idx = nearestIndex(checkins, m.at);
+      if (idx < 0) return;
+      var g = s('g', { class: 'marker marker-' + m.type + (m.severity && m.severity !== 'none' ? ' tone-' + m.severity : '') });
+      g.appendChild(s('line', { x1: x(idx), x2: x(idx), y1: PAD.t, y2: railY, class: 'marker-stem' }));
+      g.appendChild(s('circle', { cx: x(idx), cy: railY, r: 6, class: 'marker-dot' }));
+      var gl = s('text', { x: x(idx), y: railY + 4, class: 'marker-glyph', 'text-anchor': 'middle' });
+      gl.textContent = global.CL.SIGNAL_TYPES[m.type].glyph;
+      g.appendChild(gl);
+      var title = s('title');
+      title.textContent = global.CL.SIGNAL_TYPES[m.type].label + ' — ' + m.headline + ' (' + global.CL.ui.dateShort(m.at) + ')';
+      g.appendChild(title);
+      svg.appendChild(g);
+    });
+
+    /* hover crosshair */
+    /* Visibility is toggled by class, never by a style attribute: the app
+     * ships a strict Content-Security-Policy with no 'unsafe-inline', and
+     * setAttribute('style', ...) is blocked by it. */
+    var hover = s('g', { class: 'hover-layer' });
+    var hline = s('line', { y1: PAD.t, y2: railY, class: 'crosshair' });
+    hover.appendChild(hline);
+    svg.appendChild(hover);
+
+    var tip = el('div', { class: 'tooltip', hidden: 'hidden' });
+    wrap.appendChild(svg);
+    wrap.appendChild(tip);
+
+    svg.addEventListener('pointermove', function (ev) {
+      var r = svg.getBoundingClientRect();
+      var px = ((ev.clientX - r.left) / r.width) * W;
+      var i = Math.round(((px - PAD.l) / plotW) * (n - 1));
+      if (i < 0) i = 0; if (i > n - 1) i = n - 1;
+      var c = checkins[i];
+      hline.setAttribute('x1', x(i)); hline.setAttribute('x2', x(i));
+      hover.classList.add('is-on');
+      tip.hidden = false;
+      tip.innerHTML = '';
+      tip.appendChild(el('strong', { text: global.CL.ui.dayName(c.at) + ' ' + global.CL.ui.dateShort(c.at) }));
+      tip.appendChild(el('span', { class: 'tt-row' }, [
+        el('i', { class: 'sw series-1' }), 'Fuel ' + c.fuel + '/5'
+      ]));
+      tip.appendChild(el('span', { class: 'tt-row' }, [
+        el('i', { class: 'sw series-2' }), 'Load ' + c.load + '/5'
+      ]));
+      if (c.intention) tip.appendChild(el('span', { class: 'tt-note', text: '"' + c.intention + '"' }));
+      var left = (x(i) / W) * r.width;
+      tip.style.left = Math.max(8, Math.min(r.width - 8, left)) + 'px';
+    });
+    svg.addEventListener('pointerleave', function () {
+      hover.classList.remove('is-on');
+      tip.hidden = true;
+    });
+
+    /* legend + table toggle */
+    var tableWrap = el('div', { class: 'chart-table', hidden: 'hidden' }, [buildTable(checkins)]);
+    var toggle = global.CL.ui.button('Table view', function () {
+      tableWrap.hidden = !tableWrap.hidden;
+      toggle.textContent = tableWrap.hidden ? 'Table view' : 'Hide table';
+    }, 'quiet');
+
+    wrap.appendChild(el('div', { class: 'chart-foot' }, [
+      el('div', { class: 'legend' }, [
+        el('span', { class: 'legend-item' }, [el('i', { class: 'sw series-1' }), 'Fuel — self-rated 1 to 5']),
+        el('span', { class: 'legend-item' }, [el('i', { class: 'sw series-2' }), 'Load — how heavy the day feels, 1 to 5'])
+      ]),
+      toggle
+    ]));
+    wrap.appendChild(tableWrap);
+    return wrap;
+  }
+
+  function buildTable(points) {
+    var rows = points.slice().reverse().map(function (c) {
+      return el('tr', {}, [
+        el('td', { text: global.CL.ui.dateShort(c.at) }),
+        el('td', { text: String(c.fuel) }),
+        el('td', { text: String(c.load) }),
+        el('td', { text: c.intention || '' })
+      ]);
+    });
+    return el('table', { class: 'data-table' }, [
+      el('thead', {}, [el('tr', {}, [
+        el('th', { text: 'Date' }), el('th', { text: 'Fuel' }),
+        el('th', { text: 'Load' }), el('th', { text: 'Intention' })
+      ])]),
+      el('tbody', {}, rows)
+    ]);
+  }
+
+  function nearestIndex(checkins, at) {
+    var t = new Date(at).getTime(), best = -1, bestD = Infinity;
+    checkins.forEach(function (c, i) {
+      var d = Math.abs(new Date(c.at).getTime() - t);
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    return bestD > 2 * 864e5 ? -1 : best;
+  }
+
+  /* A single figure with its own label. Not a chart, and should not be one. */
+  function stat(value, label, tone) {
+    return el('div', { class: 'stat tone-' + (tone || 'neutral') }, [
+      el('span', { class: 'stat-value', text: String(value) }),
+      el('span', { class: 'stat-label', text: label })
+    ]);
+  }
+
+  /* Fourteen-cell streak strip. Ordinal presence, not magnitude. */
+  function streakStrip(points, store) {
+    var strip = el('div', { class: 'streak-strip', 'aria-label': 'Check-ins over the last 14 days' });
+    var done = {};
+    points.forEach(function (c) { done[store.dayKey(new Date(c.at))] = true; });
+    for (var i = 13; i >= 0; i--) {
+      var d = store.daysAgo(i);
+      var on = !!done[store.dayKey(d)];
+      strip.appendChild(el('span', {
+        class: 'streak-cell' + (on ? ' is-on' : ''),
+        title: store.dayKey(d) + (on ? ' — checked in' : ' — no check-in')
+      }));
+    }
+    return strip;
+  }
+
+  global.CL.charts = { trend: trend, stat: stat, streakStrip: streakStrip };
+
+})(window);
+
+
+/* ---- js/views.js ---- */
+/* The Connected Loop — the six role views plus the permissions panel.
+ *
+ * Every view reads through store.timeline(studentId, viewer), so what a role
+ * can see is decided in model.js and never re-decided here.
+ */
+(function (global) {
+  'use strict';
+
+  var CL = global.CL;
+  var ui = CL.ui, el = ui.el, card = ui.card, pill = ui.pill, btn = ui.button;
+  var charts = CL.charts;
+  var store = CL.store;
+
+  var VIEWS = {};
+
+  /* Copy helper. Built per render from the organisation's terminology and the
+   * pupil's own pronouns, so no string below has to know what this school
+   * calls its people or how this child is referred to. */
+  function T(ctx, student) {
+    var org = (ctx && ctx.organisation) || {};
+    return CL.terms(org.terms, student && student.pronouns);
+  }
+
+  /* Several cards render nothing when there is nothing to say (no open
+   * concerns, no patterns). appendChild(null) throws, so every optional card
+   * goes through here rather than relying on each call site to remember. */
+  function add(root, node) {
+    if (node) root.appendChild(node);
+    return root;
+  }
+
+  /* ================================================================ STUDENT
+   * His tool, framed as a personal performance instrument. No mention of who
+   * else is watching, because that framing is what kills adoption. */
+
+  VIEWS.student = function (root, ctx) {
+    /* His record id, which is not his login id once a coordinator has created
+     * him rather than the seed. */
+    var sid = ctx.viewer.studentId || ctx.viewer.personId;
+    var st = store.student(sid);
+    var done = store.checkedInToday(sid);
+    var series = store.checkinSeries(sid, ctx.viewer, 14);
+
+    root.appendChild(hero(
+      'Morning, ' + st.name.split(' ')[0] + '.',
+      done ? 'Done for today. Come back tomorrow.' : 'Thirty seconds. Three things. Then get on with your day.'
+    ));
+
+    /* Before anything else he might type into. A boy needs to know who reads
+     * this and how fast BEFORE he decides what to put in it. */
+    add(root, helpCard(ctx, sid));
+
+    root.appendChild(el('div', { class: 'grid grid-3 stats-row' }, [
+      charts.stat(store.streak(sid), 'day streak', 'good'),
+      charts.stat(series.length, 'check-ins this fortnight'),
+      charts.stat(store.wins(sid).length, 'wins logged')
+    ]));
+
+    /* --- check-in --- */
+    if (!done) {
+      var state = { fuel: 0, load: 0, intention: '' };
+      var form = el('div', { class: 'checkin' });
+
+      form.appendChild(el('div', { class: 'q' }, [
+        el('label', { text: '1. How charged are you today?' }),
+        ui.scale('Fuel', 0, function (v) { state.fuel = v; redraw(); }, ['Running on empty', 'Fully charged'])
+      ]));
+      form.appendChild(el('div', { class: 'q' }, [
+        el('label', { text: '2. How heavy does today feel?' }),
+        ui.scale('Load', 0, function (v) { state.load = v; redraw(); }, ['Light', 'A lot on'])
+      ]));
+      var input = el('input', {
+        class: 'text-input', type: 'text', maxlength: '90',
+        placeholder: 'e.g. Start prep at 7, not 9.',
+        oninput: function () { state.intention = this.value; }
+      });
+      form.appendChild(el('div', { class: 'q' }, [
+        el('label', { text: '3. One thing today that is yours.' }),
+        input
+      ]));
+
+      var submit = btn('Log it', function () {
+        if (!state.fuel || !state.load) { ui.toast('Tap a number for both scales.'); return; }
+        ui.after(store.addSignal('checkin', sid, sid, 'student', {
+          fuel: state.fuel, load: state.load, intention: state.intention.trim(), tags: []
+        }), function () {
+          ui.toast('Logged. Streak is ' + store.streak(sid) + '.');
+        });
+      }, 'primary');
+      form.appendChild(submit);
+
+      function redraw() {
+        var body = form.parentNode;
+        if (body) { /* re-render scales to reflect selection */
+          var qs = form.querySelectorAll('.q');
+          rebuildScale(qs[0], 'Fuel', state.fuel, function (v) { state.fuel = v; redraw(); }, ['Running on empty', 'Fully charged']);
+          rebuildScale(qs[1], 'Load', state.load, function (v) { state.load = v; redraw(); }, ['Light', 'A lot on']);
+        }
+      }
+
+      root.appendChild(card({
+        title: 'Your check-in',
+        sub: 'This is yours. It is not a test and nobody is marking it.'
+      }, [
+        el('p', { class: 'flag-line tone-info', text: CL.PURPOSE.notMonitored }),
+        form
+      ]));
+    } else {
+      var today = series[series.length - 1];
+      root.appendChild(card({ title: 'Today, done' }, [
+        el('p', { class: 'lead', text: today && today.intention ? '"' + today.intention + '"' : 'Logged.' }),
+        el('div', { class: 'inline-stats' }, [
+          pill('Fuel ' + (today ? today.fuel : '-') + '/5', 'neutral'),
+          pill('Load ' + (today ? today.load : '-') + '/5', 'neutral')
+        ])
+      ]));
+    }
+
+    root.appendChild(card({
+      title: 'Your fortnight',
+      sub: 'Nobody grades this. It is here so you can see your own shape.'
+    }, [
+      el('p', { class: 'note', text: CL.PURPOSE.noClinicalClaim }),
+      charts.streakStrip(series, store),
+      charts.trend(series, [])
+    ]));
+
+    var winInput = el('input', { class: 'text-input', type: 'text', placeholder: 'Something that went right.' });
+    root.appendChild(card({
+      title: 'Wins', sub: 'Small ones count. Especially small ones.'
+    }, [
+      el('ul', { class: 'wins' }, store.wins(sid).map(function (w) {
+        return el('li', {}, [el('span', { text: w.text }), el('em', { text: ui.ago(w.at) })]);
+      })),
+      el('div', { class: 'row' }, [winInput, btn('Add', function () {
+        if (!winInput.value.trim()) return;
+        ui.after(store.addWin(sid, winInput.value.trim()), function () {
+          ui.toast('Added.');
+        });
+      })])
+    ]));
+  };
+
+  /* Talk to someone.
+   *
+   * Three tiers, in the order a boy in difficulty needs them: right now,
+   * someone here, someone outside. The national numbers are last because they
+   * are the fallback, and present always because at 2am they are the only
+   * ones awake. Nothing here is behind a tap he has to discover. */
+  function helpCard(ctx, sid) {
+    var H = CL.HELP_ROUTES;
+    var t = T(ctx, store.student(sid));
+    var body = [];
+
+    body.push(el('div', { class: 'help-emergency' }, [
+      el('strong', { text: H.emergency.label }),
+      el('span', { class: 'help-action', text: H.emergency.action }),
+      el('span', { class: 'help-detail', text: H.emergency.detail })
+    ]));
+
+    /* Asking a member of staff to find him. */
+    var ask = { note: '', urgency: 'today', tellParents: false };
+    var sent = el('div', {});
+    var noteBox = el('textarea', {
+      class: 'text-input', rows: '3',
+      placeholder: 'You do not have to explain. "Can someone find me" is enough.',
+      oninput: function () { ask.note = this.value; }
+    });
+    var urgHolder = el('div', { class: 'chips' });
+    function drawUrg() {
+      ui.clear(urgHolder);
+      ['today', 'this week', 'no rush'].forEach(function (u) {
+        urgHolder.appendChild(el('button', {
+          type: 'button', class: 'chip' + (ask.urgency === u ? ' is-on' : ''),
+          onclick: function () { ask.urgency = u; drawUrg(); }, text: u
+        }));
+      });
+    }
+    drawUrg();
+
+    var tellBox = el('input', { type: 'checkbox',
+      onchange: function () { ask.tellParents = this.checked; } });
+
+    var askPanel = el('details', { class: 'help-ask' }, [
+      el('summary', { text: 'Ask someone at school to find me' }),
+      el('div', { class: 'help-ask-body' }, [
+        noteBox,
+        el('div', { class: 'q' }, [el('label', { text: 'How soon?' }), urgHolder]),
+        el('label', { class: 'check' }, [tellBox,
+          el('span', { text: 'Tell my parents I asked. Leave this unticked and they will not be told.' })]),
+        btn('Send it', function () {
+          ui.after(store.raiseConcern(sid, ask), function (r) {
+            askPanel.open = true;
+            ui.toast('Sent. Someone will come and find you.');
+            ui.clear(sent);
+            var who = (r && r.seenBy && r.seenBy.length)
+              ? r.seenBy.join(' and ')
+              : 'your housemaster and the coordinator';
+            sent.appendChild(el('p', { class: 'flag-line tone-good',
+              text: 'Sent. ' + who + ' will see it ' +
+                    ((r && r.whenSeen) || 'when they next open this') + '.' }));
+            sent.appendChild(el('p', { class: 'flag-line tone-warning',
+              text: (r && r.reminder) ||
+                'If you need someone now, do not wait for this. Use a number below or find any adult.' }));
+            noteBox.value = ''; ask.note = '';
+          });
+        }, 'primary'),
+        sent
+      ])
+    ]);
+    body.push(askPanel);
+
+    body.push(el('p', { class: 'help-lead', text: 'Free, any time, and they do not tell your school.' }));
+    body.push(el('ul', { class: 'help-list' }, H.external.map(function (h) {
+      return el('li', {}, [
+        el('div', {}, [
+          el('strong', { text: h.name }),
+          el('span', { class: 'help-detail', text: h.detail })
+        ]),
+        el('span', { class: 'help-contact', text: h.contact })
+      ]);
+    })));
+
+    return card({
+      class: 'card-help',
+      title: 'Talk to someone',
+      sub: 'Any time, for any reason, including none.'
+    }, body);
+  }
+
+  function rebuildScale(q, name, value, onpick, labels) {
+    var old = q.querySelector('.scale') && q.querySelector('.scale').parentNode;
+    var fresh = ui.scale(name, value, onpick, labels);
+    if (old && old.parentNode === q) q.replaceChild(fresh, old);
+    else if (q.children.length > 1) q.replaceChild(fresh, q.children[1]);
+  }
+
+  /* ================================================================ TEACHER
+   * A teacher has thirty seconds between lessons. One page, one flag, one box. */
+
+  VIEWS.teacher = function (root, ctx) {
+    var sid = ctx.studentId;
+    var st = store.student(sid);
+    var t = T(ctx, st);
+
+    root.appendChild(hero(st.name + (st.year ? ' · ' + st.year : ''), 'What you need before the lesson, and one box after it.'));
+
+    /* Morning flag: today's check-in projected for a teacher, plus any live guidance. */
+    var todays = store.timeline(sid, ctx.viewer, { types: ['checkin'], sinceDays: 1 });
+    var guidance = store.timeline(sid, ctx.viewer, { types: ['clinical'], sinceDays: 21 });
+    var flagBody = [];
+    if (todays.length) flagBody.push(el('p', { class: 'flag-line tone-warning', text: 'Low-fuel morning. Expect a slower start. Not defiance.' }));
+    else flagBody.push(el('p', { class: 'flag-line tone-good', text: 'No flag this morning.' }));
+    guidance.forEach(function (g) {
+      flagBody.push(el('p', { class: 'flag-line tone-info', text: g.body }));
+    });
+    root.appendChild(card({ title: 'This morning' }, flagBody));
+
+    root.appendChild(profileCard(st, ctx));
+
+    /* Weekly observation */
+    var obs = { subject: (ctx.viewer.subject || 'Mathematics'), engagement: 0, note: '' };
+    var subjSel = el('select', { class: 'text-input', onchange: function () { obs.subject = this.value; } },
+      ['Mathematics', 'English', 'Science', 'History', 'Games'].map(function (s) {
+        return el('option', { value: s, selected: s === obs.subject ? 'selected' : null, text: s });
+      }));
+    var noteBox = el('textarea', {
+      class: 'text-input', rows: '3',
+      placeholder: 'One observation. What you saw, not what you concluded.',
+      oninput: function () { obs.note = this.value; }
+    });
+    var engHolder = el('div', {});
+    function drawEng() {
+      ui.clear(engHolder).appendChild(
+        ui.scale('Engagement', obs.engagement, function (v) { obs.engagement = v; drawEng(); }, ['Withdrawn', 'Fully in it'])
+      );
+    }
+    drawEng();
+
+    root.appendChild(card({
+      title: 'Weekly observation',
+      sub: t('Goes to the {pastoralLead} and the {coordinator}. Not to the {pupil}, and not to their family verbatim.')
+    }, [
+      el('div', { class: 'q' }, [el('label', { text: 'Subject' }), subjSel]),
+      el('div', { class: 'q' }, [el('label', { text: 'Engagement this week' }), engHolder]),
+      el('div', { class: 'q' }, [el('label', { text: 'Note' }), noteBox]),
+      btn('Send to the loop', function () {
+        if (!obs.engagement) { ui.toast('Pick an engagement rating.'); return; }
+        ui.after(store.addSignal('observation', sid, ctx.viewer.personId, 'teacher', {
+          subject: obs.subject, engagement: obs.engagement, note: obs.note.trim()
+        }, obs.engagement <= 2 ? 'warning' : 'none'), function () {
+          ui.toast(t.cap('{pastoralLead}') + ' and the ' + t('{coordinator}') + ' have it.');
+        });
+      }, 'primary')
+    ]));
+
+    root.appendChild(card({
+      title: 'Recent, as far as you see it',
+      sub: 'Pastoral and clinical detail is deliberately withheld. You get the headline and the adjustment.'
+    }, [ui.timelineList(store.timeline(sid, ctx.viewer, { sinceDays: 21, limit: 12 }), store)]));
+  };
+
+  /* ============================================================ HOUSEMASTER
+   * The full pastoral picture and, crucially, the pattern view. */
+
+  VIEWS.housemaster = function (root, ctx) {
+    var sid = ctx.studentId;
+    var st = store.student(sid);
+    var t = T(ctx, st);
+
+    root.appendChild(hero(st.name + (st.house ? ' · ' + st.house : ''), t('Everything the loop holds on {them}, in one place.')));
+    add(root, concernsCard(ctx));
+    add(root, patternCard(sid));
+
+    var marks = store.timeline(sid, ctx.viewer, { sinceDays: 14 })
+      .filter(function (v) { return v.type !== 'checkin'; });
+    root.appendChild(card({
+      title: 'Pattern view',
+      sub: t('{Their} own trace, with everyone else\'s contributions on the same time base.')
+    }, [charts.trend(store.checkinSeries(sid, ctx.viewer, 14), marks)]));
+
+    /* pastoral note */
+    var note = { category: 'Check-in conversation', note: '', action: '', shareWithParent: false };
+    var catSel = el('select', { class: 'text-input', onchange: function () { note.category = this.value; } },
+      ['Check-in conversation', 'Incident', 'Routine change', 'Positive', 'Referral'].map(function (c) {
+        return el('option', { value: c, text: c });
+      }));
+    var noteBox = el('textarea', { class: 'text-input', rows: '3', oninput: function () { note.note = this.value; }, placeholder: 'What happened and what you make of it.' });
+    var actBox = el('input', { class: 'text-input', type: 'text', oninput: function () { note.action = this.value; }, placeholder: 'What you did about it.' });
+    var shareBox = el('input', { type: 'checkbox', id: 'share-parent', onchange: function () { note.shareWithParent = this.checked; } });
+
+    root.appendChild(card({ title: 'Pastoral note' }, [
+      el('div', { class: 'q' }, [el('label', { text: 'Category' }), catSel]),
+      el('div', { class: 'q' }, [el('label', { text: 'Note' }), noteBox]),
+      el('div', { class: 'q' }, [el('label', { text: 'Action taken' }), actBox]),
+      el('label', { class: 'check' }, [shareBox, el('span', { text: t('Share this note with {their} parents') })]),
+      btn('Log note', function () {
+        if (!note.note.trim()) { ui.toast('Write the note first.'); return; }
+        ui.after(store.addSignal('pastoral', sid, ctx.viewer.personId, 'housemaster', {
+          category: note.category, note: note.note.trim(), action: note.action.trim(),
+          shareWithParent: note.shareWithParent
+        }), function () { ui.toast('Logged to the loop.'); });
+      }, 'primary')
+    ]));
+
+    root.appendChild(card({ title: 'The full picture', sub: 'Last 21 days, every source.' }, [
+      ui.timelineList(store.timeline(sid, ctx.viewer, { sinceDays: 21 }), store)
+    ]));
+
+    root.appendChild(profileCard(st, ctx));
+  };
+
+  /* ============================================================== CLINICIAN
+   * The bridge lives here. The clinician decides what crosses it. */
+
+  VIEWS.clinician = function (root, ctx) {
+    var sid = ctx.studentId;
+    var st = store.student(sid);
+    var t = T(ctx, st);
+
+    root.appendChild(hero(st.name, 'Wellbeing trend, clinical record, and the handoff you control.'));
+
+    root.appendChild(card({
+      title: 'Wellbeing trend',
+      sub: 'Daily self-report on a common time base with school and home contributions.'
+    }, [charts.trend(store.checkinSeries(sid, ctx.viewer, 14),
+      store.timeline(sid, ctx.viewer, { sinceDays: 14 }).filter(function (v) { return v.type !== 'checkin'; }))]));
+
+    /* The clinical bridge form. */
+    var m = { kind: 'Treatment change', shareLevel: 'pastoral', clinicalDetail: '', pastoralSummary: '', teacherGuidance: '' };
+    var kindSel = el('select', { class: 'text-input', onchange: function () { m.kind = this.value; } },
+      ['Discharge', 'New diagnosis', 'Treatment change', 'Assessment complete', 'Change in approach'].map(function (k) {
+        return el('option', { value: k, text: k });
+      }));
+
+    var levelHolder = el('div', { class: 'levels' });
+    function drawLevels() {
+      ui.clear(levelHolder);
+      CL.ROLE_ORDER; /* order is fixed in model */
+      ['coordinator', 'pastoral', 'parent'].forEach(function (id) {
+        var L = CL.SHARE_LEVELS[id];
+        levelHolder.appendChild(el('button', {
+          type: 'button', class: 'level' + (m.shareLevel === id ? ' is-on' : ''),
+          onclick: function () { m.shareLevel = id; drawLevels(); }
+        }, [
+          el('strong', { text: L.label }),
+          el('span', { text: L.note })
+        ]));
+      });
+    }
+    drawLevels();
+
+    var detail = el('textarea', { class: 'text-input', rows: '3', placeholder: 'Clinical detail. Stays inside the clinical record.', oninput: function () { m.clinicalDetail = this.value; } });
+    var summary = el('textarea', { class: 'text-input', rows: '3', placeholder: 'Pastoral summary. Written by you, in the words you want the school to read.', oninput: function () { m.pastoralSummary = this.value; } });
+    var teach = el('input', { class: 'text-input', type: 'text', placeholder: 'One line for teachers. What to do differently.', oninput: function () { m.teacherGuidance = this.value; } });
+
+    root.appendChild(card({
+      title: 'Clinical milestone',
+      sub: t('The gap this closes: a discharge or a treatment change reaching the people managing {their} day, without a phone call.')
+    }, [
+      el('div', { class: 'q' }, [el('label', { text: 'Milestone' }), kindSel]),
+      el('div', { class: 'q' }, [el('label', { text: 'Clinical detail' }), detail]),
+      el('div', { class: 'q' }, [el('label', { text: 'Pastoral summary' }), summary]),
+      el('div', { class: 'q' }, [el('label', { text: 'Teacher adjustment line' }), teach]),
+      el('div', { class: 'q' }, [el('label', { text: 'How far does this travel?' }), levelHolder]),
+      btn('Send across the bridge', function () {
+        if (!m.pastoralSummary.trim() && m.shareLevel !== 'coordinator') {
+          ui.toast('Write the pastoral summary, or restrict to coordinator only.'); return;
+        }
+        ui.after(store.addSignal('clinical', sid, ctx.viewer.personId, 'clinician', {
+          kind: m.kind, shareLevel: m.shareLevel,
+          clinicalDetail: m.clinicalDetail.trim(),
+          pastoralSummary: m.pastoralSummary.trim(),
+          teacherGuidance: m.teacherGuidance.trim()
+        }), function () {
+          ui.toast('Sent at level: ' + CL.SHARE_LEVELS[m.shareLevel].label + '. The loop closed itself.');
+        });
+      }, 'primary')
+    ]));
+
+    root.appendChild(card({ title: 'Clinical record and school context', sub: 'Last 60 days.' }, [
+      ui.timelineList(store.timeline(sid, ctx.viewer, { sinceDays: 60 }), store)
+    ]));
+  };
+
+  /* ================================================================= PARENT
+   * Two-way, and the boy's record only. */
+
+  VIEWS.parent = function (root, ctx) {
+    var sid = ctx.studentId;
+    var st = store.student(sid);
+    var t = T(ctx, st);
+    var d = store.digest(sid);
+
+    root.appendChild(hero(st.name, 'Your weekly digest, and a way to send what you know back.'));
+
+    root.appendChild(card({ title: 'This week', class: 'digest' }, d ? [
+      el('div', { class: 'digest-block' }, [
+        el('h3', { text: 'What the school is working on' }), el('p', { text: d.schoolFocus })
+      ]),
+      el('div', { class: 'digest-block' }, [
+        el('h3', { text: 'One thing to reinforce at home' }), el('p', { text: d.homeReinforce })
+      ]),
+      el('div', { class: 'digest-block' }, [
+        el('h3', { text: 'What is going well' }), el('p', { text: d.goingWell })
+      ])
+    ] : [ui.empty('No digest yet this week.')]));
+
+    /* home signal */
+    var h = { kind: 'Early signal', note: '' };
+    var kindHolder = el('div', { class: 'chips' });
+    function drawKinds() {
+      ui.clear(kindHolder);
+      ['Early signal', 'What is working', 'Something has changed'].forEach(function (k) {
+        kindHolder.appendChild(el('button', {
+          type: 'button', class: 'chip' + (h.kind === k ? ' is-on' : ''),
+          onclick: function () { h.kind = k; drawKinds(); }, text: k
+        }));
+      });
+    }
+    drawKinds();
+    var noteBox = el('textarea', {
+      class: 'text-input', rows: '4', oninput: function () { h.note = this.value; },
+      placeholder: 'You know the early signs better than anyone here does. Say what you are seeing.'
+    });
+
+    root.appendChild(card({
+      title: 'Send something to the school',
+      sub: t('Goes to the {coordinator} and {their} {pastoralLead} the moment you send it. Not filed until half term.')
+    }, [
+      kindHolder, noteBox,
+      btn('Send', function () {
+        if (!h.note.trim()) { ui.toast('Write a line first.'); return; }
+        ui.after(store.addSignal('home', sid, ctx.viewer.personId, 'parent',
+          { kind: h.kind, note: h.note.trim() },
+          h.kind === 'Early signal' ? 'warning' : 'none'), function () {
+          ui.toast(t('The {coordinator} and {their} {pastoralLead} have it now.'));
+          noteBox.value = ''; h.note = '';
+        });
+      }, 'primary')
+    ]));
+
+    root.appendChild(card({
+      title: t('How {they} ' + t.verb('is', 'are') + ' doing'),
+      sub: t('{Their} own scores. The intentions {they} write are {theirs} and stay {theirs}.')
+    }, [charts.trend(store.checkinSeries(sid, ctx.viewer, 14), [])]));
+
+    root.appendChild(card({
+      title: 'Shared with you',
+      sub: t('You see this {pupil}\'s record and nothing else. Clinical detail appears only when their clinician releases it.')
+    }, [ui.timelineList(store.timeline(sid, ctx.viewer, { sinceDays: 30 }), store,
+      'Nothing has been shared with you in the last 30 days.')]));
+  };
+
+  /* ============================================================ COORDINATOR
+   * The only role that sees the whole loop, and the only one that can bridge. */
+
+  VIEWS.coordinator = function (root, ctx) {
+    var t = T(ctx, null);
+    root.appendChild(hero('The loop', t('Every {pupil}, every source, and the things that need a person today.')));
+    add(root, concernsCard(ctx));
+
+    /* Roll: attention first, alphabetical never. */
+    var rows = store.students().map(function (st) {
+      var pats = store.patterns(st.id);
+      var worst = pats.reduce(function (a, p) {
+        return p.severity === 'serious' ? 'serious' : (a === 'serious' ? a : p.severity);
+      }, 'none');
+      var ci = store.checkins(st.id, 7);
+      return { st: st, pats: pats, worst: worst, ci: ci };
+    }).sort(function (a, b) {
+      var rank = { serious: 0, warning: 1, none: 2 };
+      return rank[a.worst] - rank[b.worst];
+    });
+
+    var roll = el('ul', { class: 'roll' }, rows.map(function (r) {
+      return el('li', { class: 'roll-item tone-' + r.worst, onclick: function () { ctx.go(r.st.id); } }, [
+        el('div', {}, [
+          el('strong', { text: r.st.name }),
+          el('span', { class: 'roll-sub', text: r.st.year + ' · ' + r.st.house })
+        ]),
+        el('div', { class: 'roll-tags' }, r.st.tags.map(function (t) { return pill(t, 'muted'); })),
+        el('div', { class: 'roll-state' }, [
+          r.pats.length ? pill(r.pats[0].title, r.worst === 'serious' ? 'serious' : 'warning') : pill('Steady', 'good'),
+          el('span', { class: 'roll-sub', text: r.ci.length + '/7 check-ins' })
+        ])
+      ]);
+    }));
+    root.appendChild(card({ title: 'The roll', sub: 'Sorted by what needs you, not by name.' }, [roll]));
+
+    var sid = ctx.studentId;
+    var st = store.student(sid);
+    root.appendChild(el('h2', { class: 'section-break', text: st.name }));
+    add(root, patternCard(sid));
+
+    root.appendChild(card({ title: 'Full loop view', sub: 'Nothing withheld at this role.' }, [
+      charts.trend(store.checkinSeries(sid, ctx.viewer, 14),
+        store.timeline(sid, ctx.viewer, { sinceDays: 14 }).filter(function (v) { return v.type !== 'checkin'; }))
+    ]));
+
+    /* bridge note */
+    var b = { title: '', note: '', to: ['housemaster'] };
+    var toHolder = el('div', { class: 'chips' });
+    function drawTo() {
+      ui.clear(toHolder);
+      ['housemaster', 'teacher', 'clinician'].forEach(function (r) {
+        toHolder.appendChild(el('button', {
+          type: 'button', class: 'chip' + (b.to.indexOf(r) > -1 ? ' is-on' : ''),
+          onclick: function () {
+            var i = b.to.indexOf(r);
+            if (i > -1) b.to.splice(i, 1); else b.to.push(r);
+            drawTo();
+          }, text: CL.ROLES[r].label
+        }));
+      });
+    }
+    drawTo();
+    var tIn = el('input', { class: 'text-input', type: 'text', placeholder: 'What this is about.', oninput: function () { b.title = this.value; } });
+    var nIn = el('textarea', { class: 'text-input', rows: '3', placeholder: 'What you want them to know or do.', oninput: function () { b.note = this.value; } });
+
+    root.appendChild(card({ title: 'Bridge note', sub: 'A deliberate handoff to named roles. The loop closes because somebody closed it.' }, [
+      el('div', { class: 'q' }, [el('label', { text: 'Subject' }), tIn]),
+      el('div', { class: 'q' }, [el('label', { text: 'Note' }), nIn]),
+      el('div', { class: 'q' }, [el('label', { text: 'To' }), toHolder]),
+      btn('Send bridge note', function () {
+        if (!b.title.trim()) { ui.toast('Give it a subject.'); return; }
+        ui.after(store.addSignal('bridge', sid, ctx.viewer.personId, 'coordinator',
+          { title: b.title.trim(), note: b.note.trim(), to: b.to.slice() }), function () {
+          ui.toast('Sent to ' + b.to.length + ' role' + (b.to.length === 1 ? '' : 's') + '.');
+        });
+      }, 'primary'),
+      btn('Raise a flag', function () {
+        if (!b.title.trim()) { ui.toast('Give it a subject.'); return; }
+        ui.after(store.addSignal('flag', sid, ctx.viewer.personId, 'coordinator',
+          { title: b.title.trim(), note: b.note.trim(), shareWithParent: false }, 'serious'),
+          function () { ui.toast('Flag raised.'); });
+      })
+    ]));
+
+    root.appendChild(card({ title: 'Everything', sub: 'Last 30 days, unredacted.' }, [
+      ui.timelineList(store.timeline(sid, ctx.viewer, { sinceDays: 30 }), store)
+    ]));
+  };
+
+  /* ========================================================== shared parts */
+
+  function hero(title, sub) {
+    return el('div', { class: 'hero' }, [
+      el('h1', { text: title }),
+      el('p', { text: sub })
+    ]);
+  }
+
+  function profileCard(st, ctx) {
+    var t = T(ctx, st);
+    var p = st.profile;
+    function block(h, items) {
+      return el('div', { class: 'profile-block' }, [
+        el('h3', { text: h }),
+        el('ul', {}, items.map(function (i) { return el('li', { text: i }); }))
+      ]);
+    }
+    return card({
+      title: 'One page on ' + (st.preferredName || st.name.split(' ')[0]),
+      sub: t('Written with {them} and {their} family. The only document a new teacher has to read.')
+    }, [
+      el('div', { class: 'tag-row' }, (st.tags || []).map(function (t) { return pill(t, 'muted'); })),
+      el('p', { class: 'note', text: t('Written with {them} and {their} family. A description of what helps, not a diagnosis and not a clinical record.') }),
+      el('div', { class: 'grid grid-2' }, [
+        block(t('What {they} ' + t.verb('is', 'are') + ' good at'), p.strengths),
+        block('What helps', p.whatHelps),
+        block('Early signs something is off', p.earlySigns),
+        block('Adjustments in place', p.adjustments)
+      ]),
+      el('div', { class: 'grid grid-2' }, [
+        block(t('Pressure that suits {them}'), p.pressureFit.suits),
+        block(t('Pressure that tips {them}'), p.pressureFit.avoid)
+      ])
+    ]);
+  }
+
+  /* Boys who have asked for a person. Above the charts, always, because a
+   * request from a child outranks any trend on this page. */
+  function concernsCard(ctx) {
+    var t = T(ctx, null);
+    var open = store.concerns().filter(function (c) { return !c.acknowledgedAt; });
+    if (!open.length) return null;
+
+    return card({
+      class: 'card-urgent',
+      title: open.length === 1 ? t('A {pupil} has asked to talk to someone')
+                               : open.length + t(' {pupils} have asked to talk to someone'),
+      sub: 'Answer these before anything else on this page.'
+    }, open.map(function (c) {
+      var outcome = '';
+      return el('div', { class: 'concern' }, [
+        el('div', { class: 'concern-top' }, [
+          el('strong', { text: c.studentName || 'A pupil' }),
+          pill(c.urgency || 'today', c.urgency === 'today' ? 'serious' : 'warning'),
+          el('span', { class: 'sig-when', text: ui.ago(c.at) })
+        ]),
+        c.body ? el('p', { class: 'concern-note', text: c.body })
+               : el('p', { class: 'concern-note empty', text: 'Nothing written. They just asked.' }),
+        el('div', { class: 'row' }, [
+          el('input', { class: 'text-input', type: 'text',
+            placeholder: t('What you did. Who spoke to {them}.'),
+            oninput: function () { outcome = this.value; } }),
+          btn('I have picked this up', function () {
+            ui.after(store.acknowledgeConcern(c.id, outcome), function () {
+              ui.toast('Marked as picked up.');
+            });
+          }, 'primary')
+        ])
+      ]);
+    }));
+  }
+
+  function patternCard(sid) {
+    var pats = store.patterns(sid);
+    if (!pats.length) {
+      return card({ title: 'Patterns' }, [
+        el('p', { class: 'flag-line tone-good', text: 'No converging signals in the last seven days.' })
+      ]);
+    }
+    return card({
+      title: 'Patterns',
+      sub: 'Raised because independent sources agree, which is the thing no single person can see.'
+    }, [el('p', { class: 'note', text: 'Prompts for a conversation, not conclusions. Nothing here is a clinical judgement, and nothing happens automatically because of it.' })].concat(pats.map(function (p) {
+      return el('div', { class: 'pattern tone-' + p.severity }, [
+        el('strong', { text: p.title }),
+        el('p', { text: p.detail }),
+        el('div', { class: 'pattern-sources' }, p.sources.map(function (r) {
+          return pill(CL.ROLES[r] ? CL.ROLES[r].label : r, 'muted');
+        }))
+      ]);
+    })));
+  }
+
+  /* ========================================================== permissions */
+
+  function permissionsPanel() {
+    var head = el('tr', {}, [el('th', { text: 'Signal' })].concat(
+      CL.ROLE_ORDER.map(function (r) { return el('th', { text: CL.ROLES[r].label }); })
+    ));
+    var body = CL.MATRIX.map(function (row) {
+      return el('tr', {}, [el('td', { text: CL.SIGNAL_TYPES[row.type].label })].concat(
+        CL.ROLE_ORDER.map(function (r) {
+          var v = row[r];
+          return el('td', { class: 'cell-' + (v === 'none' ? 'none' : v.indexOf('full') > -1 ? 'full' : 'part'), text: v });
+        })
+      ));
+    });
+    return el('div', {}, [
+      el('p', { class: 'lead', text: 'Every read in this app goes through one function. Change a rule here and it changes everywhere, which is what makes it auditable.' }),
+      el('div', { class: 'table-scroll' }, [
+        el('table', { class: 'data-table matrix' }, [el('thead', {}, [head]), el('tbody', {}, body)])
+      ]),
+      el('p', { class: 'note', text: 'Clinical rows read "by level" because the clinician, not the platform, chooses how far each milestone travels: coordinator only, pastoral team, or parents as well.' })
+    ]);
+  }
+
+  CL.views = VIEWS;
+  CL.permissionsPanel = permissionsPanel;
+
+})(window);
+
+
+/* ---- js/tour.js ---- */
+/* A guided walkthrough, for the first person who opens this who did not build it.
+ *
+ * The app is six different views of one record, and its whole argument only
+ * lands if you visit them in the right order. Handed to somebody cold, that
+ * argument is invisible: they click one role, see a page of cards, and close
+ * the tab. So the demo explains itself.
+ *
+ * Deliberately not a modal that traps you. Every step can be skipped, the tour
+ * can be closed at any point, and the app is fully usable behind it.
+ */
+(function (global) {
+  'use strict';
+
+  var CL = global.CL, ui = CL.ui, el = ui.el;
+  var KEY = 'connected-loop:tour-done';
+
+  /* Each step: which role to show, and what to say about it. The order is the
+   * argument — fragments first, then the person who can see them together. */
+  var STEPS = [
+    {
+      role: null,
+      title: 'A five minute walkthrough',
+      body: [
+        'This is a working prototype of The Connected Loop. Everything in it is fictional: three invented boys, an invented fortnight.',
+        'The proposal says the problem is not the quality of any single intervention, but that nobody holds the whole picture. This shows what holding it would look like.',
+        'Six people, six different views of the same boy. Take them in this order and the argument assembles itself.'
+      ],
+      cta: 'Start'
+    },
+    {
+      role: 'student',
+      title: '1. Theo, who is at the centre',
+      body: [
+        'His own page. Thirty seconds, three questions, and a streak that belongs to him.',
+        'Notice what comes first: Talk to someone, above the check-in. He is told plainly that nobody reads this as it arrives, and given four numbers that are staffed at three in the morning.',
+        'Notice also what is absent. No list of who is watching. A boy who experiences this as monitoring stops writing true answers, and then it is worth nothing to anybody.'
+      ]
+    },
+    {
+      role: 'teacher',
+      title: '2. Mr Hartley, who has thirty seconds',
+      body: [
+        'A teacher between lessons gets one page, one flag, one box.',
+        'He sees that this is a harder morning than usual. He does not see the numbers behind it, or a word Theo wrote.',
+        'The one-page profile is the only document a new teacher has to read. It describes what helps, not what is wrong.'
+      ]
+    },
+    {
+      role: 'parent',
+      title: '3. Theo’s mother, who knows things the school does not',
+      body: [
+        'The proposal’s sharpest line is that parents hold the most detailed longitudinal knowledge and sit entirely outside the loop.',
+        'So this is two-way. A weekly digest comes to her; an early signal from her goes straight to the coordinator and the housemaster.',
+        'She sees his scores. She does not see the sentences he writes. That is a judgement, and one of the two we most want your view on.'
+      ]
+    },
+    {
+      role: 'clinician',
+      title: '4. Dr Rahim, and the gap nobody has closed',
+      body: [
+        'This is the clinical bridge, and the part of the proposal with no equivalent anywhere.',
+        'Log a milestone and choose how far it travels. At “Coordinator only” the housemaster learns that something changed and nothing more. Raise it to “pastoral team” and your written summary appears for him, and a single adjustment line for teachers.',
+        'The clinician decides. Not the platform, and not the school. Raw clinical detail never leaves this view — not even to the coordinator who relays it.'
+      ]
+    },
+    {
+      role: 'housemaster',
+      title: '5. Mr Bromley, who sees the shape',
+      body: [
+        'The pattern view puts Theo’s own trace and everyone else’s contributions on one time base.',
+        'The markers along the bottom are the moments other people noticed something. Hover one.',
+        'Individually none of it is alarming. A quiet fortnight, one flat English lesson, a phone call home.'
+      ]
+    },
+    {
+      role: 'coordinator',
+      title: '6. Ms Aluko, and the argument',
+      body: [
+        'Here it is: converging signals from three independent sources inside six days.',
+        'Four low check-ins Theo told no one about. An engagement drop only Ms Vane saw. An early signal only his mother saw. Nobody in the current arrangement could see all three.',
+        'It raises a prompt for a person to act on. It never decides anything, sends anything, or scores him. That boundary is deliberate and it is what keeps this out of medical device regulation.'
+      ]
+    },
+    {
+      role: null,
+      title: 'What this is not',
+      body: [
+        'Not a diagnostic tool. Not treatment. Not monitoring. Not an emergency service. Nothing here screens, scores or classifies a child.',
+        'Two decisions in it are really the school’s, not the software’s: whether a boy’s own written words should reach his parents, and what he can see of his own record.',
+        'Those are the two I most want you to disagree with me about. “Two questions for you” in the sidebar puts them to you directly, and copies your answers out as text you can email.'
+      ],
+      cta: 'Answer the two questions',
+      go: 'feedback'
+    }
+  ];
+
+  var state = { open: false, i: 0 };
+
+  function done() {
+    try { return global.localStorage.getItem(KEY) === 'yes'; } catch (e) { return false; }
+  }
+  function markDone() {
+    try { global.localStorage.setItem(KEY, 'yes'); } catch (e) { /* private mode */ }
+  }
+
+  function render() {
+    var host = ui.clear(document.getElementById('tour-host'));
+    if (!state.open) { host.hidden = true; return; }
+    host.hidden = false;
+
+    var step = STEPS[state.i];
+    var last = state.i === STEPS.length - 1;
+
+    host.appendChild(el('div', { class: 'tour' }, [
+      el('div', { class: 'tour-head' }, [
+        el('span', { class: 'tour-count', text: state.i === 0 ? 'Walkthrough' : state.i + ' of ' + (STEPS.length - 2) }),
+        el('button', {
+          class: 'tour-close', type: 'button', 'aria-label': 'Close the walkthrough',
+          onclick: close, text: '×'
+        })
+      ]),
+      el('h2', { text: step.title }),
+      el('div', { class: 'tour-body' }, step.body.map(function (p) {
+        return el('p', { text: p });
+      })),
+      el('div', { class: 'tour-foot' }, [
+        state.i > 0 ? el('button', {
+          class: 'btn btn-quiet', type: 'button', text: 'Back',
+          onclick: function () { go(state.i - 1); }
+        }) : el('span', {}),
+        el('button', {
+          class: 'btn btn-primary', type: 'button',
+          text: step.cta || (last ? 'Finish' : 'Next'),
+          onclick: function () {
+            if (step.go && global.CL.tourOpenPanel) { close(); global.CL.tourOpenPanel(step.go); return; }
+            last ? close() : go(state.i + 1);
+          }
+        })
+      ])
+    ]));
+  }
+
+  function go(i) {
+    state.i = Math.max(0, Math.min(STEPS.length - 1, i));
+    var role = STEPS[state.i].role;
+    if (role && global.CL.tourSetRole) global.CL.tourSetRole(role);
+    render();
+  }
+
+  function open() { state.open = true; state.i = 0; render(); }
+  function close() { state.open = false; markDone(); render(); }
+
+  /* Offered on a first visit, and always available from the sidebar. */
+  function init() {
+    var btn = document.getElementById('btn-tour');
+    if (btn) btn.addEventListener('click', open);
+    if (!done()) setTimeout(open, 400);
+  }
+
+  CL.tour = { open: open, close: close, init: init, render: render };
+
+})(window);
+
+
+/* ---- js/feedback.js ---- */
+/* Capturing the reader's view.
+ *
+ * Two decisions in this system are the school's rather than the software's,
+ * and they are currently engineering defaults standing in for a policy that
+ * does not exist. The person most qualified to argue with them is a parent.
+ *
+ * So the demo asks. Answers stay in this browser until the reader chooses to
+ * copy them out — nothing is transmitted anywhere, which is the only honest
+ * arrangement for a page that also says nothing is transmitted anywhere.
+ */
+(function (global) {
+  'use strict';
+
+  var CL = global.CL, ui = CL.ui, el = ui.el;
+  var KEY = 'connected-loop:feedback';
+
+  var QUESTIONS = [
+    {
+      id: 'ownWords',
+      title: 'Should a boy’s own written words reach his parents?',
+      context:
+        'His scores go to them either way. The sentence he types — "ask for help instead of sitting on it" — currently does not. ' +
+        'The reasoning: a boy who believes his mother reads every line stops writing true ones, and then the tool is worth nothing to anybody. ' +
+        'The counter-argument is just as real: parents hold years of observation, the proposal wants them as contributors, and withholding a child’s own words is the school deciding what a family may know.',
+      options: [
+        { id: 'keep', label: 'Keep them private, as built' },
+        { id: 'share', label: 'Parents should see them' },
+        { id: 'choice', label: 'The boy should choose, per entry' },
+        { id: 'age', label: 'It should depend on his age' }
+      ]
+    },
+    {
+      id: 'ownRecord',
+      title: 'What should a boy see of his own record?',
+      context:
+        'Today he sees his own check-ins and wins, and none of the pastoral or clinical notes written about him. ' +
+        'There is no clean age line in the UK — the test is understanding, not birthday. A boy in F Block is very likely competent to ask for his own record, and to object to his parents having it.',
+      options: [
+        { id: 'own', label: 'Only what he wrote, as built' },
+        { id: 'pastoral', label: 'His pastoral notes too' },
+        { id: 'all', label: 'Everything held about him' },
+        { id: 'ask', label: 'On request, with a conversation' }
+      ]
+    }
+  ];
+
+  var answers = load();
+
+  function load() {
+    try { return JSON.parse(global.localStorage.getItem(KEY) || '{}'); }
+    catch (e) { return {}; }
+  }
+  function save() {
+    try { global.localStorage.setItem(KEY, JSON.stringify(answers)); }
+    catch (e) { /* private mode: answers live for this visit only */ }
+  }
+
+  /* ------------------------------------------------------------- rendering */
+
+  function panel() {
+    var wrap = el('div', { class: 'prose' });
+
+    wrap.appendChild(el('p', {
+      text: 'Two decisions in this system are not the software’s to make. Both are built one way today, and both are one line to change. Your view is worth more than mine here.'
+    }));
+    wrap.appendChild(el('p', {
+      class: 'note',
+      text: 'Nothing is sent anywhere. Your answers stay in this browser until you copy them out at the bottom.'
+    }));
+
+    QUESTIONS.forEach(function (q) {
+      var chosen = answers[q.id] || {};
+      var opts = el('div', { class: 'fb-options' });
+
+      function draw() {
+        ui.clear(opts);
+        q.options.forEach(function (o) {
+          opts.appendChild(el('button', {
+            type: 'button',
+            class: 'fb-option' + (chosen.choice === o.id ? ' is-on' : ''),
+            onclick: function () {
+              chosen.choice = o.id;
+              chosen.choiceLabel = o.label;
+              answers[q.id] = chosen;
+              save();
+              draw();
+            }
+          }, [el('span', { text: o.label })]));
+        });
+      }
+      draw();
+
+      wrap.appendChild(el('section', { class: 'fb-q' }, [
+        el('h3', { text: q.title }),
+        el('p', { class: 'fb-context', text: q.context }),
+        opts,
+        el('textarea', {
+          class: 'text-input', rows: '2',
+          placeholder: 'Why, or what you would do instead. Optional.',
+          value: chosen.note || '',
+          oninput: function () { chosen.note = this.value; answers[q.id] = chosen; save(); }
+        })
+      ]));
+    });
+
+    /* Anything else she noticed. Often the most useful part. */
+    wrap.appendChild(el('section', { class: 'fb-q' }, [
+      el('h3', { text: 'Anything else' }),
+      el('p', { class: 'fb-context', text: 'What is wrong, missing, or would not survive contact with a real school week.' }),
+      el('textarea', {
+        class: 'text-input', rows: '4',
+        placeholder: 'Notes as you go.',
+        value: answers.general || '',
+        oninput: function () { answers.general = this.value; save(); }
+      })
+    ]));
+
+    var out = el('textarea', { class: 'text-input fb-out', rows: '8', readonly: 'readonly' });
+    var copyBtn = ui.button('Copy my answers', function () {
+      out.value = summarise();
+      out.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { /* fall through */ }
+      if (global.navigator && global.navigator.clipboard) {
+        global.navigator.clipboard.writeText(out.value).then(function () {
+          ui.toast('Copied. Paste it into an email.');
+        }, function () {
+          ui.toast(ok ? 'Copied.' : 'Select the text below and copy it.');
+        });
+      } else {
+        ui.toast(ok ? 'Copied.' : 'Select the text below and copy it.');
+      }
+    }, 'primary');
+
+    wrap.appendChild(el('div', { class: 'panel-actions' }, [
+      copyBtn,
+      el('p', { class: 'note', text: 'Copies everything above as plain text, ready to paste into an email.' }),
+      out
+    ]));
+
+    return wrap;
+  }
+
+  function summarise() {
+    var lines = ['The Connected Loop — my answers', ''];
+    QUESTIONS.forEach(function (q) {
+      var a = answers[q.id] || {};
+      lines.push(q.title);
+      lines.push('  Answer: ' + (a.choiceLabel || '(not answered)'));
+      if (a.note && a.note.trim()) lines.push('  Note:   ' + a.note.trim());
+      lines.push('');
+    });
+    if (answers.general && answers.general.trim()) {
+      lines.push('Anything else');
+      lines.push('  ' + answers.general.trim().replace(/\n/g, '\n  '));
+      lines.push('');
+    }
+    lines.push('Sent from the Connected Loop prototype, ' + new Date().toLocaleDateString('en-GB'));
+    return lines.join('\n');
+  }
+
+  CL.feedback = { panel: panel, summarise: summarise };
+
+})(window);
+
+
+/* ---- js/app.js ---- */
+/* The Connected Loop — shell, role switching, boot. */
+(function (global) {
+  'use strict';
+
+  var CL = global.CL, ui = CL.ui, el = ui.el, store = CL.store;
+
+  /* Who each role signs in as in the demo. In production this comes from the
+   * school's identity provider; nothing else about the app changes. */
+  var IDENTITY = {
+    student: { personId: 'p-theo', studentId: 'p-theo' },
+    teacher: { personId: 'p-hart', studentId: 'p-theo', subject: 'Mathematics' },
+    housemaster: { personId: 'p-brom', studentId: 'p-theo' },
+    clinician: { personId: 'p-nadi', studentId: 'p-theo' },
+    parent: { personId: 'p-mum', studentId: 'p-theo' },
+    coordinator: { personId: 'p-coord', studentId: 'p-theo' }
+  };
+
+  var state = { role: 'coordinator', studentId: 'p-theo', panel: null };
+
+  /* Role labels carry terminology placeholders ({Pupil}, {PastoralLead}) so
+   * one build serves any school. They must be rendered through the helper,
+   * never printed raw. */
+  function roleLabel(role) {
+    var t = CL.terms((store.organisation() || {}).terms, null);
+    var R = CL.ROLES[role];
+    return R ? t.cap(R.label) : role;
+  }
+
+  function viewer() {
+    var id = IDENTITY[state.role];
+    return {
+      role: state.role,
+      personId: id.personId,
+      subject: id.subject,
+      studentIds: state.role === 'parent' ? ['p-theo'] : store.students().map(function (s) { return s.id; })
+    };
+  }
+
+  /* ------------------------------------------------------------- chrome */
+
+  function renderNav() {
+    var nav = ui.clear(document.getElementById('role-nav'));
+    /* Only roles this offline demo has a person for. Therapist and
+     * administrator exist in the model but have no seeded identity here. */
+    CL.ROLE_ORDER.filter(function (r) { return IDENTITY[r]; }).forEach(function (r) {
+      var R = CL.ROLES[r];
+      nav.appendChild(el('button', {
+        type: 'button',
+        class: 'role-tab accent-' + R.accent + (state.role === r ? ' is-on' : ''),
+        'aria-pressed': state.role === r ? 'true' : 'false',
+        onclick: function () { setRole(r); }
+      }, [
+        el('strong', { text: roleLabel(r) }),
+        el('span', { text: R.cadence })
+      ]));
+    });
+  }
+
+  function renderStudentPicker() {
+    var host = ui.clear(document.getElementById('student-picker'));
+    var bar = document.querySelector('.topbar');
+    /* A parent sees one boy. A student sees himself. Nobody else's names
+     * should even be renderable for those roles. */
+    if (state.role === 'student' || state.role === 'parent') {
+      host.hidden = true;
+      bar.hidden = true;
+      return;
+    }
+    host.hidden = false;
+    bar.hidden = false;
+    host.appendChild(el('span', { class: 'picker-label', text: 'Viewing' }));
+    store.students().forEach(function (s) {
+      host.appendChild(el('button', {
+        type: 'button',
+        class: 'chip' + (state.studentId === s.id ? ' is-on' : ''),
+        onclick: function () { state.studentId = s.id; render(); },
+        text: s.name
+      }));
+    });
+  }
+
+  function renderContext() {
+    var box = ui.clear(document.getElementById('role-context'));
+    var R = CL.ROLES[state.role];
+    var who = store.person(IDENTITY[state.role].personId);
+    box.appendChild(el('div', { class: 'ctx-who' }, [
+      el('strong', { text: who.name }),
+      el('span', { text: who.detail })
+    ]));
+    box.appendChild(el('p', { class: 'ctx-blurb',
+      text: CL.terms((store.organisation() || {}).terms, null)(R.blurb) }));
+  }
+
+  function setRole(r) {
+    state.role = r;
+    if (r === 'student' || r === 'parent') state.studentId = 'p-theo';
+    state.panel = null;
+    render();
+  }
+
+  /* --------------------------------------------------------------- panels */
+
+  function openPanel(kind) {
+    state.panel = kind;
+    render();
+  }
+
+  function renderPanel() {
+    var host = ui.clear(document.getElementById('panel-host'));
+    if (!state.panel) { host.hidden = true; return; }
+    host.hidden = false;
+
+    var body, title;
+    if (state.panel === 'permissions') {
+      title = 'Who sees what';
+      body = CL.permissionsPanel();
+    } else if (state.panel === 'feedback') {
+      title = 'Two questions for you';
+      body = CL.feedback.panel();
+    } else {
+      title = 'About this build';
+      body = aboutPanel();
+    }
+
+    host.appendChild(el('div', { class: 'panel-scrim', onclick: function () { state.panel = null; render(); } }));
+    host.appendChild(el('div', { class: 'panel', role: 'dialog', 'aria-modal': 'true', 'aria-label': title }, [
+      el('header', { class: 'panel-head' }, [
+        el('h2', { text: title }),
+        el('button', { class: 'panel-close', type: 'button', 'aria-label': 'Close', onclick: function () { state.panel = null; render(); }, text: '×' })
+      ]),
+      el('div', { class: 'panel-body' }, [body])
+    ]));
+  }
+
+  function aboutPanel() {
+    function p(t) { return el('p', { text: t }); }
+    return el('div', { class: 'prose' }, [
+      el('h3', { text: 'What this is' }),
+      p('A working MVP of the Connected Loop: one shared, role-based picture of a neurodivergent boy, assembled from the people who each hold a fragment of it.'),
+      el('h3', { text: 'What it demonstrates' }),
+      el('ul', {}, [
+        el('li', { text: 'Six roles, each seeing a genuinely different projection of the same record.' }),
+        el('li', { text: 'The clinical bridge: a milestone at the Stephenson Centre reaching the pastoral team at a level the clinician chooses.' }),
+        el('li', { text: 'A two-way parent portal, where a note from home lands with the coordinator immediately.' }),
+        el('li', { text: 'Pattern recognition across sources, which is the thing no single person in the current arrangement can do.' }),
+        el('li', { text: 'The boy at the centre, with a tool that reads as his rather than as monitoring.' })
+      ]),
+      el('h3', { text: 'Where it runs' }),
+      p('One responsive web app. Chrome or Edge on a Windows machine, Safari on an iPad, installable to the home screen. No install on the school estate, no Mac dependency.'),
+      el('h3', { text: 'What is stubbed' }),
+      p('Data persists to this browser only, and identity is a role switcher rather than a school sign-in. Both sit behind one seam in the data layer; the views above it do not change when a real backend goes in.'),
+      el('div', { class: 'panel-actions' }, [
+        ui.button('Reset the demo data', function () {
+          store.reset();
+          ui.toast('Demo data reset.');
+        })
+      ])
+    ]);
+  }
+
+  /* --------------------------------------------------------------- render */
+
+  function render() {
+    renderNav();
+    renderStudentPicker();
+    renderContext();
+    renderPanel();
+    if (CL.tour) CL.tour.render();
+
+    var main = ui.clear(document.getElementById('main'));
+    main.className = 'main accent-' + CL.ROLES[state.role].accent;
+    var fn = CL.views[state.role];
+    fn(main, {
+      viewer: viewer(),
+      organisation: store.organisation(),
+      studentId: state.studentId,
+      go: function (sid) { state.studentId = sid; render(); }
+    });
+    main.scrollTop = 0;
+  }
+
+  /* ----------------------------------------------------------------- boot */
+
+  function boot() {
+    store.load();
+    store.onChange(render);
+
+    /* The tour drives the role switcher, so it can show each view as it
+     * talks about it. */
+    CL.tourSetRole = function (r) { setRole(r); };
+    CL.tourOpenPanel = function (k) { openPanel(k); };
+    if (CL.tour) CL.tour.init();
+
+    var fb = document.getElementById('btn-feedback');
+    if (fb) fb.addEventListener('click', function () { openPanel('feedback'); });
+    document.getElementById('btn-permissions').addEventListener('click', function () { openPanel('permissions'); });
+    document.getElementById('btn-about').addEventListener('click', function () { openPanel('about'); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && state.panel) { state.panel = null; render(); }
+    });
+
+    render();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+
+})(window);
+
+</script>
+</body>
+</html>
