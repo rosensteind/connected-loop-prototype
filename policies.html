@@ -1,0 +1,2056 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>The Connected Loop — how this works</title>
+<script>window.CL_ORG = {"name": "Eton College", "terms": {"pupil": "boy", "pupils": "boys", "pupilPossessive": "boy's", "pastoralLead": "housemaster", "pastoralLeads": "housemasters", "house": "house", "yearGroup": "block", "clinicalService": "the Stephenson Centre", "studyPeriod": "prep", "organisation": "Eton"}};</script>
+<style>
+/* The Connected Loop — one stylesheet.
+ * Sized for a Windows laptop at 1280 and an iPad in either orientation.
+ * Light and dark are both selected, not flipped.
+ */
+
+:root {
+  color-scheme: light;
+
+  --plane:        #f4f4f1;
+  --surface:      #ffffff;
+  --surface-2:    #fafaf8;
+  --ink:          #14140f;
+  --ink-2:        #52514e;
+  --ink-muted:    #7d7b75;
+  --hairline:     rgba(20, 20, 15, 0.12);
+  --hairline-2:   rgba(20, 20, 15, 0.06);
+  --grid:         #e1e0d9;
+  --baseline:     #c3c2b7;
+
+  --series-1:     #2a78d6;
+  --series-2:     #eb6834;
+
+  --good:         #0ca30c;
+  --warning:      #fab219;
+  --serious:      #ec835a;
+  --critical:     #d03b3b;
+  --good-ink:     #006300;
+  --warning-ink:  #7a5400;
+  --serious-ink:  #8c3d17;
+
+  --accent:       #2a78d6;
+
+  --r:            10px;
+  --r-lg:         14px;
+  --shadow:       0 1px 2px rgba(20,20,15,.05), 0 6px 20px rgba(20,20,15,.05);
+  --font:         system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --plane:      #0d0d0d;
+    --surface:    #16181c;
+    --surface-2:  #1c1e22;
+    --ink:        #f5f5f0;
+    --ink-2:      #c3c2b7;
+    --ink-muted:  #898781;
+    --hairline:   rgba(255, 255, 255, 0.14);
+    --hairline-2: rgba(255, 255, 255, 0.07);
+    --grid:       #2c2c2a;
+    --baseline:   #383835;
+    --series-1:   #3987e5;
+    --series-2:   #d95926;
+    --good-ink:   #0ca30c;
+    --warning-ink:#fab219;
+    --serious-ink:#ec835a;
+    --accent:     #3987e5;
+    --shadow:     0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* Several components below set display, which would otherwise beat the UA
+ * rule for the hidden attribute. Keep hidden meaning hidden. */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  background: var(--plane);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* ------------------------------------------------------------------ shell */
+
+.app {
+  display: grid;
+  grid-template-columns: 268px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "brand topbar" "side main";
+  height: 100%;
+}
+
+.brand {
+  grid-area: brand;
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  border-right: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  background: var(--surface);
+}
+.brand-mark {
+  width: 26px; height: 26px; flex: none;
+  border-radius: 50%;
+  border: 2.5px solid var(--accent);
+  border-right-color: transparent;
+  transform: rotate(-35deg);
+}
+.brand h1 { font-size: .95rem; margin: 0; letter-spacing: -.01em; }
+.brand span { display: block; font-size: .72rem; color: var(--ink-muted); font-weight: 400; letter-spacing: 0; }
+
+.topbar {
+  grid-area: topbar;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+  flex-wrap: wrap;
+}
+#student-picker { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.picker-label { font-size: .78rem; color: var(--ink-muted); margin-right: 2px; }
+.topbar-spacer { flex: 1 1 auto; }
+
+.side {
+  grid-area: side;
+  background: var(--surface);
+  border-right: 1px solid var(--hairline);
+  overflow-y: auto;
+  padding: 14px 12px 24px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.side-label {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--ink-muted); padding: 0 6px; margin: 0 0 6px;
+}
+
+#role-nav { display: flex; flex-direction: column; gap: 4px; }
+.role-tab {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  width: 100%; text-align: left; cursor: pointer;
+  padding: 9px 12px; border-radius: var(--r);
+  background: transparent; border: 1px solid transparent;
+  min-height: 44px;
+}
+.role-tab strong { font-size: .9rem; font-weight: 600; }
+.role-tab span { font-size: .72rem; color: var(--ink-muted); }
+.role-tab:hover { background: var(--surface-2); }
+.role-tab.is-on {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.role-tab.is-on strong { color: var(--accent); }
+
+.accent-blue    { --accent: #2a78d6; }
+.accent-aqua    { --accent: #1baf7a; }
+.accent-violet  { --accent: #4a3aa7; }
+.accent-magenta { --accent: #d55181; }
+.accent-orange  { --accent: #eb6834; }
+.accent-green   { --accent: #008300; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .accent-blue    { --accent: #3987e5; }
+  :root:not([data-theme="light"]) .accent-violet  { --accent: #9085e9; }
+  :root:not([data-theme="light"]) .accent-orange  { --accent: #d95926; }
+  :root:not([data-theme="light"]) .accent-green   { --accent: #19a319; }
+}
+
+#role-context {
+  padding: 12px; border-radius: var(--r);
+  background: var(--surface-2); border: 1px solid var(--hairline-2);
+}
+.ctx-who strong { display: block; font-size: .88rem; }
+.ctx-who span { font-size: .75rem; color: var(--ink-muted); }
+.ctx-blurb { font-size: .78rem; color: var(--ink-2); margin: 8px 0 0; }
+
+.side-links { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+
+.main {
+  grid-area: main;
+  overflow-y: auto;
+  padding: 22px 26px 80px;
+  max-width: 1100px;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ------------------------------------------------------------------- hero */
+
+.hero { margin: 0 0 20px; }
+.hero h1 { font-size: 1.6rem; margin: 0 0 4px; letter-spacing: -.02em; }
+.hero p { margin: 0; color: var(--ink-2); font-size: .95rem; }
+
+.section-break {
+  font-size: 1.1rem; margin: 34px 0 12px; padding-top: 18px;
+  border-top: 1px solid var(--hairline);
+}
+
+/* ------------------------------------------------------------------ cards */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  margin: 0 0 18px;
+  overflow: hidden;
+}
+.card-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 15px 18px 0;
+}
+.card-head h2 { font-size: 1rem; margin: 0; letter-spacing: -.01em; }
+.card-sub { margin: 4px 18px 0; font-size: .82rem; color: var(--ink-muted); }
+.card-body { padding: 14px 18px 18px; }
+
+.grid { display: grid; gap: 14px; }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.stats-row { margin-bottom: 18px; }
+.row { display: flex; gap: 8px; align-items: center; }
+.row .text-input { flex: 1; }
+
+/* ------------------------------------------------------------------ forms */
+
+.q { margin: 0 0 16px; }
+.q > label {
+  display: block; font-size: .84rem; font-weight: 600;
+  margin: 0 0 7px; color: var(--ink);
+}
+.text-input {
+  width: 100%; padding: 10px 12px; min-height: 44px;
+  border: 1px solid var(--hairline); border-radius: var(--r);
+  background: var(--surface-2); color: var(--ink);
+  font-size: .92rem;
+}
+textarea.text-input { min-height: 76px; resize: vertical; line-height: 1.45; }
+.text-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+
+.btn {
+  padding: 10px 16px; min-height: 44px; cursor: pointer;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface-2); font-size: .88rem; font-weight: 500;
+  /* The class is used on <a> as well as <button>. Anchors bring an underline
+   * and fill their flex line unless told otherwise. */
+  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none; color: var(--ink);
+}
+a.btn:hover { text-decoration: none; }
+.btn-primary, a.btn-primary { color: #fff; }
+.btn:hover { background: var(--plane); }
+.btn-primary {
+  background: var(--accent); color: #fff; border-color: transparent; font-weight: 600;
+}
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-quiet { background: transparent; border-color: transparent; color: var(--ink-2); font-size: .8rem; min-height: 32px; padding: 4px 8px; }
+.btn-quiet:hover { background: var(--surface-2); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.check { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; font-size: .85rem; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.scale { display: flex; gap: 8px; }
+.scale-dot {
+  flex: 1; min-width: 48px; min-height: 48px; cursor: pointer;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface-2); font-size: 1rem; font-weight: 600; color: var(--ink-2);
+}
+.scale-dot:hover { border-color: var(--accent); }
+.scale-dot.is-on { background: var(--accent); color: #fff; border-color: transparent; }
+.scale-ends {
+  display: flex; justify-content: space-between;
+  font-size: .72rem; color: var(--ink-muted); margin-top: 5px;
+}
+
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip {
+  padding: 7px 12px; min-height: 38px; cursor: pointer;
+  border-radius: 999px; border: 1px solid var(--hairline);
+  background: var(--surface-2); font-size: .82rem;
+}
+.chip.is-on { background: var(--accent); color: #fff; border-color: transparent; }
+
+.levels { display: flex; flex-direction: column; gap: 8px; }
+.level {
+  text-align: left; cursor: pointer; padding: 11px 13px;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface-2);
+}
+.level strong { display: block; font-size: .87rem; margin-bottom: 2px; }
+.level span { font-size: .78rem; color: var(--ink-muted); }
+.level.is-on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.level.is-on strong { color: var(--accent); }
+
+/* ------------------------------------------------------------------ stats */
+
+.stat {
+  background: var(--surface); border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg); padding: 16px 18px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.stat-value { font-size: 2rem; font-weight: 650; letter-spacing: -.03em; line-height: 1.1; }
+.stat-label { font-size: .78rem; color: var(--ink-muted); }
+.stat.tone-good .stat-value { color: var(--good-ink); }
+
+.inline-stats { display: flex; gap: 6px; margin-top: 8px; }
+.lead { font-size: 1.05rem; margin: 0; }
+.note { font-size: .78rem; color: var(--ink-muted); margin: 12px 0 0; }
+.empty { color: var(--ink-muted); font-size: .87rem; margin: 4px 0; }
+
+.pill {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  font-size: .72rem; font-weight: 500; white-space: nowrap;
+  background: var(--surface-2); border: 1px solid var(--hairline); color: var(--ink-2);
+}
+.pill-muted { color: var(--ink-muted); }
+.pill-good     { color: var(--good-ink);    border-color: color-mix(in srgb, var(--good) 45%, transparent); }
+.pill-warning  { color: var(--warning-ink); border-color: color-mix(in srgb, var(--warning) 60%, transparent); }
+.pill-serious  { color: var(--serious-ink); border-color: color-mix(in srgb, var(--serious) 60%, transparent); }
+
+.flag-line {
+  margin: 0 0 8px; padding: 11px 13px; border-radius: var(--r);
+  font-size: .9rem; background: var(--surface-2);
+  border-left: 3px solid var(--baseline);
+}
+.flag-line.tone-good    { border-left-color: var(--good);    }
+.flag-line.tone-warning { border-left-color: var(--warning); }
+.flag-line.tone-info    { border-left-color: var(--series-1); }
+.flag-line:last-child { margin-bottom: 0; }
+
+/* --------------------------------------------------------------- patterns */
+
+.pattern {
+  padding: 13px 15px; border-radius: var(--r); margin: 0 0 10px;
+  background: var(--surface-2); border-left: 3px solid var(--baseline);
+}
+.pattern.tone-serious { border-left-color: var(--critical); }
+.pattern.tone-warning { border-left-color: var(--warning); }
+.pattern strong { display: block; font-size: .92rem; margin-bottom: 3px; }
+.pattern p { margin: 0 0 8px; font-size: .84rem; color: var(--ink-2); }
+.pattern-sources { display: flex; gap: 5px; flex-wrap: wrap; }
+.pattern:last-child { margin-bottom: 0; }
+
+/* --------------------------------------------------------------- timeline */
+
+.timeline { list-style: none; margin: 0; padding: 0; }
+.sig {
+  display: flex; gap: 12px; padding: 13px 0;
+  border-bottom: 1px solid var(--hairline-2);
+}
+.sig:last-child { border-bottom: none; padding-bottom: 0; }
+.sig-glyph {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center; font-size: .85rem;
+  background: var(--surface-2); border: 1px solid var(--hairline); color: var(--ink-2);
+}
+.sig.tone-warning .sig-glyph { border-color: var(--warning); color: var(--warning-ink); }
+.sig.tone-serious .sig-glyph { border-color: var(--critical); color: var(--critical); }
+.sig-main { min-width: 0; flex: 1; }
+.sig-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.sig-head { font-size: .9rem; }
+.sig-kind { font-size: .72rem; color: var(--ink-muted); }
+.sig-body { margin: 3px 0 0; font-size: .87rem; color: var(--ink-2); }
+.sig-action, .sig-guidance {
+  margin: 6px 0 0; font-size: .82rem; color: var(--ink-2);
+  padding-left: 9px; border-left: 2px solid var(--hairline);
+}
+.sig-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: .74rem; color: var(--ink-muted); flex-wrap: wrap; }
+.sig-author { font-weight: 500; }
+
+.wins { list-style: none; margin: 0 0 12px; padding: 0; }
+.wins li {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 9px 0; border-bottom: 1px solid var(--hairline-2); font-size: .88rem;
+}
+.wins li:last-child { border-bottom: none; }
+.wins em { font-style: normal; color: var(--ink-muted); font-size: .76rem; white-space: nowrap; }
+
+/* ------------------------------------------------------------- profile */
+
+.tag-row { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.profile-block h3 {
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--ink-muted); margin: 0 0 6px;
+}
+.profile-block ul { margin: 0; padding-left: 18px; }
+.profile-block li { font-size: .87rem; margin-bottom: 4px; color: var(--ink-2); }
+
+.digest-block { margin-bottom: 16px; }
+.digest-block:last-child { margin-bottom: 0; }
+.digest-block h3 {
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--ink-muted); margin: 0 0 4px;
+}
+.digest-block p { margin: 0; font-size: .95rem; }
+
+/* ------------------------------------------------------------------- roll */
+
+.roll { list-style: none; margin: 0; padding: 0; }
+.roll-item {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center;
+  padding: 13px 14px; margin-bottom: 8px; cursor: pointer;
+  border-radius: var(--r); background: var(--surface-2);
+  border: 1px solid var(--hairline-2); border-left: 3px solid var(--baseline);
+}
+.roll-item:hover { border-color: var(--accent); }
+.roll-item.tone-serious { border-left-color: var(--critical); }
+.roll-item.tone-warning { border-left-color: var(--warning); }
+.roll-item.tone-none    { border-left-color: var(--good); }
+.roll-item strong { display: block; font-size: .92rem; }
+.roll-sub { font-size: .76rem; color: var(--ink-muted); }
+.roll-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.roll-state { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; text-align: right; }
+
+/* ----------------------------------------------------------------- charts */
+
+.chart { position: relative; }
+.chart-svg { width: 100%; height: auto; display: block; overflow: visible; touch-action: pan-y; }
+.chart-grid { stroke: var(--grid); stroke-width: 1; }
+.rail { stroke: var(--baseline); stroke-width: 1; }
+.axis-label { fill: var(--ink-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.pt { stroke: var(--surface); stroke-width: 2; }
+.line.series-1, .pt.series-1 { stroke: var(--series-1); }
+.pt.series-1 { fill: var(--series-1); stroke: var(--surface); }
+.line.series-2 { stroke: var(--series-2); }
+.pt.series-2 { fill: var(--series-2); stroke: var(--surface); }
+.direct-label { font-size: 11px; font-weight: 600; }
+.series-1-ink { fill: var(--series-1); }
+.series-2-ink { fill: var(--series-2); }
+
+.marker-stem { stroke: var(--hairline); stroke-width: 1; stroke-dasharray: 2 3; }
+.marker-dot { fill: var(--surface); stroke: var(--baseline); stroke-width: 1.5; }
+.marker-glyph { fill: var(--ink-2); font-size: 9px; }
+.marker.tone-warning .marker-dot { stroke: var(--warning); }
+.marker.tone-serious .marker-dot { stroke: var(--critical); }
+.marker:hover .marker-dot { stroke: var(--accent); stroke-width: 2.5; }
+
+.crosshair { stroke: var(--baseline); stroke-width: 1; }
+.hover-layer { opacity: 0; transition: opacity .12s; pointer-events: none; }
+.hover-layer.is-on { opacity: 1; }
+
+.tooltip {
+  position: absolute; top: 8px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--r); box-shadow: var(--shadow);
+  padding: 8px 11px; font-size: .78rem; pointer-events: none;
+  display: flex; flex-direction: column; gap: 2px; max-width: 240px; z-index: 5;
+}
+.tt-row { display: flex; align-items: center; gap: 6px; }
+.tt-note { color: var(--ink-muted); font-style: italic; margin-top: 3px; }
+.sw, i.sw { width: 9px; height: 9px; border-radius: 2px; display: inline-block; flex: none; }
+.sw.series-1 { background: var(--series-1); }
+.sw.series-2 { background: var(--series-2); }
+
+.chart-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; margin-top: 10px; flex-wrap: wrap;
+}
+.legend { display: flex; gap: 14px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--ink-2); }
+
+.streak-strip { display: flex; gap: 4px; margin-bottom: 18px; }
+.streak-cell {
+  flex: 1; height: 26px; border-radius: 4px;
+  background: var(--surface-2); border: 1px solid var(--hairline-2);
+}
+.streak-cell.is-on { background: var(--good); border-color: transparent; }
+
+/* ----------------------------------------------------------------- tables */
+
+.table-scroll { overflow-x: auto; }
+.chart-table { overflow-x: auto; margin-top: 12px; }
+.data-table { border-collapse: collapse; width: 100%; font-size: .82rem; }
+.data-table th, .data-table td {
+  text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--hairline-2);
+  white-space: nowrap;
+}
+.data-table th { color: var(--ink-muted); font-weight: 600; font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; }
+.data-table td:last-child { white-space: normal; }
+.matrix td { font-size: .76rem; }
+.matrix .cell-full { color: var(--good-ink); font-weight: 600; }
+.matrix .cell-none { color: var(--ink-muted); }
+.matrix .cell-part { color: var(--ink-2); }
+
+/* ----------------------------------------------------------------- panels */
+
+#panel-host { position: fixed; inset: 0; z-index: 40; }
+.panel-scrim { position: absolute; inset: 0; background: rgba(10,10,8,.45); }
+.panel {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: min(880px, 100%);
+  background: var(--surface); box-shadow: var(--shadow);
+  display: flex; flex-direction: column;
+}
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--hairline);
+}
+.panel-head h2 { margin: 0; font-size: 1.05rem; }
+.panel-close {
+  border: none; background: transparent; cursor: pointer;
+  font-size: 1.6rem; line-height: 1; width: 44px; height: 44px; color: var(--ink-2);
+}
+.panel-body { padding: 20px; overflow-y: auto; }
+.panel-actions { margin-top: 20px; }
+.prose h3 { font-size: .9rem; margin: 20px 0 6px; }
+.prose h3:first-child { margin-top: 0; }
+.prose p, .prose li { font-size: .88rem; color: var(--ink-2); margin: 0 0 8px; }
+.prose ul { padding-left: 18px; }
+
+/* ----------------------------------------------------------------- toasts */
+
+#toast-host {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
+  z-index: 60; display: flex; flex-direction: column; gap: 8px; align-items: center;
+  pointer-events: none;
+}
+.toast {
+  background: var(--ink); color: var(--plane);
+  padding: 11px 18px; border-radius: 999px; font-size: .86rem;
+  box-shadow: var(--shadow); transition: opacity .4s, transform .4s;
+  max-width: 90vw; text-align: center;
+}
+.toast.is-out { opacity: 0; transform: translateY(6px); }
+
+/* ------------------------------------------------------------- responsive
+ * iPad landscape keeps the sidebar. iPad portrait and below moves the role
+ * switcher to a horizontal strip so the content gets the full width. */
+
+@media (max-width: 1024px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-areas: "brand" "side" "topbar" "main";
+  }
+  .brand { border-right: none; }
+  .side {
+    border-right: none; border-bottom: 1px solid var(--hairline);
+    padding: 10px 12px; gap: 10px; overflow: visible;
+  }
+  .side-label { display: none; }
+  #role-nav {
+    flex-direction: row; gap: 6px;
+    overflow-x: auto; padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .role-tab { width: auto; flex: none; white-space: nowrap; }
+  #role-context { display: none; }
+  .side-links { flex-direction: row; margin-top: 0; }
+  .main { padding: 18px 18px 80px; max-width: none; }
+}
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.3rem; }
+  .main { padding: 14px 13px 80px; }
+  .card-body { padding: 12px 14px 15px; }
+  .card-head, .card-sub { padding-left: 14px; padding-right: 14px; }
+  .roll-item { grid-template-columns: 1fr; gap: 6px; }
+  .roll-state { align-items: flex-start; text-align: left; }
+  .panel { width: 100%; }
+  .scale-dot { min-width: 0; }
+}
+
+@media print {
+  .side, .topbar, .brand, #panel-host, #toast-host { display: none; }
+  .app { display: block; }
+  .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+}
+
+/* -------------------------------------------------------------- sign-in
+ * A separate surface from the app shell: nobody is signed in yet, so there
+ * is no role, no accent, and nothing to be careful about revealing. */
+
+#signin-host { min-height: 100%; }
+.signin {
+  min-height: 100vh; min-height: 100dvh;
+  display: grid; place-items: center; padding: 24px;
+  background: var(--plane);
+}
+.signin-card {
+  width: min(420px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  padding: 32px 28px;
+  text-align: center;
+}
+.brand-mark-lg {
+  width: 40px; height: 40px; margin: 0 auto 14px;
+  border-width: 3px; display: block;
+}
+.signin-card h1 { font-size: 1.25rem; margin: 0 0 4px; letter-spacing: -.02em; }
+.signin-sub { margin: 0 0 24px; color: var(--ink-muted); font-size: .88rem; }
+.signin-form { text-align: left; display: flex; flex-direction: column; gap: 8px; }
+.signin-form label { font-size: .84rem; font-weight: 600; }
+.btn-block { width: 100%; justify-content: center; margin-top: 4px; }
+.signin-note { font-size: .76rem; color: var(--ink-muted); margin: 10px 0 0; line-height: 1.45; }
+.form-error {
+  font-size: .82rem; color: var(--critical); margin: 0;
+  padding: 8px 10px; border-radius: var(--r);
+  background: color-mix(in srgb, var(--critical) 10%, transparent);
+}
+.booting { padding: 60px; text-align: center; color: var(--ink-muted); }
+
+.dev-note {
+  margin: 14px 0; padding: 12px 14px; text-align: left;
+  border-radius: var(--r); border: 1px dashed var(--warning);
+  background: color-mix(in srgb, var(--warning) 8%, transparent);
+}
+.dev-note strong { display: block; font-size: .78rem; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--warning-ink); margin-bottom: 4px; }
+.dev-note p { font-size: .8rem; margin: 0 0 8px; color: var(--ink-2); }
+.token {
+  display: block; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: .72rem; word-break: break-all; padding: 8px;
+  background: var(--surface-2); border-radius: 6px; color: var(--ink-2);
+}
+
+/* Demo account picker. Development only — the server does not serve the list
+   in production, so this never renders there. */
+.demo-accounts { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.demo-account {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  width: 100%; min-height: 40px; padding: 7px 11px; cursor: pointer;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface); text-align: left;
+}
+.demo-account:hover { border-color: var(--accent); }
+.demo-account strong {
+  font-size: .84rem; font-weight: 600;
+  /* .dev-note strong is a small-caps heading; a person's name is not. */
+  text-transform: none; letter-spacing: 0; color: var(--ink); margin: 0;
+}
+.demo-account span { font-size: .74rem; color: var(--ink-muted); }
+
+/* ------------------------------------------------------- safeguarding UI
+ * Talk to someone, and the queue of boys who have used it. Both are given
+ * more visual weight than anything else on their page, on purpose. */
+
+.card-help { border-color: color-mix(in srgb, var(--good) 35%, transparent); }
+.card-urgent { border-color: color-mix(in srgb, var(--critical) 45%, transparent); }
+.card-urgent .card-head h2 { color: var(--critical); }
+
+.help-emergency {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px;
+  padding: 12px 14px; margin-bottom: 12px; border-radius: var(--r);
+  background: color-mix(in srgb, var(--critical) 8%, transparent);
+  border-left: 3px solid var(--critical);
+}
+.help-emergency strong { font-size: .88rem; }
+.help-action { font-size: 1.05rem; font-weight: 700; color: var(--critical); }
+.help-emergency .help-detail { flex-basis: 100%; }
+.help-detail { font-size: .78rem; color: var(--ink-muted); display: block; }
+
+.help-ask { margin: 0 0 14px; border-radius: var(--r); background: var(--surface-2); border: 1px solid var(--hairline); }
+.help-ask summary {
+  cursor: pointer; padding: 12px 14px; font-size: .92rem; font-weight: 600;
+  min-height: 44px; display: flex; align-items: center;
+}
+.help-ask summary::marker { color: var(--ink-muted); }
+.help-ask-body { padding: 0 14px 14px; }
+.help-ask-body .q { margin-top: 12px; }
+
+.help-lead { font-size: .84rem; color: var(--ink-2); margin: 0 0 8px; }
+.help-list { list-style: none; margin: 0; padding: 0; }
+.help-list li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--hairline-2);
+}
+.help-list li:last-child { border-bottom: none; }
+.help-list strong { font-size: .88rem; }
+.help-contact {
+  font-size: .88rem; font-weight: 600; color: var(--accent);
+  white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+
+.concern {
+  padding: 13px 15px; margin: 0 0 10px; border-radius: var(--r);
+  background: var(--surface-2); border-left: 3px solid var(--critical);
+}
+.concern:last-child { margin-bottom: 0; }
+.concern-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.concern-top strong { font-size: .95rem; }
+.concern-note { margin: 0 0 10px; font-size: .89rem; }
+.concern-note.empty { color: var(--ink-muted); font-style: italic; }
+
+@media (max-width: 600px) {
+  .help-list li { flex-direction: column; gap: 2px; }
+  .concern .row { flex-direction: column; align-items: stretch; }
+}
+
+/* --------------------------------------------------------------- the tour
+ * A guide for somebody who did not build this. Sits beside the app rather
+ * than over it: the interface stays visible and usable behind it, because
+ * the point is to look at the thing being described. */
+
+#tour-host {
+  position: fixed; z-index: 50;
+  right: 20px; bottom: 20px; width: min(400px, calc(100vw - 40px));
+}
+.tour {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  box-shadow: 0 4px 12px rgba(20,20,15,.10), 0 16px 48px rgba(20,20,15,.16);
+  padding: 18px 20px 16px;
+  max-height: min(70vh, 620px);
+  display: flex; flex-direction: column;
+}
+.tour-head { display: flex; align-items: center; justify-content: space-between; }
+.tour-count {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink-muted); font-weight: 600;
+}
+.tour-close {
+  border: none; background: transparent; cursor: pointer; color: var(--ink-muted);
+  font-size: 1.4rem; line-height: 1; width: 32px; height: 32px; margin: -6px -8px 0 0;
+}
+.tour-close:hover { color: var(--ink); }
+.tour h2 { font-size: 1.05rem; margin: 6px 0 10px; letter-spacing: -.01em; }
+.tour-body { overflow-y: auto; margin-bottom: 14px; }
+.tour-body p { font-size: .89rem; line-height: 1.55; color: var(--ink-2); margin: 0 0 10px; }
+.tour-body p:last-child { margin-bottom: 0; }
+.tour-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+
+@media (max-width: 700px) {
+  #tour-host { right: 10px; left: 10px; bottom: 10px; width: auto; }
+  .tour { max-height: 60vh; }
+}
+
+/* ------------------------------------------------------------- feedback
+ * Two questions the software should not answer for itself. */
+
+.fb-q { margin: 0 0 1.75rem; }
+.fb-q h3 { font-size: .98rem; margin: 0 0 .35rem; color: var(--ink); }
+.fb-context { font-size: .85rem; color: var(--ink-muted); margin: 0 0 .75rem; line-height: 1.55; }
+.fb-options { display: grid; gap: 6px; margin-bottom: 10px; }
+.fb-option {
+  text-align: left; cursor: pointer; padding: 10px 13px; min-height: 44px;
+  border-radius: var(--r); border: 1px solid var(--hairline);
+  background: var(--surface-2); font-size: .88rem;
+}
+.fb-option:hover { border-color: var(--accent); }
+.fb-option.is-on {
+  border-color: var(--accent); color: var(--accent); font-weight: 600;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.fb-out {
+  margin-top: 12px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: .76rem; line-height: 1.5;
+}
+
+/* ------------------------------------------------------------- policies
+ * A document, not a dashboard: one readable column, generous leading, and
+ * no chrome competing with the text. */
+
+.pol-page { background: var(--plane); }
+.pol-bar {
+  background: var(--surface); border-bottom: 1px solid var(--hairline);
+  padding: 12px 20px;
+}
+.pol-back {
+  display: inline-flex; align-items: center; gap: 9px;
+  color: var(--ink); text-decoration: none; font-weight: 600; font-size: .9rem;
+}
+.pol-back:hover { color: var(--accent); }
+
+.pol-main { max-width: 46rem; margin: 0 auto; padding: 32px 20px 80px; }
+.pol-head h1 {
+  font-size: clamp(1.5rem, 4vw, 1.9rem); margin: 0 0 6px;
+  letter-spacing: -.02em; text-wrap: balance; line-height: 1.2;
+}
+.pol-sub { color: var(--ink-muted); font-size: .92rem; margin: 0 0 20px; }
+
+.pol-tabs { display: flex; gap: 6px; margin-bottom: 28px; flex-wrap: wrap; }
+.pol-tab {
+  padding: 9px 15px; min-height: 44px; cursor: pointer;
+  border-radius: 999px; border: 1px solid var(--hairline);
+  background: var(--surface); font-size: .88rem; font-weight: 500;
+}
+.pol-tab:hover { border-color: var(--accent); }
+.pol-tab.is-on { background: var(--accent); color: #fff; border-color: transparent; }
+
+.pol-qa {
+  background: var(--surface); border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg); padding: 20px 22px; margin: 0 0 14px;
+  box-shadow: var(--shadow);
+}
+.pol-qa h2 { font-size: 1.05rem; margin: 0 0 8px; letter-spacing: -.01em; }
+.pol-qa p { font-size: .94rem; line-height: 1.62; color: var(--ink-2); margin: 0 0 10px; }
+.pol-qa p:last-child { margin-bottom: 0; }
+.pol-qa .note { font-size: .82rem; color: var(--ink-muted); }
+.pol-foot {
+  font-size: .82rem; color: var(--ink-muted); margin: 22px 0 0;
+  padding-top: 16px; border-top: 1px solid var(--hairline);
+}
+
+/* ------------------------------------------------------------- landing
+ * The public front door. A document-weight page, not a dashboard: one
+ * column, generous rhythm, and the two things a visitor might do put where
+ * they cannot be missed. */
+
+.land-page { background: var(--plane); height: auto; }
+.land-page main { display: block; }
+
+.land-nav {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  padding: 12px 24px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: saturate(180%) blur(8px);
+  border-bottom: 1px solid var(--hairline);
+}
+.land-brand {
+  display: inline-flex; align-items: center; gap: 9px;
+  color: var(--ink); text-decoration: none; font-weight: 650; font-size: .95rem;
+}
+.land-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.land-links a {
+  color: var(--ink-2); text-decoration: none; font-size: .86rem;
+  padding: 8px 11px; border-radius: var(--r); min-height: 40px;
+  display: inline-flex; align-items: center;
+}
+.land-links a:hover { color: var(--ink); background: var(--surface-2); }
+.land-links .land-cta {
+  background: var(--accent); color: #fff; font-weight: 600;
+}
+.land-links .land-cta:hover { background: var(--accent); filter: brightness(1.08); }
+.land-links .land-signin { border: 1px solid var(--hairline); }
+
+.land-hero { max-width: 46rem; margin: 0 auto; padding: 64px 24px 56px; }
+.land-eyebrow {
+  font-size: .75rem; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--ink-muted); font-weight: 600; margin: 0 0 14px;
+}
+.land-hero h1 {
+  font-size: clamp(2rem, 5.5vw, 3rem); line-height: 1.08; letter-spacing: -.03em;
+  margin: 0 0 18px; text-wrap: balance;
+}
+.land-lede {
+  font-size: 1.1rem; line-height: 1.62; color: var(--ink-2);
+  margin: 0 0 28px; max-width: 34rem;
+}
+.land-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.btn-lg { padding: 13px 22px; min-height: 50px; font-size: .95rem; }
+.land-note { font-size: .84rem; color: var(--ink-muted); margin: 0; }
+
+.land-band {
+  border-top: 1px solid var(--hairline);
+  padding: 56px 24px;
+}
+.land-band > h2 {
+  max-width: 46rem; margin: 0 auto 12px;
+  font-size: clamp(1.4rem, 3.5vw, 1.75rem); letter-spacing: -.02em;
+}
+.land-band-lede {
+  max-width: 46rem; margin: 0 auto 32px;
+  font-size: 1rem; line-height: 1.65; color: var(--ink-2);
+}
+.land-band-alt { background: var(--surface); }
+
+.land-steps { max-width: 46rem; margin: 0 auto; padding: 0; list-style: none;
+  display: grid; gap: 22px; }
+.land-steps li { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; }
+.land-step-n {
+  width: 30px; height: 30px; border-radius: 50%; flex: none;
+  display: grid; place-items: center;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent); font-weight: 700; font-size: .82rem;
+  font-variant-numeric: tabular-nums;
+}
+.land-steps h3 { font-size: 1rem; margin: 3px 0 5px; letter-spacing: -.01em; }
+.land-steps p { font-size: .93rem; line-height: 1.6; color: var(--ink-2); margin: 0; }
+
+.land-roles, .land-gates {
+  max-width: 46rem; margin: 0 auto;
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.land-roles article, .land-gates article {
+  background: var(--plane); border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg); padding: 16px 18px;
+}
+.land-band-alt .land-roles article { background: var(--plane); }
+.land-roles h3, .land-gates h3 { font-size: .94rem; margin: 0 0 5px; }
+.land-roles p, .land-gates p { font-size: .88rem; line-height: 1.55; color: var(--ink-2); margin: 0; }
+.land-gates { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.land-gates article { border-left: 3px solid var(--warning); }
+
+.land-boundary { background: var(--surface); }
+.land-not {
+  max-width: 46rem; margin: 0 auto 20px;
+  display: grid; gap: 10px;
+}
+.land-not p {
+  margin: 0; font-size: .95rem; line-height: 1.55; color: var(--ink-2);
+  padding-left: 14px; border-left: 2px solid var(--critical);
+}
+.land-boundary-note {
+  max-width: 46rem; margin: 0 auto; font-size: .87rem;
+  line-height: 1.6; color: var(--ink-muted);
+}
+.land-boundary-note a { color: var(--accent); }
+
+.land-foot {
+  border-top: 1px solid var(--hairline); background: var(--surface);
+  padding: 32px 24px 48px;
+  display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+}
+.land-foot p { margin: 0 0 4px; font-size: .86rem; color: var(--ink-muted); }
+.land-foot strong { color: var(--ink); }
+.land-foot nav { display: flex; flex-direction: column; gap: 6px; }
+.land-foot nav a { font-size: .86rem; color: var(--ink-2); text-decoration: none; }
+.land-foot nav a:hover { color: var(--accent); }
+
+@media (max-width: 640px) {
+  .land-nav { padding: 10px 14px; }
+  .land-links { gap: 2px; }
+  .land-links a { padding: 7px 9px; font-size: .82rem; }
+  .land-hero { padding: 40px 18px 40px; }
+  .land-band { padding: 40px 18px; }
+  .land-actions .btn { width: 100%; justify-content: center; }
+}
+
+</style>
+</head>
+<bodyclass="pol-page">
+
+<header class="pol-bar">
+  <a class="pol-back" href="index.html">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>The Connected Loop</span>
+  </a>
+</header>
+
+<main class="pol-main" id="policies"></main>
+
+<script>
+/* ---- js/model.js ---- */
+/* The Connected Loop — domain model, roles, signal types, permissions.
+ *
+ * This file is the single source of truth for WHO CAN SEE WHAT. Every view
+ * reads signals through project(), never off the raw store, so a redaction
+ * rule written here holds everywhere in the app.
+ */
+/* Runs unchanged in the browser AND in Node. The server imports this exact
+ * file and projects every response through it, so there is one definition of
+ * who can read what rather than two that drift apart. Never add a DOM or a
+ * Node-only dependency to this file. */
+(function (global) {
+  'use strict';
+
+  /* ================================================================ PURPOSE
+   *
+   * What this system is, and is not. These strings are rendered in the
+   * interface rather than kept in a policy document, because the boundary
+   * only protects anyone if the people using it can see it.
+   *
+   * The distinction is not decorative. Software intended to diagnose,
+   * prevent, monitor, treat or alleviate disease can be a medical device
+   * under the UK Medical Devices Regulations 2002, with UKCA marking and MHRA
+   * obligations attached. This platform stays outside that regime by design:
+   * it moves information between people who already know the child, and it
+   * makes no clinical claim of any kind. Nothing in it scores, screens,
+   * classifies, or advises on treatment.
+   */
+  var PURPOSE = {
+    is: [
+      'A way for the people around one {pupil} to share what they each already see.',
+      'A record of what has been noticed, by whom, and what was done about it.',
+      'A tool the {pupil} owns, so their own week is visible to them.'
+    ],
+    isNot: [
+      'Not a diagnostic tool. Nothing here identifies, screens for, or rules out any condition.',
+      'Not a treatment. It delivers no therapy, no intervention, and no clinical advice.',
+      'Not a monitoring or surveillance system. It does not watch, score, or rank anybody.',
+      'Not an emergency service. Nobody is reading it at three in the morning.'
+    ],
+    /* Shown wherever a pupil could mistake the tool for a way of getting help
+     * urgently. Load-bearing: the honest answer to "who sees this and when" is
+     * the difference between a tool that is safe for a child and one that is
+     * not. */
+    notMonitored:
+      'Nobody reads this as it arrives. Your {pastoralLead} and the {coordinator} see it when they next look. ' +
+      'If something is wrong now, use Talk to someone below, or find an adult.',
+    /* The single sentence that should appear anywhere a clinical reading might
+     * be inferred: charts, patterns, profiles. */
+    noClinicalClaim:
+      'This is a record of what people have noticed. It is not a clinical assessment and means nothing on its own.'
+  };
+
+  /* ============================================================ TERMINOLOGY
+   *
+   * Nothing in this system is Eton. A school configures what its own people
+   * are called, and every piece of user-facing copy is built from these
+   * rather than hardcoded — because software that says "boy" and
+   * "housemaster" cannot be handed to a co-ed comprehensive, and software
+   * that has to be forked to change a noun is not portable software.
+   *
+   * Defaults are deliberately neutral. Eton sets its own in the organisation
+   * settings; the seed does exactly that, so the worked example still reads
+   * as Eton without a line of Eton in the code.
+   */
+  var DEFAULT_TERMS = {
+    pupil: 'pupil',
+    pupils: 'pupils',
+    pupilPossessive: "pupil's",
+    /* Whoever holds the pastoral picture: housemaster, head of year, form
+     * tutor, head of house, guidance teacher. */
+    pastoralLead: 'pastoral lead',
+    pastoralLeads: 'pastoral leads',
+    /* The grouping a pastoral lead is responsible for. */
+    house: 'house',
+    /* Where the pupil sits in the school: Block, Year, Grade, Form. */
+    yearGroup: 'year group',
+    /* The in-house clinical service. */
+    clinicalService: 'wellbeing service',
+    /* What the school calls scheduled independent study. */
+    studyPeriod: 'prep',
+    coordinator: 'coordinator',
+    organisation: 'the school'
+  };
+
+  /* Per-pupil pronouns.
+   *
+   * A system whose whole purpose is seeing one child properly should not
+   * guess how to refer to them. Recorded on the pupil's own record, they/them
+   * until somebody who knows says otherwise — a wrong guess misgenders a real
+   * child in a way the neutral default never does.
+   */
+  var PRONOUN_SETS = {
+    they: { id: 'they', label: 'they/them', subject: 'they', object: 'them',
+            possessive: 'their', possessivePronoun: 'theirs', reflexive: 'themselves',
+            plural: true },
+    he:   { id: 'he', label: 'he/him', subject: 'he', object: 'him',
+            possessive: 'his', possessivePronoun: 'his', reflexive: 'himself',
+            plural: false },
+    she:  { id: 'she', label: 'she/her', subject: 'she', object: 'her',
+            possessive: 'her', possessivePronoun: 'hers', reflexive: 'herself',
+            plural: false }
+  };
+
+  var PRONOUN_ORDER = ['they', 'he', 'she'];
+
+  /* Build the copy helper for one organisation, and optionally one pupil.
+   *
+   *   var t = CL.terms(org.terms, student.pronouns);
+   *   t('Everything the loop holds on {them}, in one place.')
+   *   t.cap('{pastoralLead}')          -> 'Housemaster'
+   *   t.verb('is', 'are')              -> agrees with the pronoun set
+   */
+  function terms(overrides, pronounId) {
+    var T = {};
+    var k;
+    for (k in DEFAULT_TERMS) T[k] = DEFAULT_TERMS[k];
+    if (overrides) for (k in overrides) if (overrides[k]) T[k] = overrides[k];
+
+    var P = PRONOUN_SETS[pronounId] || PRONOUN_SETS.they;
+    var vocab = {
+      they: P.subject, them: P.object, their: P.possessive,
+      theirs: P.possessivePronoun, themselves: P.reflexive
+    };
+    for (k in T) vocab[k] = T[k];
+
+    function fill(str) {
+      return String(str).replace(/\{(\w+)\}/g, function (m, key) {
+        if (vocab[key] != null) return vocab[key];
+        /* {They} at the start of a sentence: capitalise the lower-case term
+         * rather than making every caller write two placeholders. */
+        var lower = key.charAt(0).toLowerCase() + key.slice(1);
+        if (vocab[lower] != null) {
+          var v = vocab[lower];
+          return v.charAt(0).toUpperCase() + v.slice(1);
+        }
+        return m;
+      });
+    }
+    fill.cap = function (str) {
+      var out = fill(str);
+      return out.charAt(0).toUpperCase() + out.slice(1);
+    };
+    /* "they have" but "he has". Agreement is the thing that makes neutral
+     * pronouns read as written rather than retrofitted. */
+    fill.verb = function (singular, plural) { return P.plural ? plural : singular; };
+    fill.pronouns = P;
+    fill.T = T;
+    return fill;
+  }
+
+  /* ---------------------------------------------------------------- roles */
+
+  var ROLES = {
+    student: {
+      id: 'student',
+      label: '{Pupil}',
+      blurb: 'Their own check-in, streak and wins',
+      cadence: 'Daily',
+      accent: 'blue'
+    },
+    teacher: {
+      id: 'teacher',
+      label: 'Teacher',
+      blurb: 'One-page profile, morning flag, recent pastoral headline',
+      cadence: 'Weekly',
+      accent: 'aqua'
+    },
+    housemaster: {
+      id: 'housemaster',
+      label: '{PastoralLead}',
+      blurb: 'Full pastoral picture, pattern view, flags',
+      cadence: 'Real-time',
+      accent: 'violet'
+    },
+    clinician: {
+      id: 'clinician',
+      label: 'Clinician',
+      blurb: 'Wellbeing trend, clinical record, milestone bridge',
+      cadence: 'Monthly',
+      accent: 'magenta'
+    },
+    parent: {
+      id: 'parent',
+      label: 'Parent',
+      blurb: 'Weekly digest, home focus, what is going well',
+      cadence: 'Weekly',
+      accent: 'orange'
+    },
+    therapist: {
+      id: 'therapist',
+      label: 'Therapist',
+      blurb: 'Their own therapeutic record, and the school context around it',
+      cadence: 'Weekly',
+      accent: 'aqua'
+    },
+    coordinator: {
+      id: 'coordinator',
+      label: 'Coordinator',
+      blurb: 'The pastoral loop. Not the clinical record',
+      cadence: 'Real-time',
+      accent: 'green'
+    },
+    /* Runs the system, and is deliberately blind to what is in it.
+     * Whoever administers accounts does not need to read a child's pastoral
+     * record to do that job, and every additional pair of eyes on a
+     * safeguarding record is a risk with no matching benefit. */
+    admin: {
+      id: 'admin',
+      label: 'Administrator',
+      blurb: 'Accounts and access. Sees no pupil content at all',
+      cadence: 'As needed',
+      accent: 'violet'
+    }
+  };
+
+  var ROLE_ORDER = ['student', 'teacher', 'housemaster', 'clinician', 'therapist',
+                    'parent', 'coordinator', 'admin'];
+
+  /* Roles that hold a clinical confidence. Raw clinical detail never leaves
+   * this circle, not even to the coordinator who routes the summary. */
+  var CLINICAL_ROLES = ['clinician', 'therapist'];
+
+  /* Roles that may never read pupil content, whatever they are attached to. */
+  var CONTENT_BLIND_ROLES = ['admin'];
+
+  /* -------------------------------------------------------- signal types */
+
+  var SIGNAL_TYPES = {
+    checkin: { id: 'checkin', label: 'Daily check-in', source: 'student', glyph: '◍' },
+    observation: { id: 'observation', label: 'Teaching observation', source: 'teacher', glyph: '▤' },
+    pastoral: { id: 'pastoral', label: 'Pastoral note', source: 'housemaster', glyph: '❖' },
+    clinical: { id: 'clinical', label: 'Clinical milestone', source: 'clinician', glyph: '✚' },
+    home: { id: 'home', label: 'Home signal', source: 'parent', glyph: '⌂' },
+    bridge: { id: 'bridge', label: 'Bridge note', source: 'coordinator', glyph: '⇄' },
+    flag: { id: 'flag', label: 'Flag', source: 'any', glyph: '⚑' },
+    /* A boy asking to speak to someone. Deliberately its own type rather than
+     * a severe check-in: it is a request for a person, not a data point, and
+     * it must never be averaged into a trend or fed to pattern detection. */
+    concern: { id: 'concern', label: 'Asked to talk to someone', source: 'student', glyph: '☎' }
+  };
+
+  /* Who a pupil can reach, and how. Seeded per school by the coordinator; the
+   * external services are UK-wide and always present so a boy is never left
+   * with nobody at 2am. Never make these configurable away to nothing. */
+  var HELP_ROUTES = {
+    emergency: {
+      label: 'If you are in danger right now',
+      action: 'Call 999',
+      detail: 'Police, ambulance, fire. Any time.'
+    },
+    external: [
+      { name: 'Childline', contact: '0800 1111', detail: 'Free, 24 hours, confidential. You do not have to give your name.' },
+      { name: 'Shout', contact: 'Text SHOUT to 85258', detail: 'Free, 24 hours, by text if talking is hard.' },
+      { name: 'Samaritans', contact: '116 123', detail: 'Free, 24 hours, any reason at all.' },
+      { name: 'Papyrus HOPELINE247', contact: '0800 068 4141', detail: 'For anyone under 35 having thoughts of suicide.' }
+    ]
+  };
+
+  /* ============================================== check-in lenses
+   *
+   * The standard check-in asks about fuel and load. That is a reasonable
+   * default and a poor fit for a lot of neurodivergent boys, because it
+   * measures the wrong thing: a boy can be well rested and still unable to
+   * start, or have a light day that happens to contain the one transition he
+   * cannot manage.
+   *
+   * A lens swaps the three questions for ones that track what actually varies
+   * for him. Each is chosen WITH the boy, never assigned to him, and is
+   * changeable whenever it stops fitting.
+   *
+   * Design rules these follow, and must keep following:
+   *  - The tool must not itself be a demand. Wording is invitational; nothing
+   *    is compulsory; a skipped day is not a failure.
+   *  - Ask about the environment, not the deficit. "How much noise was there"
+   *    rather than "how badly did you cope".
+   *  - Never name a condition in a question a boy reads.
+   *  - No item is a screening question and none of them sum to anything. They
+   *    are prompts for a conversation, not an instrument. (See COMPLIANCE §0.)
+   */
+  var LENSES = {
+    standard: {
+      id: 'standard',
+      label: 'Standard',
+      blurb: 'How charged you feel, and how heavy the day looks.',
+      items: [
+        { key: 'fuel', short: 'Fuel', label: 'How charged are you today?', ends: ['Running on empty', 'Fully charged'] },
+        { key: 'load', short: 'Load', label: 'How heavy does today feel?', ends: ['Light', 'A lot on'], reverse: true }
+      ]
+    },
+
+    /* For boys whose difficulty is demand and autonomy rather than capacity.
+     * Deliberately invitational: a demand-sensitive boy cannot be helped by a
+     * tool that is itself another instruction. */
+    autonomy: {
+      id: 'autonomy',
+      label: 'Autonomy and pressure',
+      blurb: 'How much of today is yours, and how much is being asked of you.',
+      items: [
+        { key: 'autonomy', short: 'Own choice', label: 'How much of today feels like your own choice?', ends: ['None of it', 'Most of it'] },
+        { key: 'pressure', short: 'Pressure', label: 'How much is being asked of you today?', ends: ['Not much', 'A great deal'], reverse: true },
+        { key: 'onterms', short: 'On my terms', label: 'Is there anything today you can do on your own terms?', ends: ['Nothing', 'Plenty'] }
+      ]
+    },
+
+    /* Sensory environment. Asks about the room, not about him. */
+    sensory: {
+      id: 'sensory',
+      label: 'Sensory load',
+      blurb: 'What the environment is doing to you today.',
+      items: [
+        { key: 'sensory', short: 'Sensory load', label: 'How much is the noise, light or crowding getting to you?', ends: ['Not at all', 'A lot'], reverse: true },
+        { key: 'recovery', short: 'Somewhere to go', label: 'Have you had anywhere to get away from it?', ends: ['Nowhere', 'Enough'] },
+        { key: 'fuel', short: 'Fuel', label: 'How charged are you today?', ends: ['Running on empty', 'Fully charged'] }
+      ]
+    },
+
+    /* Predictability and change. The commonest avoidable bad day. */
+    transitions: {
+      id: 'transitions',
+      label: 'Change and predictability',
+      blurb: 'How much of today you can see coming.',
+      items: [
+        { key: 'predictable', short: 'Predictable', label: 'How much of today do you already know the shape of?', ends: ['None of it', 'All of it'] },
+        { key: 'change', short: 'Change', label: 'Has anything changed at short notice?', ends: ['Nothing', 'A lot'], reverse: true },
+        { key: 'prepared', short: 'Ready', label: 'Do you feel ready for the parts you know about?', ends: ['Not at all', 'Ready'] }
+      ]
+    },
+
+    /* Getting started, which is not the same thing as motivation. */
+    starting: {
+      id: 'starting',
+      label: 'Getting started',
+      blurb: 'The gap between meaning to and doing.',
+      items: [
+        { key: 'startup', short: 'Starting', label: 'How hard is it to start things today?', ends: ['Easy', 'Very hard'], reverse: true },
+        { key: 'clarity', short: 'First step clear', label: 'Do you know what the first step actually is?', ends: ['No idea', 'Completely clear'] },
+        { key: 'followthrough', short: 'Staying with it', label: 'Once started, are you staying with it?', ends: ['Not at all', 'Staying with it'] }
+      ]
+    },
+
+    /* Being around people, without pathologising either answer. */
+    social: {
+      id: 'social',
+      label: 'People and masking',
+      blurb: 'How much of today is spent being a version of yourself.',
+      items: [
+        { key: 'socialload', short: 'People', label: 'How tiring have people been today?', ends: ['Not tiring', 'Exhausting'], reverse: true },
+        { key: 'masking', short: 'Holding it together', label: 'How much have you been holding a version of yourself together?', ends: ['Not at all', 'Constantly'], reverse: true },
+        { key: 'belonging', short: 'Felt like myself', label: 'Has there been anywhere you felt like yourself?', ends: ['Nowhere', 'Yes'] }
+      ]
+    }
+  };
+
+  var LENS_ORDER = ['standard', 'autonomy', 'sensory', 'transitions', 'starting', 'social'];
+
+  /* Context tags: what was going on, not what is wrong with him.
+   *
+   * Deliberately about circumstance, because circumstance is what the school
+   * can change. Ten years of "he struggled again" is worth less than one term
+   * of "it is always double periods after games".
+   */
+  var CONTEXTS = {
+    when: ['Before school', 'Morning lessons', 'Afternoon lessons', 'Games', 'Prep', 'Evening', 'Weekend'],
+    where: ['Classroom', 'House', 'Dining hall', 'Sports', 'Corridors', 'Off site'],
+    what: ['Timed assessment', 'Group work', 'Unstructured time', 'Something changed',
+           'Somewhere loud', 'Reading aloud', 'A new person', 'Back-to-back periods'],
+    withWhom: ['On my own', 'Small group', 'Whole class', 'With friends', 'With staff']
+  };
+
+  /* Clinical share levels. The clinician, not the platform, chooses this. */
+  var SHARE_LEVELS = {
+    coordinator: {
+      id: 'coordinator',
+      label: 'Coordinator only',
+      note: 'Nothing leaves the clinical record except the fact that something changed.'
+    },
+    pastoral: {
+      id: 'pastoral',
+      label: 'Coordinator + pastoral team',
+      note: 'Housemaster sees your written summary. Teachers see the adjustment line only.'
+    },
+    parent: {
+      id: 'parent',
+      label: 'Coordinator + pastoral team + parents',
+      note: 'Parents also see your written summary in their weekly digest.'
+    }
+  };
+
+  /* ------------------------------------------------------------- redaction
+   *
+   * project(signal, viewer) returns either null (not visible at all) or a
+   * VIEW of the signal: { ...signal, headline, body, grain }.
+   *
+   *   grain 'full'      the viewer sees what the author wrote
+   *   grain 'summary'   the viewer sees a deliberately reduced version
+   *   grain 'existence' the viewer sees only that something happened
+   *
+   * viewer = { role, personId, studentIds }
+   *
+   * The projection NEVER carries the raw payload. A view object holds only
+   * fields its projector put there on purpose, so a role that is not entitled
+   * to a piece of text does not hold that text in memory at all. Copying
+   * sig.data through and relying on the UI not to render it would leave the
+   * content one devtools panel, one console.log or one future serialisation
+   * away from the wrong person.
+   */
+
+  function project(sig, viewer) {
+    var role = viewer.role;
+
+    /* Content-blind roles are refused before any projector runs, so a new
+     * signal type cannot accidentally become readable by an administrator by
+     * forgetting a case. Deny by default, at the top. */
+    if (CONTENT_BLIND_ROLES.indexOf(role) > -1) return null;
+
+    var fn = PROJECTORS[sig.type];
+    if (!fn) return null;
+    var v = fn(sig, role, viewer);
+    if (!v) return null;
+    v.id = sig.id;
+    v.type = sig.type;
+    v.studentId = sig.studentId;
+    v.authorId = sig.authorId;
+    v.authorRole = sig.authorRole;
+    v.at = sig.at;
+    v.severity = sig.severity || 'none';
+    return v;
+  }
+
+  function view(grain, headline, body, extra) {
+    var o = { grain: grain, headline: headline, body: body || '' };
+    if (extra) for (var k in extra) o[k] = extra[k];
+    return o;
+  }
+
+  /* Does today's check-in warrant a heads-up to the people teaching him?
+   *
+   * A single 1-5 answer at the hard end, on whichever items this lens asks.
+   * Deliberately crude: it is a nudge to read a slow start correctly, not an
+   * assessment, and it carries no number and no severity to the teacher.
+   */
+  function flaggedToday(d, lens) {
+    return (lens.items || []).some(function (item) {
+      var v = d[item.key];
+      if (v == null) return false;
+      return item.reverse ? v >= 4 : v <= 2;
+    });
+  }
+
+  var PROJECTORS = {
+
+    /* The pupil's own check-in. They own it.
+     *
+     * The numbers travel further than the words. His named care team (house-
+     * master, clinician, coordinator) sees the intention he wrote because
+     * that is the pastoral picture. Parents get the scores and not the text:
+     * a pupil who believes a parent reads every line stops writing true ones,
+     * and the tool is worth nothing the moment that happens. */
+    checkin: function (s, role) {
+      var d = s.data;
+      var lens = LENSES[d.lens] || LENSES.standard;
+
+      /* A lens changes which three things were asked, so the summary line and
+       * the chart series are built from the lens rather than hardcoded. */
+      var metrics = {};
+      var parts = [];
+      lens.items.forEach(function (item) {
+        if (d[item.key] == null) return;
+        metrics[item.key] = d[item.key];
+        parts.push((item.short || item.key) + ' ' + d[item.key] + '/5');
+      });
+      var line = parts.join(' · ') || 'Checked in';
+      metrics.lens = lens.id;
+      switch (role) {
+        case 'student':
+          return view('full', 'Your check-in', d.intention,
+            { own: true, metrics: metrics, intention: d.intention });
+        case 'housemaster':
+        case 'coordinator':
+        case 'clinician':
+        case 'therapist':
+          return view('full', line, d.intention,
+            { metrics: metrics, intention: d.intention });
+        case 'teacher':
+          /* Teachers get a traffic signal for today, not a data feed.
+           * Computed from the lens rather than from fuel and load, so
+           * choosing a different lens cannot silently turn the flag off. */
+          return flaggedToday(d, lens)
+            ? view('summary', 'Harder morning than usual', '')
+            : null;
+        case 'parent':
+          return view('summary', line, '', { metrics: metrics, intention: null });
+        default:
+          return null;
+      }
+    },
+
+    observation: function (s, role, viewer) {
+      var d = s.data;
+      var head = d.subject + ' · engagement ' + d.engagement + '/5';
+      switch (role) {
+        case 'teacher':
+          if (s.authorId === viewer.personId) return view('full', head, d.note, { own: true });
+          return view('summary', head, '');
+        case 'housemaster':
+        case 'coordinator':
+          return view('full', head, d.note);
+        case 'clinician':
+        case 'therapist':
+          return view('summary', head, d.note);
+        case 'parent':
+          return view('summary', d.subject, d.engagement >= 4 ? 'Going well this week.' : '');
+        default:
+          return null;
+      }
+    },
+
+    pastoral: function (s, role) {
+      var d = s.data;
+      switch (role) {
+        case 'housemaster':
+        case 'coordinator':
+          return view('full', d.category, d.note, { action: d.action });
+        case 'clinician':
+        case 'therapist':
+          return view('summary', d.category, d.note);
+        case 'teacher':
+          /* Teachers get the headline so they are not blindsided, never the note. */
+          return view('existence', d.category, '');
+        case 'parent':
+          return d.shareWithParent ? view('summary', d.category, d.note) : null;
+        default:
+          return null;
+      }
+    },
+
+    /* The clinical bridge. This is the rule the whole proposal turns on. */
+    clinical: function (s, role, viewer) {
+      var d = s.data;
+      var lvl = d.shareLevel || 'coordinator';
+      switch (role) {
+        case 'clinician':
+        case 'therapist':
+          /* The clinical circle, and only within its own discipline. A
+           * therapist does not automatically read the SCW clinician's record,
+           * or the reverse: a boy who tells his therapist something has not
+           * thereby told the school's doctor. Sharing between them is a
+           * decision somebody makes, not a default. */
+          if (s.authorRole !== role && !d.shareWithClinicalPeers) {
+            return view('summary', d.kind, d.pastoralSummary || 'A clinical update was recorded by a colleague.',
+              { shareLevel: lvl });
+          }
+          return view('full', d.kind, d.clinicalDetail, {
+            pastoralSummary: d.pastoralSummary,
+            teacherGuidance: d.teacherGuidance,
+            shareLevel: lvl
+          });
+        case 'coordinator':
+          /* Routes the bridge without reading what is inside it. The
+           * coordinator needs the summary the clinician WROTE for the school,
+           * never the clinical detail behind it. */
+          if (lvl === 'coordinator') {
+            return view('summary', d.kind,
+              d.pastoralSummary || 'A clinical update was recorded and is held with the clinician.',
+              { shareLevel: lvl, teacherGuidance: d.teacherGuidance });
+          }
+          return view('summary', d.kind, d.pastoralSummary, {
+            teacherGuidance: d.teacherGuidance, shareLevel: lvl
+          });
+        case 'housemaster':
+          if (lvl === 'coordinator') {
+            return view('existence', 'Clinical update logged', 'Held with the coordinator. Ask if you need context.');
+          }
+          return view('summary', d.kind, d.pastoralSummary, { teacherGuidance: d.teacherGuidance });
+        case 'teacher':
+          if (lvl === 'coordinator' || !d.teacherGuidance) return null;
+          return view('summary', 'Support adjustment', d.teacherGuidance);
+        case 'parent':
+          if (lvl !== 'parent') return null;
+          return view('summary', d.kind, d.pastoralSummary);
+        default:
+          return null;
+      }
+    },
+
+    home: function (s, role) {
+      var d = s.data;
+      switch (role) {
+        case 'parent':
+          return view('full', d.kind, d.note, { own: true });
+        case 'coordinator':
+        case 'housemaster':
+          return view('full', d.kind, d.note);
+        case 'clinician':
+        case 'therapist':
+          return view('summary', d.kind, d.note);
+        case 'teacher':
+          /* A subject teacher is not pastoral staff. They are told to expect
+           * a harder week so they read the behaviour correctly; the family's
+           * own words stay with the coordinator and the housemaster. */
+          if (d.kind !== 'Early signal') return null;
+          return view('existence', 'Early signal from home',
+            'Their family has flagged something this week. Read a slow start as that, not as attitude.');
+        default:
+          return null;
+      }
+    },
+
+    bridge: function (s, role) {
+      var d = s.data;
+      if (role === 'coordinator') return view('full', d.title, d.note, { own: true });
+      if (d.to && d.to.indexOf(role) === -1) return null;
+      if (role === 'student' || role === 'parent') return null;
+      return view('full', d.title, d.note);
+    },
+
+    /* A pupil asking for a person.
+     *
+     * It reaches their pastoral leads immediately and in full, because that is
+     * the entire point. It reaches their TEACHERS never: a pupil who thinks the
+     * room will know stops asking. And it reaches their parents only if they
+     * said it could, because for some children the thing they need to talk
+     * about is home, and a tool that tells a parent they asked for help is a
+     * tool they will never use twice. */
+    concern: function (s, role) {
+      var d = s.data;
+      switch (role) {
+        case 'student':
+          return view('full', 'You asked to talk to someone', d.note, { own: true });
+        case 'housemaster':
+        case 'coordinator':
+          return view('full', 'Asked to talk to someone', d.note, { urgency: d.urgency });
+        case 'clinician':
+        case 'therapist':
+          return view('full', 'Asked to talk to someone', d.note, { urgency: d.urgency });
+        case 'parent':
+          if (!d.tellParents) return null;
+          return view('summary', 'They asked to talk to someone at school',
+            'They have asked to speak to a member of staff. {Organisation} knows and is following it up.');
+        case 'teacher':
+          return null;
+        default:
+          return null;
+      }
+    },
+
+    flag: function (s, role) {
+      var d = s.data;
+      if (role === 'student') return null;
+      if (role === 'parent') return d.shareWithParent ? view('summary', d.title, d.note) : null;
+      if (role === 'teacher') return view('existence', d.title, '');
+      return view('full', d.title, d.note);
+    }
+  };
+
+  /* --------------------------------------------------- permission summary
+   * Rendered in the "Who sees what" panel. Kept beside the projectors on
+   * purpose: if one changes, the other is right there. */
+
+  var MATRIX = [
+    { type: 'checkin', therapist: 'full', admin: 'none', student: 'own full', teacher: 'flag only', housemaster: 'full', clinician: 'full', parent: 'scores only', coordinator: 'full' },
+    { type: 'observation', therapist: 'summary', admin: 'none', student: 'none', teacher: 'own full', housemaster: 'full', clinician: 'summary', parent: 'digest line', coordinator: 'full' },
+    { type: 'pastoral', therapist: 'summary', admin: 'none', student: 'none', teacher: 'headline', housemaster: 'full', clinician: 'summary', parent: 'if shared', coordinator: 'full' },
+    { type: 'clinical', student: 'none', teacher: 'adjustment', housemaster: 'by level', clinician: 'own full', therapist: 'own full', parent: 'by level', coordinator: 'summary', admin: 'none' },
+    { type: 'home', therapist: 'summary', admin: 'none', student: 'none', teacher: 'warned only', housemaster: 'full', clinician: 'summary', parent: 'own full', coordinator: 'full' },
+    { type: 'bridge', therapist: 'if named', admin: 'none', student: 'none', teacher: 'if named', housemaster: 'full', clinician: 'if named', parent: 'none', coordinator: 'full' },
+    { type: 'flag', therapist: 'full', admin: 'none', student: 'none', teacher: 'headline', housemaster: 'full', clinician: 'full', parent: 'if shared', coordinator: 'full' },
+    { type: 'concern', therapist: 'full', admin: 'none', student: 'own full', teacher: 'none', housemaster: 'full', clinician: 'full', parent: 'by choice', coordinator: 'full' }
+  ];
+
+  var api = {
+    PURPOSE: PURPOSE,
+    DEFAULT_TERMS: DEFAULT_TERMS,
+    PRONOUN_SETS: PRONOUN_SETS,
+    PRONOUN_ORDER: PRONOUN_ORDER,
+    terms: terms,
+    CLINICAL_ROLES: CLINICAL_ROLES,
+    LENSES: LENSES,
+    LENS_ORDER: LENS_ORDER,
+    CONTEXTS: CONTEXTS,
+    CONTENT_BLIND_ROLES: CONTENT_BLIND_ROLES,
+    HELP_ROUTES: HELP_ROUTES,
+    ROLES: ROLES,
+    ROLE_ORDER: ROLE_ORDER,
+    SIGNAL_TYPES: SIGNAL_TYPES,
+    SHARE_LEVELS: SHARE_LEVELS,
+    MATRIX: MATRIX,
+    project: project
+  };
+
+  global.CL = global.CL || {};
+  for (var key in api) global.CL[key] = api[key];
+
+  /* Node: `import CL from '../../js/model.js'` after the loader shim. */
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+
+/* ---- js/ui.js ---- */
+/* The Connected Loop — small DOM helpers and shared components. */
+(function (global) {
+  'use strict';
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) {
+      for (var k in attrs) {
+        if (k === 'class') n.className = attrs[k];
+        else if (k === 'html') n.innerHTML = attrs[k];
+        else if (k === 'text') n.textContent = attrs[k];
+        else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), attrs[k]);
+        else if (attrs[k] != null && attrs[k] !== false) n.setAttribute(k, attrs[k]);
+      }
+    }
+    (kids || []).forEach(function (c) {
+      if (c == null || c === false) return;
+      n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+
+  function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); return n; }
+
+  /* ---------------------------------------------------------------- time */
+
+  var DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  function ago(isoStr) {
+    var ms = Date.now() - new Date(isoStr).getTime();
+    var mins = Math.round(ms / 6e4);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + ' min ago';
+    var hrs = Math.round(mins / 60);
+    if (hrs < 24) return hrs + (hrs === 1 ? ' hour ago' : ' hours ago');
+    var d = Math.round(hrs / 24);
+    if (d === 1) return 'yesterday';
+    if (d < 14) return d + ' days ago';
+    return dateShort(isoStr);
+  }
+
+  function dateShort(isoStr) {
+    var d = new Date(isoStr);
+    return d.getDate() + ' ' + MON[d.getMonth()];
+  }
+
+  function dayName(isoStr) { return DAY[new Date(isoStr).getDay()]; }
+
+  /* ---------------------------------------------------------- components */
+
+  function card(opts, kids) {
+    opts = opts || {};
+    return el('section', { class: 'card ' + (opts.class || ''), id: opts.id }, [
+      opts.title ? el('header', { class: 'card-head' }, [
+        el('h2', { text: opts.title }),
+        opts.action || null
+      ]) : null,
+      opts.sub ? el('p', { class: 'card-sub', text: opts.sub }) : null,
+      el('div', { class: 'card-body' }, kids || [])
+    ]);
+  }
+
+  function pill(text, tone) {
+    return el('span', { class: 'pill pill-' + (tone || 'neutral'), text: text });
+  }
+
+  function empty(text) { return el('p', { class: 'empty', text: text }); }
+
+  function button(label, onclick, variant) {
+    return el('button', { class: 'btn ' + (variant ? 'btn-' + variant : ''), type: 'button', onclick: onclick }, [label]);
+  }
+
+  /* A 1-5 tap scale. Big targets, works with a finger on an iPad. */
+  function scale(name, value, onpick, labels) {
+    var wrap = el('div', { class: 'scale', role: 'radiogroup', 'aria-label': name });
+    for (var i = 1; i <= 5; i++) {
+      (function (v) {
+        var b = el('button', {
+          type: 'button',
+          class: 'scale-dot' + (value === v ? ' is-on' : ''),
+          role: 'radio',
+          'aria-checked': value === v ? 'true' : 'false',
+          'aria-label': name + ' ' + v + ' of 5',
+          onclick: function () { onpick(v); }
+        }, [String(v)]);
+        wrap.appendChild(b);
+      })(i);
+    }
+    if (labels) {
+      return el('div', {}, [
+        wrap,
+        el('div', { class: 'scale-ends' }, [
+          el('span', { text: labels[0] }), el('span', { text: labels[1] })
+        ])
+      ]);
+    }
+    return wrap;
+  }
+
+  /* Timeline entry, rendered from a projected view (never a raw signal). */
+  function signalRow(v, store) {
+    var T = global.CL.SIGNAL_TYPES[v.type];
+    var author = store.person(v.authorId);
+    var tone = v.severity === 'serious' ? 'serious' : v.severity === 'warning' ? 'warning' : 'neutral';
+
+    var meta = [
+      el('span', { class: 'sig-author', text: author ? author.name : 'Unknown' }),
+      el('span', { class: 'sig-dot', text: '·' }),
+      el('span', { class: 'sig-when', text: ago(v.at) })
+    ];
+    if (v.grain === 'summary') meta.push(pill('summary', 'muted'));
+    if (v.grain === 'existence') meta.push(pill('restricted', 'muted'));
+
+    return el('li', { class: 'sig sig-' + v.type + ' tone-' + tone }, [
+      el('span', { class: 'sig-glyph', 'aria-hidden': 'true', text: T.glyph }),
+      el('div', { class: 'sig-main' }, [
+        el('div', { class: 'sig-top' }, [
+          el('strong', { class: 'sig-head', text: v.headline }),
+          el('span', { class: 'sig-kind', text: T.label })
+        ]),
+        v.body ? el('p', { class: 'sig-body', text: v.body }) : null,
+        v.action ? el('p', { class: 'sig-action', text: 'Action: ' + v.action }) : null,
+        v.teacherGuidance && v.grain === 'full'
+          ? el('p', { class: 'sig-guidance', text: 'To teachers: ' + v.teacherGuidance }) : null,
+        el('div', { class: 'sig-meta' }, meta)
+      ])
+    ]);
+  }
+
+  function timelineList(views, store, emptyText) {
+    if (!views.length) return empty(emptyText || 'Nothing in this window.');
+    return el('ul', { class: 'timeline' }, views.map(function (v) { return signalRow(v, store); }));
+  }
+
+  /* Toast confirmation. Feedback that something reached the loop matters more
+   * here than in most apps: the whole point is that contributions land. */
+  function toast(msg) {
+    var host = document.getElementById('toast-host');
+    var t = el('div', { class: 'toast', role: 'status', text: msg });
+    host.appendChild(t);
+    setTimeout(function () { t.classList.add('is-out'); }, 2600);
+    setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 3100);
+  }
+
+  /* Writes are synchronous offline and a promise when connected. Views call
+   * this so one piece of view code serves both, and so a rejected write says
+   * so instead of failing silently — which in this app would mean a parent
+   * believing a note reached the school when it did not. */
+  function after(result, onDone) {
+    if (result && typeof result.then === 'function') {
+      result.then(function (v) { onDone(v); }, function (err) {
+        toast(err && err.code === 401
+          ? 'Your session has expired. Sign in again.'
+          : 'Not saved: ' + (err && err.message ? err.message : 'unknown error'));
+      });
+    } else {
+      onDone(result);
+    }
+  }
+
+  global.CL = global.CL || {};
+  global.CL.ui = {
+    after: after,
+    el: el, clear: clear, card: card, pill: pill, empty: empty, button: button,
+    scale: scale, signalRow: signalRow, timelineList: timelineList, toast: toast,
+    ago: ago, dateShort: dateShort, dayName: dayName
+  };
+
+})(window);
+
+
+/* ---- js/policies.js ---- */
+/* The policies page.
+ *
+ * Two registers, because the Children's Code requires that a service likely
+ * to be accessed by children explains itself to the children too — not only
+ * to the adults responsible for them. The pupil version is not a simplified
+ * adult notice; it answers the questions a boy actually has, in the order he
+ * would ask them.
+ *
+ * The "who sees what" table is GENERATED from CL.MATRIX — the same constant
+ * the enforcement reads. A hand-written copy would drift from the code within
+ * a term, and a privacy notice that no longer describes the software is worse
+ * than none.
+ */
+(function (global) {
+  'use strict';
+
+  var CL = global.CL, ui = CL.ui, el = ui.el;
+
+  /* ------------------------------------------------------------ for pupils */
+
+  var PUPIL = [
+    {
+      q: 'What is this?',
+      a: ['A place where the adults who look after you at school can see the same picture of how you are doing, instead of each having a different piece of it.',
+          'You are part of it, not the subject of it. The check-in is yours.']
+    },
+    {
+      q: 'Who can see what I write?',
+      a: ['Your {pastoralLead} and the {coordinator}. Your clinician, if you have one.',
+          'Your teachers cannot read it. They only see whether today looks like a harder morning than usual, so they read a slow start correctly.',
+          'Your parents see your numbers. They do not see the sentences you write. That is on purpose.']
+    },
+    {
+      q: 'Is anyone watching this all the time?',
+      a: ['No. Nobody reads it as it arrives. Your {pastoralLead} and the {coordinator} see it when they next look, which is usually the same day.',
+          'If something is wrong now, do not wait for this. Use Talk to someone, call one of the numbers on that page, or find any adult.']
+    },
+    {
+      q: 'What if I ask to speak to someone?',
+      a: ['It goes to your {pastoralLead} and the {coordinator}, and you are told who by name.',
+          'Your teachers are never told. Your parents are told only if you tick the box saying they can be — and even then they are told that you asked, not what you wrote.']
+    },
+    {
+      q: 'Is this a test? Does it go on my record?',
+      a: ['No. Nothing here is marked, scored or graded. There is no number that means you are doing well or badly.',
+          'It is not a medical thing either. Nothing in it diagnoses anything.']
+    },
+    {
+      q: 'Do I have to use it?',
+      a: ['A day you skip is not a failure and nobody chases you for it.',
+          'If the questions do not fit you, they can be changed. Ask your {pastoralLead} — there are several sets and you choose with them, not have one picked for you.']
+    },
+    {
+      q: 'Can I see what is written about me?',
+      a: ['You can see everything you wrote yourself, any time.',
+          'Notes that staff write about you are not shown here at the moment. If you want to see them, ask — you have a right to ask, and somebody should sit down with you and go through it.']
+    },
+    {
+      q: 'Can I get it deleted?',
+      a: ['Some of it, and some not. Things written for safeguarding have to be kept by law, even if you ask.',
+          'Ask the {coordinator} and they have to explain what can go and what cannot, and why.']
+    }
+  ];
+
+  /* ------------------------------------------------------------ for adults */
+
+  var ADULT = [
+    {
+      h: 'What this system is for',
+      p: ['Sharing, between the adults already responsible for a pupil, what each of them already sees. And keeping a record of what was noticed, by whom, and what was done about it.',
+          'It is used under the "recognised legitimate interests" basis introduced by the Data (Use and Access) Act 2025, which covers processing for safeguarding children without a separate balancing assessment. Clinical information carries its own condition under Article 9 of the UK GDPR.']
+    },
+    {
+      h: 'What it is not',
+      p: ['It is not a diagnostic tool, not a treatment, not a monitoring system and not an emergency service. Nothing in it screens for, identifies or rules out any condition, and no scale in it is a validated instrument.',
+          'That boundary is regulatory as well as clinical: software intended to diagnose, monitor or treat can be a medical device under the UK Medical Devices Regulations 2002. This is deliberately outside that regime.']
+    },
+    {
+      h: 'Information held',
+      p: ['Name, year group and house. A one-page profile describing what helps. Daily check-ins the pupil writes. Observations from teaching staff, pastoral notes, and signals from home.',
+          'Where a pupil is seen clinically, a summary the clinician writes for the school. Any tag naming a condition is treated as special-category health data throughout, whatever the school calls it internally.']
+    },
+    {
+      h: 'Automated processing',
+      p: ['The system notices when independent sources agree within the same week and raises that for a person to look at. It produces a prompt, never a decision: nothing is sent, written or escalated automatically as a result.',
+          'You may object to this and ask for it to be reviewed by a person. Speak to the coordinator.']
+    },
+    {
+      h: 'How long it is kept',
+      p: ['Safeguarding records carry statutory retention that outlasts an ordinary request for erasure. Every pupil record carries its own retention date, set from the school’s policy when the record is created.',
+          'Content can be redacted while the audit trail of who accessed it is preserved, because the second is what answers a later question about the first.']
+    },
+    {
+      h: 'Your rights',
+      p: ['Access, rectification, and objection to the pattern detection described above. Erasure is constrained by the statutory retention above, and the school must explain what can and cannot be removed.',
+          'A pupil who understands what they are asking exercises these rights themselves. There is no age at which this changes in the UK; the test is understanding, not birthday.']
+    },
+    {
+      h: 'Who has looked',
+      p: ['Every read is recorded, not only every change — including which records were returned and any refused attempt.',
+          'That means the school can answer "who has seen my son’s record" with a list rather than a reassurance. Ask the coordinator.']
+    }
+  ];
+
+  /* --------------------------------------------------------------- render */
+
+  function render(root, opts) {
+    opts = opts || {};
+    var t = CL.terms((opts.organisation || {}).terms, null);
+    var mode = opts.mode || 'adult';
+
+    function draw() {
+      ui.clear(root);
+
+      root.appendChild(el('div', { class: 'pol-head' }, [
+        el('h1', { text: 'How this works, and what happens to what you write' }),
+        el('p', { class: 'pol-sub', text: 'Two versions of the same thing. They do not say different things.' }),
+        el('div', { class: 'pol-tabs', role: 'tablist' }, [
+          tab('pupil', 'Written for ' + t('{pupils}')),
+          tab('adult', 'Written for adults')
+        ])
+      ]));
+
+      root.appendChild(mode === 'pupil' ? pupilPanel(t) : adultPanel(t));
+      root.appendChild(matrixPanel(t));
+      root.appendChild(el('p', { class: 'pol-foot', text:
+        'This page describes a prototype. Everything in the demonstration is fictional, and no real pupil information has been held in it.' }));
+    }
+
+    function tab(id, label) {
+      return el('button', {
+        type: 'button', role: 'tab', class: 'pol-tab' + (mode === id ? ' is-on' : ''),
+        'aria-selected': mode === id ? 'true' : 'false',
+        onclick: function () { mode = id; draw(); }
+      }, [label]);
+    }
+
+    draw();
+    return root;
+  }
+
+  function pupilPanel(t) {
+    return el('div', { class: 'pol-body' }, PUPIL.map(function (item) {
+      return el('section', { class: 'pol-qa' }, [
+        el('h2', { text: item.q }),
+        el('div', {}, item.a.map(function (p) { return el('p', { text: t(p) }); }))
+      ]);
+    }));
+  }
+
+  function adultPanel(t) {
+    return el('div', { class: 'pol-body' }, ADULT.map(function (item) {
+      return el('section', { class: 'pol-qa' }, [
+        el('h2', { text: item.h }),
+        el('div', {}, item.p.map(function (p) { return el('p', { text: t(p) }); }))
+      ]);
+    }));
+  }
+
+  /* Generated from the same constant the enforcement reads, so this table
+   * cannot describe a system other than the one running. */
+  function matrixPanel(t) {
+    var roles = CL.ROLE_ORDER;
+    var head = el('tr', {}, [el('th', { text: 'Information' })].concat(
+      roles.map(function (r) { return el('th', { text: t.cap(CL.ROLES[r].label) }); })));
+
+    var rows = CL.MATRIX.map(function (row) {
+      return el('tr', {}, [el('td', { text: CL.SIGNAL_TYPES[row.type].label })].concat(
+        roles.map(function (r) {
+          var v = row[r] || 'none';
+          return el('td', {
+            class: 'cell-' + (v === 'none' ? 'none' : v.indexOf('full') > -1 ? 'full' : 'part'),
+            text: v
+          });
+        })));
+    });
+
+    return el('section', { class: 'pol-qa' }, [
+      el('h2', { text: 'Who sees what' }),
+      el('p', { text: 'This table is generated from the rules the software actually enforces, not written alongside them. If one changed without the other, this page would be wrong — so it cannot.' }),
+      el('div', { class: 'table-scroll' }, [
+        el('table', { class: 'data-table matrix' }, [
+          el('thead', {}, [head]), el('tbody', {}, rows)
+        ])
+      ]),
+      el('p', { class: 'note', text: 'Clinical rows read "by level" because the clinician, not the school and not the software, chooses how far each piece of clinical news travels.' })
+    ]);
+  }
+
+  CL.policies = { render: render };
+
+})(window);
+
+
+/* ---- js/policies-boot.js ---- */
+/* Boots the policies page.
+ *
+ * Deliberately readable WITHOUT signing in. A privacy notice you have to
+ * authenticate to read is not a privacy notice — the people most entitled to
+ * it are often the ones deciding whether to use the thing at all.
+ *
+ * It asks the server for the organisation's terminology so the page says
+ * "housemaster" or "head of year" as that school does, and falls back to the
+ * neutral defaults when there is no server (the offline prototype, or a file
+ * opened from disk).
+ */
+(function (global) {
+  'use strict';
+  var CL = global.CL;
+
+  function start(organisation) {
+    CL.policies.render(document.getElementById('policies'), {
+      organisation: organisation || { terms: {} },
+      mode: new URLSearchParams(location.search).get('for') === 'adults' ? 'adult' : 'pupil'
+    });
+  }
+
+  /* A statically hosted copy has no API. The build bakes the organisation in
+   * as CL_ORG so the page still says "housemaster" rather than falling back
+   * to the neutral defaults. */
+  if (global.CL_ORG) { start(global.CL_ORG); return; }
+
+  if (global.fetch) {
+    fetch('/api/public/organisation')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { start(d && d.organisation); })
+      .catch(function () { start(null); });
+  } else {
+    start(null);
+  }
+})(window);
+
+</script>
+</body>
+</html>

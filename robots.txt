@@ -1,3 +1,2 @@
-# A prototype shared by link, not something to be found by searching.
 User-agent: *
 Disallow: /
