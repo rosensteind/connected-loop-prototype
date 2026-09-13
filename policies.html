@@ -931,6 +931,22 @@ a.btn:hover { text-decoration: none; }
   .land-actions .btn { width: 100%; justify-content: center; }
 }
 
+/* ----------------------------------------------------------- guidance
+ * Collapsed by default. An adult who knows this pupil does not need to be
+ * lectured; one who does not can open it. */
+.guide { border-radius: var(--r); background: var(--surface-2); border: 1px solid var(--hairline); }
+.guide summary {
+  cursor: pointer; padding: 11px 14px; font-size: .89rem; font-weight: 600;
+  min-height: 44px; display: flex; align-items: center;
+}
+.guide summary::marker { color: var(--ink-muted); }
+.guide-body { padding: 0 14px 8px; display: grid; gap: 14px; }
+.guide-item { padding-left: 11px; border-left: 2px solid var(--accent); }
+.guide-item h3 { font-size: .85rem; margin: 0 0 4px; color: var(--ink-muted);
+  text-transform: none; font-weight: 600; }
+.guide-do { font-size: .91rem; margin: 0 0 3px; color: var(--ink); }
+.guide-why { font-size: .83rem; margin: 0; color: var(--ink-muted); font-style: italic; }
+
 </style>
 </head>
 <bodyclass="pol-page">
@@ -1072,6 +1088,13 @@ a.btn:hover { text-decoration: none; }
     for (k in T) vocab[k] = T[k];
 
     function fill(str) {
+      /* {v:cope/copes} picks the form that agrees with this pronoun set, so a
+       * string can be written once and read correctly for "they" and for
+       * "he". Without it every sentence with a verb needs two variants, and
+       * somebody eventually writes "he cope". */
+      str = String(str).replace(/\{v:([^/}]*)\/([^}]*)\}/g, function (m, plural, singular) {
+        return P.plural ? plural : singular;
+      });
       return String(str).replace(/\{(\w+)\}/g, function (m, key) {
         if (vocab[key] != null) return vocab[key];
         /* {They} at the start of a sentence: capitalise the lower-case term
@@ -1236,6 +1259,37 @@ a.btn:hover { text-decoration: none; }
       ]
     },
 
+
+    /* ACT-informed, and deliberately not ACT-delivering.
+     *
+     * The triflex — openness, engagement, values — asked about a school day
+     * rather than a therapy session. It notices whether a boy had room for a
+     * hard thing, whether he was actually present, and whether any of the day
+     * was his. Those are the three that move when things are going better,
+     * and they move before attainment does.
+     *
+     * It is a set of three questions, not an intervention: nothing here asks
+     * him to practise defusion, clarify values, or commit to an action. The
+     * moment it did, this would be treatment delivered by software, and a
+     * medical device. See COMPLIANCE section 0.
+     *
+     * No jargon reaches him. A boy should not be able to tell which model
+     * this came from, and should not have to care.
+     */
+    flexibility: {
+      id: 'flexibility',
+      label: 'Room, presence and what matters',
+      blurb: 'Whether hard things had room, and whether any of today was yours.',
+      items: [
+        { key: 'room', short: 'Room', label: 'When something got difficult today, did you have room for it?',
+          ends: ['It took over', 'I had room'] },
+        { key: 'present', short: 'Present', label: 'How much of today were you actually in?',
+          ends: ['Somewhere else', 'Right there'] },
+        { key: 'mattered', short: 'Mattered', label: 'Was any of today about something you care about?',
+          ends: ['None of it', 'A good part'] }
+      ]
+    },
+
     /* For boys whose difficulty is demand and autonomy rather than capacity.
      * Deliberately invitational: a demand-sensitive boy cannot be helped by a
      * tool that is itself another instruction. */
@@ -1299,7 +1353,7 @@ a.btn:hover { text-decoration: none; }
     }
   };
 
-  var LENS_ORDER = ['standard', 'autonomy', 'sensory', 'transitions', 'starting', 'social'];
+  var LENS_ORDER = ['standard', 'flexibility', 'autonomy', 'sensory', 'transitions', 'starting', 'social'];
 
   /* Context tags: what was going on, not what is wrong with him.
    *
@@ -1313,6 +1367,93 @@ a.btn:hover { text-decoration: none; }
     what: ['Timed assessment', 'Group work', 'Unstructured time', 'Something changed',
            'Somewhere loud', 'Reading aloud', 'A new person', 'Back-to-back periods'],
     withWhom: ['On my own', 'Small group', 'Whole class', 'With friends', 'With staff']
+  };
+
+
+  /* ============================================ RESPONSE GUIDANCE
+   *
+   * What an adult might do, given what they are looking at.
+   *
+   * This is pastoral practice advice for staff, NOT treatment for the pupil
+   * and NOT a care plan. It never diagnoses, never prescribes, and never says
+   * "because he is autistic" — it says "when you see this, this tends to
+   * help", which is a different kind of claim and a much smaller one.
+   *
+   * The shape is ACT-consistent without being ACT-delivering: make room
+   * rather than argue with the feeling, restore workable choice, reduce the
+   * cost of the environment, and connect the task to something that matters.
+   * A teacher does not need the vocabulary to use any of it.
+   */
+  var GUIDANCE = {
+    teacher: [
+      { when: 'A low-fuel or harder-than-usual morning flag',
+        act: 'Give the first step, not the whole task. Written on the board as well as spoken.',
+        why: 'A slow start is usually the cost of getting here, not a refusal.' },
+      { when: 'They have gone quiet when they are normally not',
+        act: 'Ask something you know they can answer, privately, not in front of the room.',
+        why: 'Public correction costs more than the behaviour did.' },
+      { when: 'An adjustment line has come from the clinical team',
+        act: 'Do the one thing it names for a fortnight, and say nothing about why.',
+        why: 'The adjustment works; the explanation is not yours to give.' },
+      { when: 'They hand in less than usual',
+        act: 'Mark what is there. Ask for the next piece rather than the missing one.',
+        why: 'Starting again is the hard part, and a deficit is a worse place to start from.' }
+    ],
+    housemaster: [
+      { when: 'Converging signals from several sources',
+        act: 'Have the conversation before anything is written down. Ask what has changed, not what is wrong.',
+        why: 'The prompt exists to occasion a conversation. It is not a finding.' },
+      { when: 'Autonomy and pressure showing low over several days',
+        act: 'Find one thing this week they can decide — how, when, or with whom, even if not whether.',
+        why: 'Restoring a real choice does more than removing a demand, and lasts longer.' },
+      { when: 'They have stopped checking in',
+        act: 'Ask about the week, not about the app. Offer to change the questions or drop them.',
+        why: 'A tool that becomes another demand is worse than no tool.' },
+      { when: 'Something has come from home',
+        act: 'Acknowledge it to the family within the day, even if there is nothing to report yet.',
+        why: 'A parent who hears nothing back stops sending, and they see things first.' }
+    ],
+    coordinator: [
+      { when: 'A clinical milestone arrives',
+        act: 'Relay the summary the clinician wrote, to the people it names, the same day.',
+        why: 'The delay, not the disclosure, is what the old arrangement got wrong.' },
+      { when: 'A pupil has asked to talk to someone',
+        act: 'Answer it before anything else on the page, and record who picked it up.',
+        why: 'A request from a child outranks any trend on this screen.' },
+      { when: 'A pattern has been raised',
+        act: 'Name a person to act, and say by when. Close the loop in writing.',
+        why: 'A prompt nobody owns is a prompt that did not happen.' },
+      { when: 'The same pupil keeps surfacing',
+        act: 'Ask whether the environment is the variable. Timetable, room, transitions, staffing.',
+        why: 'Circumstance is the part a school can actually change.' }
+    ],
+    clinician: [
+      { when: 'Writing a milestone for the school',
+        act: 'Write the pastoral summary in the words you want a housemaster to read, and one line for teachers.',
+        why: 'You control how far it travels. The summary you write is the version that arrives.' },
+      { when: 'The school trace and your own picture disagree',
+        act: 'Treat the difference as information. Where {they} {v:cope/copes} tells you as much as where {they} {v:do/does} not.',
+        why: 'Presentation varies by setting, and the school sees settings you do not.' },
+      { when: 'Choosing which questions he answers daily',
+        act: 'Pick the lens with him. Change it when it stops fitting, and say that it can be changed.',
+        why: 'A measure chosen with someone is answered more honestly than one assigned to them.' }
+    ],
+    therapist: [
+      { when: 'Considering what to share with the school',
+        act: 'Share the pattern and the adjustment, not the content. Decide it with the pupil where you can.',
+        why: 'What the school needs to act is almost never what was said in the room.' },
+      { when: 'School context arrives that you did not have',
+        act: 'Use it. A flat fortnight in one subject is data you would otherwise have to ask for.',
+        why: 'This is the half of the picture a weekly session cannot see.' }
+    ],
+    parent: [
+      { when: 'The weekly digest names a focus',
+        act: 'Reinforce the same one thing at home. Ask about the process, not the outcome.',
+        why: 'The same habit in two places is what makes it stick.' },
+      { when: 'You notice an early sign',
+        act: 'Send it the day you notice it, even if it seems small.',
+        why: 'You are usually ten days ahead of the school, and that margin is the whole value.' }
+    ]
   };
 
   /* Clinical share levels. The clinician, not the platform, chooses this. */
@@ -1626,6 +1767,7 @@ a.btn:hover { text-decoration: none; }
     LENSES: LENSES,
     LENS_ORDER: LENS_ORDER,
     CONTEXTS: CONTEXTS,
+    GUIDANCE: GUIDANCE,
     CONTENT_BLIND_ROLES: CONTENT_BLIND_ROLES,
     HELP_ROUTES: HELP_ROUTES,
     ROLES: ROLES,

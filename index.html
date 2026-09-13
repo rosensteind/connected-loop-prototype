@@ -931,6 +931,22 @@ a.btn:hover { text-decoration: none; }
   .land-actions .btn { width: 100%; justify-content: center; }
 }
 
+/* ----------------------------------------------------------- guidance
+ * Collapsed by default. An adult who knows this pupil does not need to be
+ * lectured; one who does not can open it. */
+.guide { border-radius: var(--r); background: var(--surface-2); border: 1px solid var(--hairline); }
+.guide summary {
+  cursor: pointer; padding: 11px 14px; font-size: .89rem; font-weight: 600;
+  min-height: 44px; display: flex; align-items: center;
+}
+.guide summary::marker { color: var(--ink-muted); }
+.guide-body { padding: 0 14px 8px; display: grid; gap: 14px; }
+.guide-item { padding-left: 11px; border-left: 2px solid var(--accent); }
+.guide-item h3 { font-size: .85rem; margin: 0 0 4px; color: var(--ink-muted);
+  text-transform: none; font-weight: 600; }
+.guide-do { font-size: .91rem; margin: 0 0 3px; color: var(--ink); }
+.guide-why { font-size: .83rem; margin: 0; color: var(--ink-muted); font-style: italic; }
+
 </style>
 </head>
 <body class="land-page">
