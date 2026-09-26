@@ -1054,39 +1054,55 @@ a.btn:hover { text-decoration: none; }
 .share-opt.is-on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 .share-who { font-size: .78rem; color: var(--ink-muted); margin: 8px 0 0; line-height: 1.45; }
 
-/* ------------------------------------------------------ the find-me button */
+/* ------------------------------------------------- the emergency button */
 /*
- * Deliberately the loudest thing on the page, and deliberately absent unless
- * a school has named somebody who is actually on duty.
+ * One button, red, in the sidebar. Shaped like a button rather than a banner:
+ * two full-width red bars used to sit at the top of a boy's page, which made
+ * a wellbeing check-in look like an emergency service and put crisis in front
+ * of him on a perfectly ordinary Tuesday.
+ *
+ * Findable in a second, never the loudest thing on the page. Red carries the
+ * meaning; size does not have to.
  */
-/* Two buttons, and the emergency one is unmistakably the larger. A boy in
- * difficulty should be able to tell them apart without reading carefully. */
-.findme {
-  width: 100%; border: none; border-radius: var(--r-lg);
-  color: #fff; font: inherit; font-weight: 650; cursor: pointer;
+.emg { margin: 2px 0 4px; }
+.emg-btn {
+  display: block; width: 100%;
+  min-height: 46px; padding: 11px 16px;
+  border: none; border-radius: var(--r);
+  background: var(--critical); color: #fff;
+  font: inherit; font-size: .98rem; font-weight: 650; letter-spacing: .01em;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,.18);
 }
-.findme-emergency {
-  min-height: 76px; margin: 6px 0 4px;
-  font-size: 1.18rem; letter-spacing: -.01em;
-  background: var(--serious-ink);
+.emg-btn:hover  { filter: brightness(1.07); }
+.emg-btn:active { transform: translateY(1px); }
+.emg-btn:focus-visible { outline: 3px solid var(--critical); outline-offset: 2px; }
+.emg-caption {
+  margin: 6px 2px 0; font-size: .74rem; line-height: 1.35;
+  color: var(--ink-muted); text-align: center;
 }
-.findme-urgent {
-  min-height: 56px; margin: 14px 0 4px;
-  font-size: 1rem;
-  background: var(--warning-ink);
+
+/* After it is pressed. The instruction is the largest thing in the panel,
+ * because it is the only part he has to act on. */
+.emg-sent {
+  border: 2px solid var(--critical); border-radius: var(--r);
+  padding: 12px 13px; background: var(--surface);
 }
-.findme:hover { filter: brightness(1.08); }
-.findme-blurb { font-size: .8rem; color: var(--ink-muted); margin: 0 0 4px; }
-.findme-sent-emergency { border-width: 3px; }
-.findme-sent-emergency strong { font-size: 1.35rem; line-height: 1.25; }
-.findme-who { font-size: .82rem; color: var(--ink-muted); margin: 0 0 12px; line-height: 1.5; }
-.findme-sent {
-  border: 2px solid var(--serious-ink); border-radius: var(--r-lg);
-  padding: 14px 16px; margin: 10px 0;
+.emg-sent strong {
+  display: block; font-size: 1.02rem; line-height: 1.3;
+  margin-bottom: 8px; color: var(--critical);
 }
-.findme-sent strong { display: block; font-size: 1.05rem; margin-bottom: 6px; }
-.findme-sent p { margin: 4px 0; }
-.findme-contact { font-size: 1.3rem; font-weight: 700; letter-spacing: -.01em; }
+.emg-sent p { margin: 5px 0; font-size: .82rem; line-height: 1.45; color: var(--ink-2); }
+.emg-contact { font-size: 1.1rem !important; font-weight: 700; color: var(--ink) !important; }
+.emg-999 { color: var(--ink) !important; font-weight: 600; }
+
+/* On a narrow screen the sidebar stacks above the main column, so the button
+ * ends up near the top of the page anyway — which is where it should be when
+ * there is no side to put it on. Kept to a sensible width so it still reads
+ * as a button and not a banner. */
+@media (max-width: 1024px) {
+  .emg { max-width: 320px; }
+}
 
 /* What a pupil wrote, in a staff timeline. A withheld note is shown as
  * withheld rather than omitted: "he wrote something and kept it" is itself
@@ -1132,6 +1148,87 @@ a.btn:hover { text-decoration: none; }
 .land-guide .land-actions { margin: 0 0 12px; }
 @media (max-width: 620px) { .land-guide-steps { columns: 1; } }
 
+/* ===================================================== the argument diagram */
+/*
+ * One week, four people, on one time base. Colours come from the chart series
+ * and status tokens so the picture agrees with every other chart in the
+ * product, and every value is a token so it survives the dark theme.
+ */
+.land-argument { }
+.land-figure { margin: 26px 0 0; }
+.land-svg {
+  width: 100%; height: auto; max-width: 860px;
+  display: block; margin: 0 auto;
+  font-family: var(--font);
+}
+.land-figure figcaption {
+  max-width: 62ch; margin: 18px auto 0;
+  font-size: .9rem; line-height: 1.6; color: var(--ink-2);
+}
+
+.d-grid line { stroke: var(--grid); stroke-width: 1; }
+.d-rule { stroke: var(--hairline); stroke-width: 1; }
+
+/* The six days in which all four things happened. Filled rather than outlined,
+ * so the eye reads "this period" rather than "this box". */
+.d-window {
+  fill: color-mix(in srgb, var(--accent) 7%, transparent);
+  stroke: color-mix(in srgb, var(--accent) 28%, transparent);
+  stroke-width: 1;
+}
+
+.d-day text { font-size: 12px; fill: var(--ink-muted); }
+.d-who  { font-size: 14px; font-weight: 600; fill: var(--ink); }
+.d-what { font-size: 11.5px; fill: var(--ink-muted); }
+.d-caption { font-size: 12px; fill: var(--accent); font-weight: 600; letter-spacing: .04em; }
+
+/* A different shape per source as well as a different colour: the picture has
+ * to survive being printed in grey, and about one boy in twelve at any school
+ * cannot tell these two colours apart. */
+.d-mark-1 { fill: var(--series-1); }
+.d-mark-2 { fill: var(--series-2); }
+.d-mark-3 { fill: var(--warning-ink); }
+.d-mark-4 { fill: none; stroke: var(--good-ink); stroke-width: 2.5; stroke-linecap: round; }
+
+/* Below the width at which the labels stay readable, the figure scrolls
+ * rather than shrinking. A hint is shown so nobody misses that it does. */
+.land-figure-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 700px) {
+  .land-svg { min-width: 620px; }
+  .land-figure-scroll::after {
+    content: 'Scroll sideways to see the whole week';
+    display: block; font-size: .74rem; color: var(--ink-muted); padding: 4px 0 0;
+  }
+}
+
+/* ------------------------------------------------- what the pupil decides */
+.land-share {
+  display: grid; gap: 22px; margin: 24px 0 28px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  align-items: start;
+}
+.land-share-prompt {
+  font-size: 1.12rem; font-weight: 600; line-height: 1.45;
+  margin: 0 0 10px; color: var(--ink);
+}
+.land-share-sub { font-size: .88rem; color: var(--ink-muted); margin: 14px 0 0; line-height: 1.55; }
+.land-share-opts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.land-share-opts li {
+  padding: 13px 16px; border: 1px solid var(--hairline-2);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-lg); background: var(--surface);
+}
+.land-share-opts strong { display: block; font-size: .95rem; margin-bottom: 3px; }
+.land-share-opts span { font-size: .85rem; color: var(--ink-2); line-height: 1.5; }
+
+.land-two { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.land-two h3 { margin: 0 0 8px; font-size: 1rem; }
+.land-two p { margin: 0; font-size: .9rem; line-height: 1.62; color: var(--ink-2); }
+
+.land-pilot { margin-top: 24px; }
+
+@media (max-width: 760px) { .land-share { grid-template-columns: 1fr; } }
+
 </style>
 </head>
 <body class="land-page">
@@ -1175,7 +1272,7 @@ a.btn:hover { text-decoration: none; }
       </p>
       <ol class="land-guide-steps">
         <li><strong>Theo</strong>, who is at the centre</li>
-        <li><strong>The two red buttons</strong>, and why there are two</li>
+        <li><strong>The emergency button</strong>, and what it does not claim</li>
         <li><strong>What he chooses to share</strong>, and what he keeps</li>
         <li><strong>A teacher</strong>, who has thirty seconds</li>
         <li><strong>His mother</strong>, who knows things the school does not</li>
@@ -1199,6 +1296,9 @@ a.btn:hover { text-decoration: none; }
       sets out who sees what, in the words a pupil is shown.
     </p>
   </section>
+
+
+  
 
   <section class="land-band" id="how">
     <h2>The thing no one person can see</h2>
@@ -1240,14 +1340,14 @@ a.btn:hover { text-decoration: none; }
     </ol>
   </section>
 
-  <section class="land-band land-band-alt" id="who">
+  <section class="land-band" id="who">
     <h2>Who it is for</h2>
     <p class="land-band-lede">
       Six roles, each with a genuinely different view of the same record. What
       you see is what your job needs, and no more.
     </p>
     <div class="land-roles">
-      <article><h3>The pupil</h3><p>His own check-in, and control of where each thing he writes goes. Two routes to a person, above everything else on the page.</p></article>
+      <article><h3>The pupil</h3><p>His own check-in, and control of where each thing he writes goes. A route to a person above everything else, and a red button for an emergency.</p></article>
       <article><h3>Teachers</h3><p>One page on him, a morning flag, and one box after the lesson. Never a pastoral note, never a clinical one.</p></article>
       <article><h3>Pastoral leads</h3><p>The full picture, and the pattern view that puts every source on one time base.</p></article>
       <article><h3>Clinicians and therapists</h3><p>Their own record, and the handoff to the school that they control. Compartmented from each other.</p></article>
@@ -1256,13 +1356,16 @@ a.btn:hover { text-decoration: none; }
     </div>
   </section>
 
+
+  
+
   <section class="land-band land-boundary">
     <h2>What this is not</h2>
     <div class="land-not">
       <p><strong>Not a diagnostic tool.</strong> Nothing here identifies, screens for, or rules out any condition.</p>
       <p><strong>Not a treatment.</strong> It delivers no therapy, no intervention, and no clinical advice.</p>
       <p><strong>Not monitoring.</strong> It does not watch, score, or rank a child.</p>
-      <p><strong>Not an emergency service.</strong> There is an emergency button, and it does not change this: it writes a record and names whoever is on duty. It cannot make a person appear, it says so every time, and it repeats 999 alongside.</p>
+      <p><strong>Not an emergency service.</strong> There is one emergency button, in the sidebar, marked for emergencies only. It does not change this: it writes a record and names whoever is on duty. It cannot make a person appear, it says so every time, and it repeats 999 alongside.</p>
     </div>
     <p class="land-boundary-note">
       That boundary is regulatory as well as clinical. Software intended to
@@ -1273,21 +1376,30 @@ a.btn:hover { text-decoration: none; }
   </section>
 
   <section class="land-band" id="status">
-    <h2>Where it stands</h2>
+    <h2>Where it stands, and what a pilot would involve</h2>
     <p class="land-band-lede">
-      A working prototype with fictional pupils. Before a real child's name goes
-      anywhere near it, two things have to be true, and neither is a formality.
+      A working prototype with fictional pupils, built and tested but not yet
+      used by a real school. Before one real child's name goes anywhere near
+      it, two things have to be true, and neither is a formality.
     </p>
     <div class="land-gates">
       <article>
         <h3>A written safeguarding response path</h3>
-        <p>Who answers when a pupil asks for someone, within what time, and who covers evenings and weekends. The buttons do not appear at all until a school has named somebody on duty and a place to send him — but naming them in a form is not the same as agreeing a rota.</p>
+        <p>Who answers when a pupil asks for someone, within what time, and who covers evenings and weekends. The button does not appear at all until a school has named somebody on duty and a place to send him — but naming them in a form is not the same as agreeing a rota.</p>
       </article>
       <article>
         <h3>A signed-off Data Protection Impact Assessment</h3>
         <p>Mandatory under Article 35 for special-category data about children. A pilot of six is not a way around it.</p>
       </article>
     </div>
+    <p class="land-band-lede land-pilot">
+      A pilot is six to ten pupils for one term &mdash; small enough to stop,
+      long enough to learn anything. The school is the data controller
+      throughout, the data stays in the UK, nothing is used to train any model,
+      and there is no AI anywhere in it.
+      <a href="policies.html?for=adults">The full data protection position</a>
+      is published rather than available on request.
+    </p>
   </section>
 
 </main>

@@ -22,11 +22,16 @@ changes. This one does not.
 
 ## What this snapshot contains
 
-Frozen 26 September 2026, from `connected-loop` commit `6456e78`:
+Updated 26 September 2026 at David's request, from `connected-loop` commit
+`9e0019f`. A deliberately small update: the emergency button was a correction
+he asked for, so it went out; the new landing-page diagram and the
+"what the pupil decides" section are additions, so they are held back for the
+domain. Built with `MINIMAL=1 demo/build-site.sh`, which is what holds them
+back — the same source builds both versions.
 
 - The landing page, opening on the guided walkthrough
 - The nine-step walkthrough: three fictional pupils, a fictional fortnight
-- Both pupil buttons (emergency, and find me)
+- One red emergency button in the sidebar, marked "use only in an emergency"
 - Per-note sharing: whole team / one adult / nobody
 - Information circles on every section
 - Environment events and the adjustment lifecycle
