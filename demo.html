@@ -1242,6 +1242,11 @@ a.btn:hover { text-decoration: none; }
 
 @media (max-width: 760px) { .land-share { grid-template-columns: 1fr; } }
 
+/* The way back to the landing page, first in the sidebar of the walkthrough.
+ * The landing page is the front door: it explains what the walkthrough is
+ * before dropping anybody inside it. */
+.btn-home { font-weight: 600; }
+
 </style>
 </head>
 <body>
@@ -1264,11 +1269,11 @@ a.btn:hover { text-decoration: none; }
     </div>
     <div id="role-context"></div>
     <div class="side-links">
+      <a class="btn btn-quiet btn-home" href="index.html?v=20260926-0651">← Start page</a>
       <button class="btn btn-quiet" type="button" id="btn-tour">Walk me through it</button>
       <button class="btn btn-quiet" type="button" id="btn-feedback">Two questions for you</button>
       <button class="btn btn-quiet" type="button" id="btn-permissions">Who sees what</button>
-      <a class="btn btn-quiet" href="policies.html">How this works</a>
-      <a class="btn btn-quiet" href="index.html">Back to the start</a>
+      <a class="btn btn-quiet" href="policies.html?v=20260926-0651">How this works</a>
       <button class="btn btn-quiet" type="button" id="btn-about">About this build</button>
     </div>
   </aside>
@@ -5531,5 +5536,6 @@ a.btn:hover { text-decoration: none; }
 })(window);
 
 </script>
+<p style="text-align:center;font-size:.7rem;opacity:.45;padding:10px 0 16px">build 20260926-0651</p>
 </body>
 </html>

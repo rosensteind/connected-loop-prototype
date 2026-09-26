@@ -1243,12 +1243,17 @@ a.btn:hover { text-decoration: none; }
 
 @media (max-width: 760px) { .land-share { grid-template-columns: 1fr; } }
 
+/* The way back to the landing page, first in the sidebar of the walkthrough.
+ * The landing page is the front door: it explains what the walkthrough is
+ * before dropping anybody inside it. */
+.btn-home { font-weight: 600; }
+
 </style>
 </head>
 <bodyclass="pol-page">
 
 <header class="pol-bar">
-  <a class="pol-back" href="index.html">
+  <a class="pol-back" href="index.html?v=20260926-0651">
     <span class="brand-mark" aria-hidden="true"></span>
     <span>The Connected Loop</span>
   </a>
@@ -2954,5 +2959,6 @@ a.btn:hover { text-decoration: none; }
 })(window);
 
 </script>
+<p style="text-align:center;font-size:.7rem;opacity:.45;padding:10px 0 16px">build 20260926-0651</p>
 </body>
 </html>

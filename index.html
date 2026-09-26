@@ -1243,20 +1243,25 @@ a.btn:hover { text-decoration: none; }
 
 @media (max-width: 760px) { .land-share { grid-template-columns: 1fr; } }
 
+/* The way back to the landing page, first in the sidebar of the walkthrough.
+ * The landing page is the front door: it explains what the walkthrough is
+ * before dropping anybody inside it. */
+.btn-home { font-weight: 600; }
+
 </style>
 </head>
 <body class="land-page">
 
 <header class="land-nav">
-  <a class="land-brand" href="index.html">
+  <a class="land-brand" href="index.html?v=20260926-0651">
     <span class="brand-mark" aria-hidden="true"></span>
     <span>The Connected Loop</span>
   </a>
   <nav class="land-links" aria-label="Main">
     <a href="#how">How it works</a>
     <a href="#who">Who it is for</a>
-    <a href="policies.html">Your information</a>
-    <a class="land-cta" href="demo.html?tour=1">Start the walkthrough</a>
+    <a href="policies.html?v=20260926-0651">Your information</a>
+    <a class="land-cta" href="demo.html?tour=1&v=20260926-0651">Start the walkthrough</a>
     
   </nav>
 </header>
@@ -1296,8 +1301,8 @@ a.btn:hover { text-decoration: none; }
         <li><strong>The coordinator</strong>, and the argument</li>
       </ol>
       <div class="land-actions">
-        <a class="btn btn-primary btn-lg" href="demo.html?tour=1">Start the walkthrough</a>
-        <a class="btn btn-lg" href="demo.html?tour=0">Skip it and look around</a>
+        <a class="btn btn-primary btn-lg" href="demo.html?tour=1&v=20260926-0651">Start the walkthrough</a>
+        <a class="btn btn-lg" href="demo.html?tour=0&v=20260926-0651">Skip it and look around</a>
       </div>
       <p class="land-note">
         Nothing to install and no sign-in. Three invented boys, an invented
@@ -1306,7 +1311,7 @@ a.btn:hover { text-decoration: none; }
     </div>
 
     <p class="land-note">
-      Rather read than click? <a href="policies.html">What happens to what you write</a>
+      Rather read than click? <a href="policies.html?v=20260926-0651">What happens to what you write</a>
       sets out who sees what, in the words a pupil is shown.
     </p>
   </section>
@@ -1385,7 +1390,7 @@ a.btn:hover { text-decoration: none; }
       That boundary is regulatory as well as clinical. Software intended to
       diagnose, monitor or treat can be a medical device under the UK Medical
       Devices Regulations 2002. This sits outside that regime deliberately.
-      <a href="policies.html?for=adults">Read the full position</a>.
+      <a href="policies.html?for=adults&v=20260926-0651">Read the full position</a>.
     </p>
   </section>
 
@@ -1411,7 +1416,7 @@ a.btn:hover { text-decoration: none; }
       long enough to learn anything. The school is the data controller
       throughout, the data stays in the UK, nothing is used to train any model,
       and there is no AI anywhere in it.
-      <a href="policies.html?for=adults">The full data protection position</a>
+      <a href="policies.html?for=adults&v=20260926-0651">The full data protection position</a>
       is published rather than available on request.
     </p>
   </section>
@@ -1424,12 +1429,13 @@ a.btn:hover { text-decoration: none; }
     <p>Built by Dr David Rosenstein, Clinical Psychologist, from a proposal by Farnaz Al-Sadi.</p>
   </div>
   <nav aria-label="Footer">
-    <a href="demo.html?tour=1">Start the walkthrough</a>
-    <a href="policies.html">Written for pupils</a>
-    <a href="policies.html?for=adults">Written for adults</a>
+    <a href="demo.html?tour=1&v=20260926-0651">Start the walkthrough</a>
+    <a href="policies.html?v=20260926-0651">Written for pupils</a>
+    <a href="policies.html?for=adults&v=20260926-0651">Written for adults</a>
     
   </nav>
 </footer>
 
+<p style="text-align:center;font-size:.7rem;opacity:.45;padding:10px 0 16px">build 20260926-0651</p>
 </body>
 </html>
