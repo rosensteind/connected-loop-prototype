@@ -947,6 +947,191 @@ a.btn:hover { text-decoration: none; }
 .guide-do { font-size: .91rem; margin: 0 0 3px; color: var(--ink); }
 .guide-why { font-size: .83rem; margin: 0; color: var(--ink-muted); font-style: italic; }
 
+/* ------------------------------------------------------- programme layer */
+/*
+ * The oversight screen. Deliberately plainer than every other view: it is a
+ * governance instrument, not a place anybody spends their day, and it should
+ * not look like it is showing you a child.
+ */
+
+.stats {
+  display: grid; gap: 12px; margin-bottom: 4px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+/* A suppressed figure is shown, never hidden — the board should see that a
+ * number exists and is being withheld, rather than wonder if it is zero. */
+.stat-soft .stat-value { font-size: 1.25rem; color: var(--ink-muted); font-weight: 600; }
+.stat-note { font-size: .72rem; color: var(--ink-muted); }
+
+.card-note { font-size: .78rem; color: var(--ink-muted); margin: 12px 0 0; }
+.ok-note   { font-size: .82rem; color: var(--good-ink); margin: 10px 0 0; word-break: break-all; }
+
+/* The boundary card sits above the numbers and is styled to be read, not
+ * skimmed past. */
+.card-boundary { border-color: color-mix(in srgb, var(--accent) 35%, var(--hairline-2)); }
+.card-boundary .card-head h2 { color: var(--accent); }
+.card-key { border-left: 3px solid var(--accent); }
+
+.plain-list { margin: 0; padding-left: 18px; }
+.plain-list li { margin: 0 0 6px; font-size: .86rem; line-height: 1.45; }
+
+.seg { display: flex; gap: 6px; }
+.lens-use { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+
+.row-warn td { background: color-mix(in srgb, var(--warning) 14%, transparent); }
+
+/* A categorical answer, where a 1-5 would be false precision. Sized for a
+ * finger on an iPad like the scale dots are. */
+.choices { display: flex; gap: 8px; flex-wrap: wrap; }
+.choice {
+  flex: 1 1 0; min-width: 96px; min-height: 48px; padding: 10px 14px;
+  border: 1px solid var(--hairline-2); border-radius: var(--r-lg);
+  background: var(--surface); color: var(--ink); font: inherit; font-weight: 550;
+  cursor: pointer;
+}
+.choice:hover { border-color: var(--accent); }
+.choice.is-on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* An adjustment and how far it has got. The open ones are marked, because
+ * "agreed six weeks ago and never passed on" is the thing worth seeing. */
+.adj {
+  border: 1px solid var(--hairline-2); border-radius: var(--r-lg);
+  padding: 12px 14px; margin-bottom: 10px; background: var(--surface);
+}
+.adj-open { border-left: 3px solid var(--warning-ink); }
+.adj-foot { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.adj .note { margin-top: 6px; }
+
+.states { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+.state {
+  font-size: .72rem; padding: 3px 9px; border-radius: 999px;
+  border: 1px solid var(--hairline-2); color: var(--ink-muted);
+}
+.state.is-done { color: var(--ink); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.state.is-now  { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+.env-row { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; padding: 6px 0; }
+.env-when { font-size: .76rem; color: var(--ink-muted); }
+.env-note { font-size: .85rem; }
+
+/* ------------------------------------------------- the ⓘ explainers */
+/*
+ * "What is this, and where does it go." Tap as well as hover: half the people
+ * using this are on an iPad, where hover does not exist.
+ */
+.info { position: relative; display: inline-flex; vertical-align: middle; margin-left: 6px; }
+.info-dot {
+  width: 18px; height: 18px; line-height: 1; padding: 0;
+  border-radius: 50%; border: 1px solid var(--hairline-2);
+  background: var(--surface); color: var(--ink-muted);
+  font: 600 11px/1 Georgia, 'Times New Roman', serif; font-style: italic;
+  cursor: help; display: inline-flex; align-items: center; justify-content: center;
+}
+.info-dot:hover, .info-dot:focus-visible { border-color: var(--accent); color: var(--accent); }
+.info-panel {
+  position: absolute; z-index: 30; top: 24px; left: -8px;
+  width: min(320px, 78vw); padding: 12px 14px;
+  background: var(--surface); border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg); box-shadow: var(--shadow);
+  font-size: .8rem; line-height: 1.45; color: var(--ink); text-align: left;
+  font-weight: 400; text-transform: none; letter-spacing: normal;
+}
+.info-panel strong { display: block; margin-bottom: 6px; }
+.info-panel p { margin: 0 0 6px; }
+.info-panel p:last-child { margin-bottom: 0; }
+.info-panel b { color: var(--ink-2); }
+.labelled { display: inline-flex; align-items: center; }
+
+/* -------------------------------------------- the pupil's written notes */
+.note-q { margin: 0 0 20px; }
+.note-hint { font-size: .82rem; color: var(--ink-muted); margin: 2px 0 8px; line-height: 1.45; }
+.share-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.share-opt {
+  padding: 7px 12px; min-height: 40px; border-radius: 999px;
+  border: 1px solid var(--hairline-2); background: var(--surface);
+  color: var(--ink-muted); font: inherit; font-size: .82rem; cursor: pointer;
+}
+.share-opt.is-on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.share-who { font-size: .78rem; color: var(--ink-muted); margin: 8px 0 0; line-height: 1.45; }
+
+/* ------------------------------------------------------ the find-me button */
+/*
+ * Deliberately the loudest thing on the page, and deliberately absent unless
+ * a school has named somebody who is actually on duty.
+ */
+/* Two buttons, and the emergency one is unmistakably the larger. A boy in
+ * difficulty should be able to tell them apart without reading carefully. */
+.findme {
+  width: 100%; border: none; border-radius: var(--r-lg);
+  color: #fff; font: inherit; font-weight: 650; cursor: pointer;
+}
+.findme-emergency {
+  min-height: 76px; margin: 6px 0 4px;
+  font-size: 1.18rem; letter-spacing: -.01em;
+  background: var(--serious-ink);
+}
+.findme-urgent {
+  min-height: 56px; margin: 14px 0 4px;
+  font-size: 1rem;
+  background: var(--warning-ink);
+}
+.findme:hover { filter: brightness(1.08); }
+.findme-blurb { font-size: .8rem; color: var(--ink-muted); margin: 0 0 4px; }
+.findme-sent-emergency { border-width: 3px; }
+.findme-sent-emergency strong { font-size: 1.35rem; line-height: 1.25; }
+.findme-who { font-size: .82rem; color: var(--ink-muted); margin: 0 0 12px; line-height: 1.5; }
+.findme-sent {
+  border: 2px solid var(--serious-ink); border-radius: var(--r-lg);
+  padding: 14px 16px; margin: 10px 0;
+}
+.findme-sent strong { display: block; font-size: 1.05rem; margin-bottom: 6px; }
+.findme-sent p { margin: 4px 0; }
+.findme-contact { font-size: 1.3rem; font-weight: 700; letter-spacing: -.01em; }
+
+/* What a pupil wrote, in a staff timeline. A withheld note is shown as
+ * withheld rather than omitted: "he wrote something and kept it" is itself
+ * worth a housemaster knowing. */
+.sig-notes { margin: 8px 0 0; display: flex; flex-direction: column; gap: 8px; }
+.sig-note {
+  border-left: 2px solid var(--hairline-2); padding: 2px 0 2px 10px;
+}
+.sig-note-withheld { border-left-style: dashed; }
+.sig-note-q { font-size: .74rem; color: var(--ink-muted); display: block; }
+.sig-note-a { margin: 2px 0 4px; font-size: .88rem; }
+.sig-note-withheld .sig-note-a { color: var(--ink-muted); font-style: italic; }
+
+/* An unanswered emergency. Louder than anything else a pastoral screen shows,
+ * and deliberately not collapsible. */
+.card-emergency {
+  border: 2px solid var(--serious-ink);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--serious) 18%, transparent);
+}
+.card-emergency .card-head h2 { color: var(--serious-ink); }
+.concern-emergency { border-left: 3px solid var(--serious-ink); padding-left: 10px; }
+.concern-where { font-weight: 650; margin: 6px 0; }
+
+/* ------------------------------------------- the guide, on the landing page */
+/*
+ * The walkthrough is the point of the public site, so it gets a card at the
+ * top of the first screen rather than a link under three sections of prose.
+ */
+.land-guide {
+  margin: 28px 0 8px; padding: 24px 26px;
+  border: 1px solid var(--hairline-2); border-left: 3px solid var(--accent);
+  border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow);
+  max-width: 640px;
+}
+.land-guide h2 { margin: 0 0 8px; font-size: 1.2rem; }
+.land-guide > p { margin: 0 0 14px; font-size: .92rem; line-height: 1.55; color: var(--ink-2); }
+.land-guide-steps {
+  margin: 0 0 20px; padding: 0 0 0 20px;
+  font-size: .86rem; line-height: 1.7; color: var(--ink-2);
+  columns: 2; column-gap: 28px;
+}
+.land-guide-steps li { break-inside: avoid; }
+.land-guide .land-actions { margin: 0 0 12px; }
+@media (max-width: 620px) { .land-guide-steps { columns: 1; } }
+
 </style>
 </head>
 <body class="land-page">
@@ -960,7 +1145,7 @@ a.btn:hover { text-decoration: none; }
     <a href="#how">How it works</a>
     <a href="#who">Who it is for</a>
     <a href="policies.html">Your information</a>
-    <a class="land-cta" href="demo.html">Walk through it</a>
+    <a class="land-cta" href="demo.html?tour=1">Start the walkthrough</a>
     
   </nav>
 </header>
@@ -976,13 +1161,42 @@ a.btn:hover { text-decoration: none; }
       holds the whole, and his parents — who often know most — sit outside the
       loop entirely.
     </p>
-    <div class="land-actions">
-      <a class="btn btn-primary btn-lg" href="demo.html">Walk through it &mdash; 5 minutes</a>
-      <a class="btn btn-lg" href="policies.html">What happens to what you write</a>
+
+    <!-- The guide is the point of this page, so it is the first thing on it
+         and it says what it will do before asking anybody to click. A landing
+         page whose primary action is below three sections of prose is a
+         landing page nobody acts on. -->
+    <div class="land-guide">
+      <h2>Start here: a guided walkthrough</h2>
+      <p>
+        Nine steps, about five minutes. It opens by itself and moves you
+        between the six people who see the same boy, in the order that makes
+        the argument. You can leave it at any point and look around on your own.
+      </p>
+      <ol class="land-guide-steps">
+        <li><strong>Theo</strong>, who is at the centre</li>
+        <li><strong>The two red buttons</strong>, and why there are two</li>
+        <li><strong>What he chooses to share</strong>, and what he keeps</li>
+        <li><strong>A teacher</strong>, who has thirty seconds</li>
+        <li><strong>His mother</strong>, who knows things the school does not</li>
+        <li><strong>A clinician</strong>, and the gap nobody has closed</li>
+        <li><strong>His housemaster</strong>, who sees the shape</li>
+        <li><strong>What changed around him</strong>, and whether support landed</li>
+        <li><strong>The coordinator</strong>, and the argument</li>
+      </ol>
+      <div class="land-actions">
+        <a class="btn btn-primary btn-lg" href="demo.html?tour=1">Start the walkthrough</a>
+        <a class="btn btn-lg" href="demo.html?tour=0">Skip it and look around</a>
+      </div>
+      <p class="land-note">
+        Nothing to install and no sign-in. Three invented boys, an invented
+        fortnight, an invented rota. No real child appears anywhere in it.
+      </p>
     </div>
+
     <p class="land-note">
-      Nothing to install and no sign-in. Everything in the walkthrough is
-      fictional.
+      Rather read than click? <a href="policies.html">What happens to what you write</a>
+      sets out who sees what, in the words a pupil is shown.
     </p>
   </section>
 
@@ -998,8 +1212,8 @@ a.btn:hover { text-decoration: none; }
       <li>
         <span class="land-step-n">1</span>
         <div>
-          <h3>He checks in, in thirty seconds</h3>
-          <p>Three questions chosen with him, not assigned to him. His streak, his wins, his words. Framed as his own instrument, because a boy who experiences it as monitoring stops answering honestly.</p>
+          <h3>He checks in, and decides where it goes</h3>
+          <p>Questions chosen with him, not assigned to him — two taps if that is all he has in him. What he writes, he shares with his whole team, with one adult, or with nobody. Every section tells him exactly who reads it, because a boy told nothing assumes the worst.</p>
         </div>
       </li>
       <li>
@@ -1020,7 +1234,7 @@ a.btn:hover { text-decoration: none; }
         <span class="land-step-n">4</span>
         <div>
           <h3>Converging signals surface for a person to act on</h3>
-          <p>When independent sources agree inside one week, it is raised. It prompts a conversation. It never decides anything, sends anything, or scores him.</p>
+          <p>When independent sources agree inside one week, it is raised — alongside what changed around him, because a dip that follows a set change is a different conversation. It prompts a conversation. It never decides anything, sends anything, or scores him.</p>
         </div>
       </li>
     </ol>
@@ -1033,7 +1247,7 @@ a.btn:hover { text-decoration: none; }
       you see is what your job needs, and no more.
     </p>
     <div class="land-roles">
-      <article><h3>The pupil</h3><p>His own check-in, streak and wins. A route to a person, above everything else on the page.</p></article>
+      <article><h3>The pupil</h3><p>His own check-in, and control of where each thing he writes goes. Two routes to a person, above everything else on the page.</p></article>
       <article><h3>Teachers</h3><p>One page on him, a morning flag, and one box after the lesson. Never a pastoral note, never a clinical one.</p></article>
       <article><h3>Pastoral leads</h3><p>The full picture, and the pattern view that puts every source on one time base.</p></article>
       <article><h3>Clinicians and therapists</h3><p>Their own record, and the handoff to the school that they control. Compartmented from each other.</p></article>
@@ -1048,7 +1262,7 @@ a.btn:hover { text-decoration: none; }
       <p><strong>Not a diagnostic tool.</strong> Nothing here identifies, screens for, or rules out any condition.</p>
       <p><strong>Not a treatment.</strong> It delivers no therapy, no intervention, and no clinical advice.</p>
       <p><strong>Not monitoring.</strong> It does not watch, score, or rank a child.</p>
-      <p><strong>Not an emergency service.</strong> Nobody is reading it at three in the morning, and it says so on the page where that matters.</p>
+      <p><strong>Not an emergency service.</strong> There is an emergency button, and it does not change this: it writes a record and names whoever is on duty. It cannot make a person appear, it says so every time, and it repeats 999 alongside.</p>
     </div>
     <p class="land-boundary-note">
       That boundary is regulatory as well as clinical. Software intended to
@@ -1067,7 +1281,7 @@ a.btn:hover { text-decoration: none; }
     <div class="land-gates">
       <article>
         <h3>A written safeguarding response path</h3>
-        <p>Who answers when a pupil asks for someone, within what time, and who covers evenings and weekends. A child must not have a "find me" button before somebody has agreed who comes.</p>
+        <p>Who answers when a pupil asks for someone, within what time, and who covers evenings and weekends. The buttons do not appear at all until a school has named somebody on duty and a place to send him — but naming them in a form is not the same as agreeing a rota.</p>
       </article>
       <article>
         <h3>A signed-off Data Protection Impact Assessment</h3>
@@ -1084,7 +1298,7 @@ a.btn:hover { text-decoration: none; }
     <p>Built by Dr David Rosenstein, Clinical Psychologist, from a proposal by Farnaz Al-Sadi.</p>
   </div>
   <nav aria-label="Footer">
-    <a href="demo.html">Walk through it</a>
+    <a href="demo.html?tour=1">Start the walkthrough</a>
     <a href="policies.html">Written for pupils</a>
     <a href="policies.html?for=adults">Written for adults</a>
     

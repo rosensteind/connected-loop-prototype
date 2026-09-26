@@ -946,6 +946,191 @@ a.btn:hover { text-decoration: none; }
 .guide-do { font-size: .91rem; margin: 0 0 3px; color: var(--ink); }
 .guide-why { font-size: .83rem; margin: 0; color: var(--ink-muted); font-style: italic; }
 
+/* ------------------------------------------------------- programme layer */
+/*
+ * The oversight screen. Deliberately plainer than every other view: it is a
+ * governance instrument, not a place anybody spends their day, and it should
+ * not look like it is showing you a child.
+ */
+
+.stats {
+  display: grid; gap: 12px; margin-bottom: 4px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+/* A suppressed figure is shown, never hidden — the board should see that a
+ * number exists and is being withheld, rather than wonder if it is zero. */
+.stat-soft .stat-value { font-size: 1.25rem; color: var(--ink-muted); font-weight: 600; }
+.stat-note { font-size: .72rem; color: var(--ink-muted); }
+
+.card-note { font-size: .78rem; color: var(--ink-muted); margin: 12px 0 0; }
+.ok-note   { font-size: .82rem; color: var(--good-ink); margin: 10px 0 0; word-break: break-all; }
+
+/* The boundary card sits above the numbers and is styled to be read, not
+ * skimmed past. */
+.card-boundary { border-color: color-mix(in srgb, var(--accent) 35%, var(--hairline-2)); }
+.card-boundary .card-head h2 { color: var(--accent); }
+.card-key { border-left: 3px solid var(--accent); }
+
+.plain-list { margin: 0; padding-left: 18px; }
+.plain-list li { margin: 0 0 6px; font-size: .86rem; line-height: 1.45; }
+
+.seg { display: flex; gap: 6px; }
+.lens-use { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+
+.row-warn td { background: color-mix(in srgb, var(--warning) 14%, transparent); }
+
+/* A categorical answer, where a 1-5 would be false precision. Sized for a
+ * finger on an iPad like the scale dots are. */
+.choices { display: flex; gap: 8px; flex-wrap: wrap; }
+.choice {
+  flex: 1 1 0; min-width: 96px; min-height: 48px; padding: 10px 14px;
+  border: 1px solid var(--hairline-2); border-radius: var(--r-lg);
+  background: var(--surface); color: var(--ink); font: inherit; font-weight: 550;
+  cursor: pointer;
+}
+.choice:hover { border-color: var(--accent); }
+.choice.is-on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* An adjustment and how far it has got. The open ones are marked, because
+ * "agreed six weeks ago and never passed on" is the thing worth seeing. */
+.adj {
+  border: 1px solid var(--hairline-2); border-radius: var(--r-lg);
+  padding: 12px 14px; margin-bottom: 10px; background: var(--surface);
+}
+.adj-open { border-left: 3px solid var(--warning-ink); }
+.adj-foot { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.adj .note { margin-top: 6px; }
+
+.states { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+.state {
+  font-size: .72rem; padding: 3px 9px; border-radius: 999px;
+  border: 1px solid var(--hairline-2); color: var(--ink-muted);
+}
+.state.is-done { color: var(--ink); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.state.is-now  { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+.env-row { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; padding: 6px 0; }
+.env-when { font-size: .76rem; color: var(--ink-muted); }
+.env-note { font-size: .85rem; }
+
+/* ------------------------------------------------- the ⓘ explainers */
+/*
+ * "What is this, and where does it go." Tap as well as hover: half the people
+ * using this are on an iPad, where hover does not exist.
+ */
+.info { position: relative; display: inline-flex; vertical-align: middle; margin-left: 6px; }
+.info-dot {
+  width: 18px; height: 18px; line-height: 1; padding: 0;
+  border-radius: 50%; border: 1px solid var(--hairline-2);
+  background: var(--surface); color: var(--ink-muted);
+  font: 600 11px/1 Georgia, 'Times New Roman', serif; font-style: italic;
+  cursor: help; display: inline-flex; align-items: center; justify-content: center;
+}
+.info-dot:hover, .info-dot:focus-visible { border-color: var(--accent); color: var(--accent); }
+.info-panel {
+  position: absolute; z-index: 30; top: 24px; left: -8px;
+  width: min(320px, 78vw); padding: 12px 14px;
+  background: var(--surface); border: 1px solid var(--hairline-2);
+  border-radius: var(--r-lg); box-shadow: var(--shadow);
+  font-size: .8rem; line-height: 1.45; color: var(--ink); text-align: left;
+  font-weight: 400; text-transform: none; letter-spacing: normal;
+}
+.info-panel strong { display: block; margin-bottom: 6px; }
+.info-panel p { margin: 0 0 6px; }
+.info-panel p:last-child { margin-bottom: 0; }
+.info-panel b { color: var(--ink-2); }
+.labelled { display: inline-flex; align-items: center; }
+
+/* -------------------------------------------- the pupil's written notes */
+.note-q { margin: 0 0 20px; }
+.note-hint { font-size: .82rem; color: var(--ink-muted); margin: 2px 0 8px; line-height: 1.45; }
+.share-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.share-opt {
+  padding: 7px 12px; min-height: 40px; border-radius: 999px;
+  border: 1px solid var(--hairline-2); background: var(--surface);
+  color: var(--ink-muted); font: inherit; font-size: .82rem; cursor: pointer;
+}
+.share-opt.is-on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.share-who { font-size: .78rem; color: var(--ink-muted); margin: 8px 0 0; line-height: 1.45; }
+
+/* ------------------------------------------------------ the find-me button */
+/*
+ * Deliberately the loudest thing on the page, and deliberately absent unless
+ * a school has named somebody who is actually on duty.
+ */
+/* Two buttons, and the emergency one is unmistakably the larger. A boy in
+ * difficulty should be able to tell them apart without reading carefully. */
+.findme {
+  width: 100%; border: none; border-radius: var(--r-lg);
+  color: #fff; font: inherit; font-weight: 650; cursor: pointer;
+}
+.findme-emergency {
+  min-height: 76px; margin: 6px 0 4px;
+  font-size: 1.18rem; letter-spacing: -.01em;
+  background: var(--serious-ink);
+}
+.findme-urgent {
+  min-height: 56px; margin: 14px 0 4px;
+  font-size: 1rem;
+  background: var(--warning-ink);
+}
+.findme:hover { filter: brightness(1.08); }
+.findme-blurb { font-size: .8rem; color: var(--ink-muted); margin: 0 0 4px; }
+.findme-sent-emergency { border-width: 3px; }
+.findme-sent-emergency strong { font-size: 1.35rem; line-height: 1.25; }
+.findme-who { font-size: .82rem; color: var(--ink-muted); margin: 0 0 12px; line-height: 1.5; }
+.findme-sent {
+  border: 2px solid var(--serious-ink); border-radius: var(--r-lg);
+  padding: 14px 16px; margin: 10px 0;
+}
+.findme-sent strong { display: block; font-size: 1.05rem; margin-bottom: 6px; }
+.findme-sent p { margin: 4px 0; }
+.findme-contact { font-size: 1.3rem; font-weight: 700; letter-spacing: -.01em; }
+
+/* What a pupil wrote, in a staff timeline. A withheld note is shown as
+ * withheld rather than omitted: "he wrote something and kept it" is itself
+ * worth a housemaster knowing. */
+.sig-notes { margin: 8px 0 0; display: flex; flex-direction: column; gap: 8px; }
+.sig-note {
+  border-left: 2px solid var(--hairline-2); padding: 2px 0 2px 10px;
+}
+.sig-note-withheld { border-left-style: dashed; }
+.sig-note-q { font-size: .74rem; color: var(--ink-muted); display: block; }
+.sig-note-a { margin: 2px 0 4px; font-size: .88rem; }
+.sig-note-withheld .sig-note-a { color: var(--ink-muted); font-style: italic; }
+
+/* An unanswered emergency. Louder than anything else a pastoral screen shows,
+ * and deliberately not collapsible. */
+.card-emergency {
+  border: 2px solid var(--serious-ink);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--serious) 18%, transparent);
+}
+.card-emergency .card-head h2 { color: var(--serious-ink); }
+.concern-emergency { border-left: 3px solid var(--serious-ink); padding-left: 10px; }
+.concern-where { font-weight: 650; margin: 6px 0; }
+
+/* ------------------------------------------- the guide, on the landing page */
+/*
+ * The walkthrough is the point of the public site, so it gets a card at the
+ * top of the first screen rather than a link under three sections of prose.
+ */
+.land-guide {
+  margin: 28px 0 8px; padding: 24px 26px;
+  border: 1px solid var(--hairline-2); border-left: 3px solid var(--accent);
+  border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow);
+  max-width: 640px;
+}
+.land-guide h2 { margin: 0 0 8px; font-size: 1.2rem; }
+.land-guide > p { margin: 0 0 14px; font-size: .92rem; line-height: 1.55; color: var(--ink-2); }
+.land-guide-steps {
+  margin: 0 0 20px; padding: 0 0 0 20px;
+  font-size: .86rem; line-height: 1.7; color: var(--ink-2);
+  columns: 2; column-gap: 28px;
+}
+.land-guide-steps li { break-inside: avoid; }
+.land-guide .land-actions { margin: 0 0 12px; }
+@media (max-width: 620px) { .land-guide-steps { columns: 1; } }
+
 </style>
 </head>
 <body>
@@ -1144,6 +1329,72 @@ a.btn:hover { text-decoration: none; }
     return fill;
   }
 
+  /* ======================================================= what he shares
+   *
+   * A boy writes two things into his check-in, and he decides where each one
+   * goes. This is the part of the system that is most his, so the choice is
+   * explicit, per note, and remembered nowhere — he chooses again each time,
+   * because what is fine to share on Tuesday may not be on Wednesday.
+   *
+   * 'private' is the delicate one. A school cannot offer a child unmonitored
+   * storage — a private note is exactly where a disclosure lands that nobody
+   * then reads — so private here means STAFF SEE THAT IT EXISTS, NEVER WHAT
+   * IT SAYS. His {pastoralLead} can see he wrote something and ask him about
+   * it face to face, which is the right way for that conversation to happen
+   * anyway. The interface says this to him plainly rather than implying a
+   * secrecy the system does not actually provide.
+   */
+  var NOTE_SHARE = {
+    team: {
+      id: 'team',
+      label: 'My whole team',
+      who: 'Your {pastoralLead}, the {coordinator}, and anyone clinical working with you.',
+      blurb: 'The most useful choice. They can only act on what they know.'
+    },
+    pastoral: {
+      id: 'pastoral',
+      label: 'Just my {pastoralLead}',
+      who: 'Your {pastoralLead} only. Nobody clinical, no teachers, not your parents.',
+      blurb: 'One adult. Use this when it is for them and nobody else.'
+    },
+    private: {
+      id: 'private',
+      label: 'Just me',
+      who: 'Nobody reads this. Staff can see that you wrote something, not what it says.',
+      blurb: 'For working something out on your own. If somebody needs to know, do not leave it here.'
+    }
+  };
+  var NOTE_SHARE_ORDER = ['team', 'pastoral', 'private'];
+
+  /* The two things he is asked to write, and why.
+   *
+   * "One thing today that is yours" was too open. A boy given a blank box and
+   * no direction writes nothing, or writes something that helps nobody. These
+   * ask for a specific kind of answer and explain who reads it, because the
+   * quality of what he writes depends almost entirely on his knowing that.
+   */
+  var NOTE_PROMPTS = {
+    need: {
+      id: 'need',
+      label: 'What do you need today?',
+      hint: 'Or something you want to remember for yourself that would help. ' +
+            'The people reading it can only act on what they know, so if there is ' +
+            'something that would make today easier, this is where to say it.',
+      placeholder: 'e.g. I need the instructions written down, not just said.',
+      defaultShare: 'team'
+    },
+    stuck: {
+      id: 'stuck',
+      label: 'Anything on your mind you cannot sort out?',
+      hint: 'Something that feels unfair, or that you have been turning over and ' +
+            'cannot get anywhere with. It does not have to be a big thing, and you ' +
+            'do not have to know what you want done about it.',
+      placeholder: 'e.g. I keep getting marked late for a lesson I cannot get to on time.',
+      defaultShare: 'team'
+    }
+  };
+  var NOTE_PROMPT_ORDER = ['need', 'stuck'];
+
   /* ---------------------------------------------------------------- roles */
 
   var ROLES = {
@@ -1196,6 +1447,25 @@ a.btn:hover { text-decoration: none; }
       cadence: 'Real-time',
       accent: 'green'
     },
+    /* The people designing and governing the programme, across schools.
+     *
+     * They need to know whether the process works: is anybody checking in,
+     * do requests for help get answered, does a clinical milestone reach the
+     * pastoral team, is the loop closing. None of that requires reading a
+     * single child's record, and reading one would not answer it.
+     *
+     * So this role sees SHAPE, never CONTENT, and never a name. Pupils appear
+     * as numbers. A programme lead can tell you that requests are being
+     * answered in a median of four hours; they cannot tell you who asked or
+     * what they said, and that is the correct trade.
+     */
+    programme: {
+      id: 'programme',
+      label: 'Programme',
+      blurb: 'How the process is working. No names, no records',
+      cadence: 'Weekly',
+      accent: 'aqua'
+    },
     /* Runs the system, and is deliberately blind to what is in it.
      * Whoever administers accounts does not need to read a child's pastoral
      * record to do that job, and every additional pair of eyes on a
@@ -1210,14 +1480,20 @@ a.btn:hover { text-decoration: none; }
   };
 
   var ROLE_ORDER = ['student', 'teacher', 'housemaster', 'clinician', 'therapist',
-                    'parent', 'coordinator', 'admin'];
+                    'parent', 'coordinator', 'programme', 'admin'];
 
   /* Roles that hold a clinical confidence. Raw clinical detail never leaves
    * this circle, not even to the coordinator who routes the summary. */
   var CLINICAL_ROLES = ['clinician', 'therapist'];
 
-  /* Roles that may never read pupil content, whatever they are attached to. */
-  var CONTENT_BLIND_ROLES = ['admin'];
+  /* Roles that may never read pupil content, whatever they are attached to.
+   *
+   * An administrator runs the system; a programme lead governs the design.
+   * Neither job requires reading a child's record, and every extra pair of
+   * eyes on one is risk without matching benefit. Enforced at the TOP of
+   * project(), so a signal type added next year is covered without anyone
+   * remembering to add a case. */
+  var CONTENT_BLIND_ROLES = ['admin', 'programme'];
 
   /* -------------------------------------------------------- signal types */
 
@@ -1232,8 +1508,131 @@ a.btn:hover { text-decoration: none; }
     /* A boy asking to speak to someone. Deliberately its own type rather than
      * a severe check-in: it is a request for a person, not a data point, and
      * it must never be averaged into a trend or fed to pattern detection. */
-    concern: { id: 'concern', label: 'Asked to talk to someone', source: 'student', glyph: '☎' }
+    concern: { id: 'concern', label: 'Asked to talk to someone', source: 'student', glyph: '☎' },
+
+    /* What changed AROUND him.
+     *
+     * A school cannot change a boy's anxiety. It can change his room, his
+     * timetable, who teaches period four, whether he has a pass to leave. Up
+     * to now none of that was recorded, so a three-week dip could not be read
+     * against the set change in week one that caused it — and the system was
+     * left asking a fourteen-year-old to explain a fall it had all the
+     * information to explain itself.
+     *
+     * Note what this is NOT: it holds no judgement, no score, and nothing
+     * about the boy. It is a fact about a building and a timetable that
+     * happens to be attached to his record. That is why it is the one signal
+     * type with no confidentiality gradient in the matrix. */
+    environment: { id: 'environment', label: 'What changed around him', source: 'any', glyph: '◇' },
+
+    /* An adjustment, and whether it actually reached a classroom.
+     *
+     * The commonest failure in school support is not the wrong adjustment. It
+     * is the right one, agreed in a meeting, that nobody ever tells the person
+     * teaching period four. This records the state of that journey —
+     * agreed, communicated, applied, reviewed — and, at the end, whether it
+     * helped.
+     *
+     * There is deliberately NO rationale field. What to do travels; why lives
+     * in the clinical record and stays there. A teacher does not need a
+     * diagnosis to give a boy five extra minutes, and the absence of the field
+     * is what guarantees they are never sent one. */
+    adjustment: { id: 'adjustment', label: 'Adjustment', source: 'any', glyph: '⚙' },
+
+    /* "Come and find me."
+     *
+     * Separate from everything else, including from a request to talk, because
+     * it makes a different promise: not "somebody will read this when they next
+     * look", but "a named person who is on duty right now". That promise can
+     * only be made by a school that has actually staffed it, so the button does
+     * not exist until an organisation configures a route and says who is on it.
+     * A button that summons nobody is worse than no button.
+     *
+     * The screen never claims to have dispatched anyone. It logs the press and
+     * then tells him who is on duty, where they are and how to reach them,
+     * because the thing that actually helps a boy at eleven at night is a name
+     * and a number, not a confirmation message. */
+    findme: { id: 'findme', label: 'Asked for someone now', source: 'student', glyph: '◉' }
   };
+
+  /* Two buttons, because they ask for two different things and the difference
+   * is what a boy should DO.
+   *
+   *   emergency — stop, go to a known safe place, stay there. Staff come to
+   *               him. He is not sent walking around a school at night looking
+   *               for an adult, and the people responding know exactly where
+   *               he will be.
+   *   findme    — he is all right to move. Here is who is on duty, where they
+   *               are, and their number. He goes to them.
+   *
+   * A child in distress should not have to read two paragraphs and choose. So
+   * the emergency button is the larger of the two, sits above the other, and
+   * its answer is one instruction in the imperative before anything else on
+   * the screen.
+   *
+   * Neither promises that anybody is on their way. The system knows it wrote
+   * the record and told the named people; it does not know that a human is
+   * walking down a corridor, and telling a frightened boy otherwise is the one
+   * lie this product must never tell.
+   */
+  var URGENCY_LEVELS = {
+    emergency: {
+      id: 'emergency',
+      label: 'Emergency',
+      button: 'Emergency — something is very wrong',
+      /* Written as an instruction because instructions are what a distressed
+       * adolescent can follow. "Let someone know" is not an instruction. */
+      heading: 'Go to your room now, and stay there.',
+      blurb: 'Use this if something is very wrong and you need an adult with you.',
+      tone: 'critical'
+    },
+    findme: {
+      id: 'findme',
+      label: 'Find me',
+      button: 'Find me — I need someone',
+      heading: 'Logged. Now go and find them.',
+      blurb: 'Use this if you need somebody, and you are all right to walk there.',
+      tone: 'serious'
+    }
+  };
+  var URGENCY_ORDER = ['emergency', 'findme'];
+
+  /* The states an adjustment passes through. Ordered: the interface shows
+   * where one has got to, and the oversight layer counts how many get all the
+   * way. Each step is an ACT of an adult, observable and datable, never a
+   * judgement about the child. */
+  var ADJUSTMENT_STATES = {
+    agreed:       { id: 'agreed', label: 'Agreed', blurb: 'Decided, but nobody has been told yet.' },
+    communicated: { id: 'communicated', label: 'Passed on', blurb: 'The people who must act on it have it.' },
+    applied:      { id: 'applied', label: 'In place', blurb: 'Actually happening in the room.' },
+    reviewed:     { id: 'reviewed', label: 'Reviewed', blurb: 'Someone has asked whether it is working.' }
+  };
+  var ADJUSTMENT_ORDER = ['agreed', 'communicated', 'applied', 'reviewed'];
+
+  /* Deliberately includes "too early to say". Forcing a yes/no at review
+   * produces a confident answer where there isn't one, and a confident wrong
+   * answer is how a working adjustment gets withdrawn. */
+  var HELPED = {
+    tooEarly: { id: 'tooEarly', label: 'Too early to say' },
+    yes:      { id: 'yes', label: 'Yes' },
+    partly:   { id: 'partly', label: 'Partly' },
+    no:       { id: 'no', label: 'No' }
+  };
+  var HELPED_ORDER = ['tooEarly', 'yes', 'partly', 'no'];
+
+  /* Kinds of change worth recording. Mostly derivable from a school's own
+   * timetabling system later; typed by hand until then. */
+  var ENVIRONMENT_KINDS = {
+    timetable: { id: 'timetable', label: 'Timetable change' },
+    room:      { id: 'room', label: 'Room change' },
+    staff:     { id: 'staff', label: 'Staff change' },
+    cover:     { id: 'cover', label: 'Cover lesson' },
+    exams:     { id: 'exams', label: 'Exam or assessment period' },
+    trip:      { id: 'trip', label: 'Trip or fixture' },
+    house:     { id: 'house', label: 'House or room move' },
+    other:     { id: 'other', label: 'Something else' }
+  };
+  var ENVIRONMENT_ORDER = ['timetable', 'room', 'staff', 'cover', 'exams', 'trip', 'house', 'other'];
 
   /* Who a pupil can reach, and how. Seeded per school by the coordinator; the
    * external services are UK-wide and always present so a boy is never left
@@ -1274,13 +1673,31 @@ a.btn:hover { text-decoration: none; }
    *    are prompts for a conversation, not an instrument. (See COMPLIANCE §0.)
    */
   var LENSES = {
+    /* One number and one comparison.
+     *
+     * This used to ask for two 1-5 ratings. Two numbers a day, every day, from
+     * a fourteen-year-old, is a quantity of self-report the system was never
+     * going to keep getting honestly — and the second number was the weaker
+     * of the two, because "how heavy does today feel" is a judgement about a
+     * day that has not happened yet.
+     *
+     * What replaced it is a comparison, which is the thing people can
+     * actually answer. Nobody knows whether today is a 3 or a 4. Everybody
+     * knows whether it is harder than usual. It is also the more useful
+     * signal: a run of "harder than usual" is legible to a housemaster in a
+     * way that a run of 2s is not. */
     standard: {
       id: 'standard',
       label: 'Standard',
-      blurb: 'How charged you feel, and how heavy the day looks.',
+      blurb: 'How charged you feel, and how today compares.',
       items: [
         { key: 'fuel', short: 'Fuel', label: 'How charged are you today?', ends: ['Running on empty', 'Fully charged'] },
-        { key: 'load', short: 'Load', label: 'How heavy does today feel?', ends: ['Light', 'A lot on'], reverse: true }
+        { key: 'compared', short: 'Today', type: 'choice', label: 'Compared with a normal day, today is',
+          options: [
+            { value: 'easier', label: 'Easier', hard: false },
+            { value: 'usual',  label: 'About usual', hard: false },
+            { value: 'harder', label: 'Harder', hard: true }
+          ] }
       ]
     },
 
@@ -1553,10 +1970,53 @@ a.btn:hover { text-decoration: none; }
    * Deliberately crude: it is a nudge to read a slow start correctly, not an
    * assessment, and it carries no number and no severity to the teacher.
    */
+  /* One written note, projected for one reader.
+   *
+   * Returns null when this reader gets nothing at all, or a shape carrying
+   * either the text or the bare fact that something was written. The
+   * distinction between "there is no note" and "there is a note you may not
+   * read" is deliberate and load-bearing: a {pastoralLead} who can see that a
+   * boy wrote something private has a reason to go and ask him, which is how
+   * that conversation should happen anyway.
+   */
+  function projectNote(note, role, promptId) {
+    if (!note) return null;
+    var text = typeof note === 'string' ? note : note.text;
+    if (!text) return null;
+    var share = (typeof note === 'string' ? 'team' : note.share) || 'team';
+    var prompt = NOTE_PROMPTS[promptId] || {};
+
+    /* Teachers and parents never read a boy's own written notes, at any share
+     * level. A pupil who believes a parent reads every line stops writing true
+     * ones, and the tool is worth nothing the moment that happens. */
+    if (role === 'teacher' || role === 'parent') return null;
+    if (role === 'student') return { id: promptId, label: prompt.label, text: text, share: share, own: true };
+
+    var pastoral = role === 'housemaster' || role === 'coordinator';
+    var clinical = role === 'clinician' || role === 'therapist';
+    if (!pastoral && !clinical) return null;
+
+    if (share === 'team') return { id: promptId, label: prompt.label, text: text, share: share };
+    if (share === 'pastoral') {
+      return pastoral
+        ? { id: promptId, label: prompt.label, text: text, share: share }
+        : { id: promptId, label: prompt.label, text: null, share: share,
+            existence: 'Written for the {pastoralLead} only.' };
+    }
+    /* private */
+    return { id: promptId, label: prompt.label, text: null, share: 'private',
+             existence: 'Wrote something for {themselves} and kept it private.' };
+  }
+
   function flaggedToday(d, lens) {
     return (lens.items || []).some(function (item) {
       var v = d[item.key];
       if (v == null) return false;
+      /* A choice item says for itself which answers are the hard end, so a
+       * lens can add one without this function needing to know about it. */
+      if (item.type === 'choice') {
+        return (item.options || []).some(function (o) { return o.value === v && o.hard; });
+      }
       return item.reverse ? v >= 4 : v <= 2;
     });
   }
@@ -1581,20 +2041,45 @@ a.btn:hover { text-decoration: none; }
       lens.items.forEach(function (item) {
         if (d[item.key] == null) return;
         metrics[item.key] = d[item.key];
-        parts.push((item.short || item.key) + ' ' + d[item.key] + '/5');
+        if (item.type === 'choice') {
+          var chosen = (item.options || []).filter(function (o) { return o.value === d[item.key]; })[0];
+          parts.push((item.short || item.key) + ' ' + (chosen ? chosen.label.toLowerCase() : d[item.key]));
+        } else {
+          parts.push((item.short || item.key) + ' ' + d[item.key] + '/5');
+        }
       });
       var line = parts.join(' · ') || 'Checked in';
       metrics.lens = lens.id;
+
+      /* The written notes travel separately from the numbers, and each one
+       * carries the share level the boy chose for it. A legacy 'intention'
+       * string is read as a team-shared "need", so records written before the
+       * prompts changed still project correctly rather than disappearing. */
+      var legacy = d.intention ? { text: d.intention, share: 'team' } : null;
+      function notesFor(r) {
+        return NOTE_PROMPT_ORDER
+          .map(function (id) {
+            return projectNote(id === 'need' ? (d.need || legacy) : d[id], r, id);
+          })
+          .filter(Boolean);
+      }
+      /* Kept so existing screens that read .intention do not break. It is the
+       * "need" note, and only when that note was shared. */
+      function intentionFor(r) {
+        var n = projectNote(d.need || legacy, r, 'need');
+        return n && n.text ? n.text : null;
+      }
+
       switch (role) {
         case 'student':
-          return view('full', 'Your check-in', d.intention,
-            { own: true, metrics: metrics, intention: d.intention });
+          return view('full', 'Your check-in', intentionFor(role),
+            { own: true, metrics: metrics, notes: notesFor(role), intention: intentionFor(role) });
         case 'housemaster':
         case 'coordinator':
         case 'clinician':
         case 'therapist':
-          return view('full', line, d.intention,
-            { metrics: metrics, intention: d.intention });
+          return view('full', line, intentionFor(role),
+            { metrics: metrics, notes: notesFor(role), intention: intentionFor(role) });
         case 'teacher':
           /* Teachers get a traffic signal for today, not a data feed.
            * Computed from the lens rather than from fuel and load, so
@@ -1603,7 +2088,7 @@ a.btn:hover { text-decoration: none; }
             ? view('summary', 'Harder morning than usual', '')
             : null;
         case 'parent':
-          return view('summary', line, '', { metrics: metrics, intention: null });
+          return view('summary', line, '', { metrics: metrics, notes: [], intention: null });
         default:
           return null;
       }
@@ -1764,6 +2249,109 @@ a.btn:hover { text-decoration: none; }
       if (role === 'parent') return d.shareWithParent ? view('summary', d.title, d.note) : null;
       if (role === 'teacher') return view('existence', d.title, '');
       return view('full', d.title, d.note);
+    },
+
+    /* "Come and find me."
+     *
+     * Reaches the people who can physically go and do that, and nobody else.
+     * Teachers are not on the list because a boy pressing this at eleven at
+     * night needs whoever is on duty, not the person who takes him for
+     * Maths — and a press that reached twenty people would reach nobody.
+     *
+     * Parents are told only if he said so. He may be pressing it BECAUSE of
+     * home, and a button that calls his parents without asking is a button he
+     * will not press. */
+    findme: function (s, role) {
+      var d = s.data;
+      var lvl = URGENCY_LEVELS[d.level] || URGENCY_LEVELS.findme;
+      var emergency = lvl.id === 'emergency';
+      /* An emergency says where he was told to go, because the first thing a
+       * responding adult needs is a place to walk to. */
+      var heading = emergency ? 'EMERGENCY — pressed the emergency button' : 'Asked to be found';
+      var extra = {
+        level: lvl.id, levelLabel: lvl.label,
+        safePlace: d.safePlace || null, where: d.where || null,
+        acknowledgedAt: d.acknowledgedAt || null,
+        acknowledgedBy: d.acknowledgedBy || null
+      };
+      switch (role) {
+        case 'student':
+          return view('full', emergency ? 'You pressed the emergency button' : 'You asked to be found',
+            d.note || '', { own: true, at: s.at, level: lvl.id,
+                            acknowledgedAt: d.acknowledgedAt || null });
+        case 'housemaster':
+        case 'coordinator':
+          return view('full', heading, d.note || '', extra);
+        case 'clinician':
+        case 'therapist':
+          return view('full', heading, d.note || '',
+            { level: lvl.id, acknowledgedAt: d.acknowledgedAt || null });
+        case 'parent':
+          if (!d.tellParents) return null;
+          return view('summary',
+            emergency ? 'They used the emergency button at school'
+                      : 'They asked for someone at school to come and find them',
+            '{Organisation} was told at the time and followed it up.');
+        default:
+          return null;
+      }
+    },
+
+    /* What changed around him.
+     *
+     * The only signal type in the system with no confidentiality gradient,
+     * and that is the design rather than an oversight: it holds no judgement,
+     * no score and nothing about the boy. A room change is a fact about a
+     * building. Withholding it from the boy whose room it is would be absurd,
+     * and withholding it from his parents would be worse.
+     *
+     * The single exception is a staff change before it has been announced,
+     * which is somebody else's employment matter and not his to be told
+     * first. So the writer can mark one "staff only", and that is the whole
+     * of the gradient. */
+    environment: function (s, role) {
+      var d = s.data;
+      var kind = ENVIRONMENT_KINDS[d.kind] || ENVIRONMENT_KINDS.other;
+      var when = d.from ? (d.until ? d.from + ' to ' + d.until : 'from ' + d.from) : '';
+      if (d.staffOnly && (role === 'student' || role === 'parent')) return null;
+      return view('full', kind.label, d.note || '',
+        { kind: d.kind, from: d.from || null, until: d.until || null, when: when });
+    },
+
+    /* An adjustment, and how far it has actually travelled.
+     *
+     * Everyone attached sees this, including the boy — especially the boy. An
+     * adjustment he is entitled to but does not know about is not an
+     * adjustment, it is a secret, and a boy who cannot say "I am supposed to
+     * get five extra minutes" cannot ask for it when the adult forgets.
+     *
+     * What nobody sees is WHY, because there is no field for it. A teacher
+     * gets the instruction and not the diagnosis. That is not a redaction
+     * that could be forgotten; it is an absence in the shape of the record. */
+    adjustment: function (s, role) {
+      var d = s.data;
+      var st = ADJUSTMENT_STATES[d.state] || ADJUSTMENT_STATES.agreed;
+      var helped = HELPED[d.helped] || null;
+      var extra = {
+        state: st.id, stateLabel: st.label,
+        helped: helped ? helped.id : null,
+        helpedLabel: helped ? helped.label : null,
+        agreedAt: d.agreedAt || null, appliedAt: d.appliedAt || null,
+        reviewedAt: d.reviewedAt || null,
+        /* Who must act on it. A teacher needs to know it is theirs. */
+        forRoles: d.forRoles || []
+      };
+      switch (role) {
+        case 'student':
+          return view('full', d.what, d.pupilNote || '', extra);
+        case 'teacher':
+          /* The instruction and its state, never the note between adults. */
+          return view('full', d.what, '', extra);
+        case 'parent':
+          return view('full', d.what, '', extra);
+        default:
+          return view('full', d.what, d.note || '', extra);
+      }
     }
   };
 
@@ -1772,14 +2360,17 @@ a.btn:hover { text-decoration: none; }
    * purpose: if one changes, the other is right there. */
 
   var MATRIX = [
-    { type: 'checkin', therapist: 'full', admin: 'none', student: 'own full', teacher: 'flag only', housemaster: 'full', clinician: 'full', parent: 'scores only', coordinator: 'full' },
-    { type: 'observation', therapist: 'summary', admin: 'none', student: 'none', teacher: 'own full', housemaster: 'full', clinician: 'summary', parent: 'digest line', coordinator: 'full' },
-    { type: 'pastoral', therapist: 'summary', admin: 'none', student: 'none', teacher: 'headline', housemaster: 'full', clinician: 'summary', parent: 'if shared', coordinator: 'full' },
-    { type: 'clinical', student: 'none', teacher: 'adjustment', housemaster: 'by level', clinician: 'own full', therapist: 'own full', parent: 'by level', coordinator: 'summary', admin: 'none' },
-    { type: 'home', therapist: 'summary', admin: 'none', student: 'none', teacher: 'warned only', housemaster: 'full', clinician: 'summary', parent: 'own full', coordinator: 'full' },
-    { type: 'bridge', therapist: 'if named', admin: 'none', student: 'none', teacher: 'if named', housemaster: 'full', clinician: 'if named', parent: 'none', coordinator: 'full' },
-    { type: 'flag', therapist: 'full', admin: 'none', student: 'none', teacher: 'headline', housemaster: 'full', clinician: 'full', parent: 'if shared', coordinator: 'full' },
-    { type: 'concern', therapist: 'full', admin: 'none', student: 'own full', teacher: 'none', housemaster: 'full', clinician: 'full', parent: 'by choice', coordinator: 'full' }
+    { type: 'checkin', programme: 'none', therapist: 'full', admin: 'none', student: 'own full', teacher: 'flag only', housemaster: 'full', clinician: 'full', parent: 'scores only', coordinator: 'full' },
+    { type: 'observation', programme: 'none', therapist: 'summary', admin: 'none', student: 'none', teacher: 'own full', housemaster: 'full', clinician: 'summary', parent: 'digest line', coordinator: 'full' },
+    { type: 'pastoral', programme: 'none', therapist: 'summary', admin: 'none', student: 'none', teacher: 'headline', housemaster: 'full', clinician: 'summary', parent: 'if shared', coordinator: 'full' },
+    { type: 'clinical', programme: 'none', student: 'none', teacher: 'adjustment', housemaster: 'by level', clinician: 'own full', therapist: 'own full', parent: 'by level', coordinator: 'summary', admin: 'none' },
+    { type: 'home', programme: 'none', therapist: 'summary', admin: 'none', student: 'none', teacher: 'warned only', housemaster: 'full', clinician: 'summary', parent: 'own full', coordinator: 'full' },
+    { type: 'bridge', programme: 'none', therapist: 'if named', admin: 'none', student: 'none', teacher: 'if named', housemaster: 'full', clinician: 'if named', parent: 'none', coordinator: 'full' },
+    { type: 'flag', programme: 'none', therapist: 'full', admin: 'none', student: 'none', teacher: 'headline', housemaster: 'full', clinician: 'full', parent: 'if shared', coordinator: 'full' },
+    { type: 'concern', programme: 'none', therapist: 'full', admin: 'none', student: 'own full', teacher: 'none', housemaster: 'full', clinician: 'full', parent: 'by choice', coordinator: 'full' },
+    { type: 'findme', programme: 'none', therapist: 'full', admin: 'none', student: 'own full', teacher: 'none', housemaster: 'full', clinician: 'full', parent: 'by choice', coordinator: 'full' },
+    { type: 'environment', programme: 'none', therapist: 'full', admin: 'none', student: 'full', teacher: 'full', housemaster: 'full', clinician: 'full', parent: 'full', coordinator: 'full' },
+    { type: 'adjustment', programme: 'none', therapist: 'full', admin: 'none', student: 'full', teacher: 'what only', housemaster: 'full', clinician: 'full', parent: 'what only', coordinator: 'full' }
   ];
 
   var api = {
@@ -1794,6 +2385,12 @@ a.btn:hover { text-decoration: none; }
     CONTEXTS: CONTEXTS,
     GUIDANCE: GUIDANCE,
     CONTENT_BLIND_ROLES: CONTENT_BLIND_ROLES,
+    URGENCY_LEVELS: URGENCY_LEVELS, URGENCY_ORDER: URGENCY_ORDER,
+    NOTE_SHARE: NOTE_SHARE, NOTE_SHARE_ORDER: NOTE_SHARE_ORDER,
+    NOTE_PROMPTS: NOTE_PROMPTS, NOTE_PROMPT_ORDER: NOTE_PROMPT_ORDER,
+    ADJUSTMENT_STATES: ADJUSTMENT_STATES, ADJUSTMENT_ORDER: ADJUSTMENT_ORDER,
+    HELPED: HELPED, HELPED_ORDER: HELPED_ORDER,
+    ENVIRONMENT_KINDS: ENVIRONMENT_KINDS, ENVIRONMENT_ORDER: ENVIRONMENT_ORDER,
     HELP_ROUTES: HELP_ROUTES,
     ROLES: ROLES,
     ROLE_ORDER: ROLE_ORDER,
@@ -1882,6 +2479,52 @@ a.btn:hover { text-decoration: none; }
 
   function empty(text) { return el('p', { class: 'empty', text: text }); }
 
+  /* An ⓘ that explains a section: what it means, and what happens to it.
+   *
+   * Tap as well as hover, because half the people using this are on an iPad
+   * and hover does not exist there. Focusable and Escape-dismissable, because
+   * the other half may be on a keyboard. The panel is a sibling rather than a
+   * title attribute so it can hold more than one line and be read by a screen
+   * reader on demand rather than after a delay.
+   */
+  var infoSeq = 0;
+  function info(title, lines) {
+    var id = 'info-' + (++infoSeq);
+    var panel = el('div', { class: 'info-panel', id: id, role: 'note', hidden: 'hidden' }, [
+      el('strong', { text: title })
+    ].concat((lines || []).map(function (l) {
+      return typeof l === 'string'
+        ? el('p', { text: l })
+        : el('p', {}, [el('b', { text: l.who + ': ' }), l.what]);
+    })));
+
+    var open = false;
+    function set(v) {
+      open = v;
+      panel.hidden = !v;
+      dot.setAttribute('aria-expanded', v ? 'true' : 'false');
+    }
+    var dot = el('button', {
+      type: 'button', class: 'info-dot', 'aria-label': 'What is this? ' + title,
+      'aria-expanded': 'false', 'aria-controls': id,
+      onclick: function (e) { e.preventDefault(); set(!open); },
+      onmouseenter: function () { set(true); },
+      onmouseleave: function () { if (document.activeElement !== dot) set(false); },
+      onfocus: function () { set(true); },
+      onblur: function () { set(false); },
+      onkeydown: function (e) { if (e.key === 'Escape') set(false); }
+    }, ['i']);
+
+    return el('span', { class: 'info' }, [dot, panel]);
+  }
+
+  /* A heading with its own explainer attached. */
+  function labelled(text, title, lines) {
+    return el('span', { class: 'labelled' }, [
+      el('span', { text: text }), info(title || text, lines)
+    ]);
+  }
+
   function button(label, onclick, variant) {
     return el('button', { class: 'btn ' + (variant ? 'btn-' + variant : ''), type: 'button', onclick: onclick }, [label]);
   }
@@ -1917,6 +2560,12 @@ a.btn:hover { text-decoration: none; }
   function signalRow(v, store) {
     var T = global.CL.SIGNAL_TYPES[v.type];
     var author = store.person(v.authorId);
+    /* Projector text carries {placeholders} like every other model string, so
+     * it is resolved HERE — once, for every signal type and every role —
+     * rather than at each of the dozen call sites that render a timeline. A
+     * parent was being shown "{Organisation} knows and is following it up." */
+    var term = global.CL.terms(
+      (store.organisation && store.organisation() || {}).terms, null);
     var tone = v.severity === 'serious' ? 'serious' : v.severity === 'warning' ? 'warning' : 'neutral';
 
     var meta = [
@@ -1931,13 +2580,29 @@ a.btn:hover { text-decoration: none; }
       el('span', { class: 'sig-glyph', 'aria-hidden': 'true', text: T.glyph }),
       el('div', { class: 'sig-main' }, [
         el('div', { class: 'sig-top' }, [
-          el('strong', { class: 'sig-head', text: v.headline }),
+          el('strong', { class: 'sig-head', text: term(v.headline) }),
           el('span', { class: 'sig-kind', text: T.label })
         ]),
-        v.body ? el('p', { class: 'sig-body', text: v.body }) : null,
-        v.action ? el('p', { class: 'sig-action', text: 'Action: ' + v.action }) : null,
+        v.body ? el('p', { class: 'sig-body', text: term(v.body) }) : null,
+        /* What he wrote, and where he chose to send it. A note he kept to
+         * himself still appears — as its existence and not its words — so his
+         * {pastoralLead} has a reason to go and ask him, which is how that
+         * conversation should happen anyway. */
+        v.notes && v.notes.length
+          ? el('div', { class: 'sig-notes' }, v.notes.map(function (n) {
+              return el('div', { class: 'sig-note' + (n.text ? '' : ' sig-note-withheld') }, [
+                el('span', { class: 'sig-note-q', text: n.label }),
+                n.text
+                  ? el('p', { class: 'sig-note-a', text: n.text })
+                  : el('p', { class: 'sig-note-a', text: term(n.existence || 'Kept private.') }),
+                n.share === 'private' ? pill('private', 'muted')
+                  : n.share === 'pastoral' ? pill(term('{pastoralLead} only'), 'muted') : null
+              ].filter(Boolean));
+            }))
+          : null,
+        v.action ? el('p', { class: 'sig-action', text: 'Action: ' + term(v.action) }) : null,
         v.teacherGuidance && v.grain === 'full'
-          ? el('p', { class: 'sig-guidance', text: 'To teachers: ' + v.teacherGuidance }) : null,
+          ? el('p', { class: 'sig-guidance', text: 'To teachers: ' + term(v.teacherGuidance) }) : null,
         el('div', { class: 'sig-meta' }, meta)
       ])
     ]);
@@ -1978,6 +2643,7 @@ a.btn:hover { text-decoration: none; }
   global.CL.ui = {
     after: after,
     el: el, clear: clear, card: card, pill: pill, empty: empty, button: button,
+    info: info, labelled: labelled,
     scale: scale, signalRow: signalRow, timelineList: timelineList, toast: toast,
     ago: ago, dateShort: dateShort, dayName: dayName
   };
@@ -2137,14 +2803,47 @@ a.btn:hover { text-decoration: none; }
     for (var i = 14; i >= 1; i--) {
       var k = 14 - i;
       add('checkin', 'p-theo', 'p-theo', 'student', iso(i, 7), {
-        fuel: fuel[k], load: load[k], intention: intents[k],
+        lens: 'standard', fuel: fuel[k], intention: intents[k],
+        compared: load[k] >= 4 ? 'harder' : load[k] <= 2 ? 'easier' : 'usual',
         tags: load[k] >= 4 ? ['deadline', 'sleep'] : ['ok']
       });
     }
     /* Ade and Rafi get a lighter trace so the coordinator view has a roll. */
     [4, 4, 5, 4, 3, 4, 4].forEach(function (f, j) {
       add('checkin', 'p-ade', 'p-ade', 'student', iso(7 - j, 7),
-        { fuel: f, load: 5 - f + 1, intention: 'Stick to the plan.', tags: ['ok'] });
+        { lens: 'standard', fuel: f, compared: f >= 4 ? 'usual' : 'harder',
+          intention: 'Stick to the plan.', tags: ['ok'] });
+    });
+
+    /* What changed around him, a week before the dip — the thing the whole
+     * tracking revision exists to make visible. On the marker rail it sits on
+     * the same time base as the fall, which is the entire argument in one
+     * picture. */
+    add('environment', 'p-theo', 'p-coord', 'coordinator', iso(12, 9), {
+      kind: 'timetable', from: null, until: null, staffOnly: false,
+      note: 'Moved up a Maths set. Same teacher, faster pace, and a double before lunch.'
+    });
+    add('environment', 'p-theo', 'p-brom', 'housemaster', iso(9, 9), {
+      kind: 'exams', from: null, until: null, staffOnly: false,
+      note: 'Assessment week across the block.'
+    });
+
+    /* One adjustment that made it all the way, and one that has not left the
+     * meeting it was agreed in. The second is the commonest failure in school
+     * support and the one nobody currently notices. */
+    add('adjustment', 'p-theo', 'p-nadi', 'clinician', iso(5, 16), {
+      what: 'A movement break between the two Maths periods.',
+      state: 'reviewed', helped: 'yes', forRoles: ['teacher'],
+      agreedAt: iso(5, 16), appliedAt: iso(4, 9), reviewedAt: iso(1, 17),
+      pupilNote: 'You can take five minutes between the doubles. You do not have to ask.',
+      note: 'Agreed at the Centre and confirmed working by his mother and Mr Hartley.'
+    });
+    add('adjustment', 'p-theo', 'p-nadi', 'clinician', iso(18, 16), {
+      what: 'Written instructions alongside spoken ones, in every lesson.',
+      state: 'agreed', helped: 'tooEarly', forRoles: ['teacher'],
+      agreedAt: iso(18, 16),
+      pupilNote: 'You should get the instructions written down as well as said.',
+      note: 'Agreed at the last review. Not yet passed to the teaching staff.'
     });
 
     add('observation', 'p-theo', 'p-hart', 'teacher', iso(11, 11), {
@@ -2222,7 +2921,18 @@ a.btn:hover { text-decoration: none; }
         terms: { pupil: 'boy', pupils: 'boys', pupilPossessive: "boy's",
                  pastoralLead: 'housemaster', pastoralLeads: 'housemasters',
                  house: 'house', yearGroup: 'block',
-                 clinicalService: 'the Stephenson Centre', organisation: 'Eton' }
+                 clinicalService: 'the Stephenson Centre', organisation: 'Eton' },
+        /* The demo shows the find-me button, so the demo has to name somebody
+         * on duty. A real school fills this in itself, and until it does the
+         * button does not appear anywhere. */
+        onCall: {
+          who: 'The Dame on duty',
+          where: 'Godolphin House, ground floor',
+          contact: '01753 000 000',
+          hours: 'Any time, day or night',
+          safePlace: 'your own room',
+          note: 'Demonstration rota. A real school names its own people here.'
+        }
       },
       digestFocus: {
         'p-theo': {
@@ -2311,7 +3021,12 @@ a.btn:hover { text-decoration: none; }
     return checkins(studentId, days).map(function (s) {
       var v = global.CL.project(s, viewer);
       if (!v || !v.metrics) return null;
-      return { at: s.at, fuel: v.metrics.fuel, load: v.metrics.load, intention: v.intention || null };
+      /* Spread the metrics rather than naming two of them. Naming fuel and
+       * load here was the offline twin of the chart bug: a boy on any other
+       * lens produced points with nothing in them. */
+      var point = { at: s.at, intention: v.intention || null };
+      for (var key in v.metrics) point[key] = v.metrics[key];
+      return point;
     }).filter(Boolean);
   }
 
@@ -2337,6 +3052,108 @@ a.btn:hover { text-decoration: none; }
   function digest(studentId) { return db.digestFocus[studentId] || null; }
   function organisation() { return db.organisation || { name: 'The school', terms: {} }; }
 
+  /* The offline twin of the adjustment route. Same narrowness: state, whether
+   * it helped, and the note between adults. What the adjustment IS is never
+   * rewritten here either, so the demo cannot show a behaviour the real
+   * system refuses. */
+  /* The offline twin of the find-me press. It writes the same record and
+   * returns the same shape, so the demo shows exactly what the real thing
+   * does — including that it tells him who to go and find rather than
+   * claiming to have sent anybody. */
+  /* Writes without emitting, for the same reason as the connected twin: a
+   * repaint here destroys the panel holding the name and number of whoever is
+   * on duty, which is the only part of this that helps. */
+  function pressFindMe(studentId, body) {
+    body = body || {};
+    var org = organisation();
+    /* Unknown level falls to the louder of the two, exactly as the server
+     * does. The demo must not show a gentler behaviour than the real thing. */
+    var level = body.level === 'findme' ? 'findme' : 'emergency';
+    var safePlace = (org.onCall && org.onCall.safePlace) || 'your own room';
+
+    addSignalQuietly('findme', studentId, studentId, 'student', {
+      level: level, safePlace: safePlace,
+      note: String(body.note || '').trim(), where: String(body.where || '').trim(),
+      tellParents: body.tellParents === true, acknowledgedAt: null
+    }, 'critical');
+
+    var leads = db.people.filter(function (p2) {
+      return ['housemaster', 'coordinator'].indexOf(p2.role) > -1;
+    }).map(function (p2) { return p2.name; });
+
+    return Promise.resolve({
+      ok: true, logged: true, level: level,
+      onCall: org.onCall || null,
+      alsoTold: leads,
+      instruction: level === 'emergency' ? 'Go to ' + safePlace + ' now, and stay there.' : null,
+      safePlace: level === 'emergency' ? safePlace : null,
+      doNotWait: level === 'emergency'
+        ? 'If you are in danger right now, call 999. That works whether or not this app does.'
+        : 'Do not wait for this screen. Go and find them, or call the number. ' +
+          'If you are in danger right now, call 999.'
+    });
+  }
+
+  /* The offline twin of the on-call queue. Same shape as the server's, so one
+   * piece of view code serves both builds. */
+  function findMePresses() {
+    return db.signals
+      .filter(function (s2) { return s2.type === 'findme'; })
+      .sort(function (a, b) {
+        var ackA = a.data.acknowledgedAt ? 1 : 0, ackB = b.data.acknowledgedAt ? 1 : 0;
+        if (ackA !== ackB) return ackA - ackB;
+        var emA = (a.data.level || 'emergency') === 'emergency' ? 0 : 1;
+        var emB = (b.data.level || 'emergency') === 'emergency' ? 0 : 1;
+        if (emA !== emB) return emA - emB;
+        return new Date(b.at) - new Date(a.at);
+      })
+      .map(function (s2) {
+        var st = student(s2.studentId) || {};
+        return {
+          id: s2.id, at: s2.at, studentName: st.name || null, house: st.house || null,
+          level: s2.data.level || 'emergency', safePlace: s2.data.safePlace || null,
+          note: s2.data.note || '', where: s2.data.where || '',
+          acknowledgedAt: s2.data.acknowledgedAt || null,
+          acknowledgedBy: s2.data.acknowledgedBy || null
+        };
+      });
+  }
+
+  function acknowledgeFindMe(signalId, outcome) {
+    db.signals.forEach(function (s2) {
+      if (s2.id !== signalId || s2.type !== 'findme') return;
+      s2.data.acknowledgedAt = new Date().toISOString();
+      s2.data.outcome = String(outcome || '').trim();
+    });
+    write();
+    emit();
+    return Promise.resolve(true);
+  }
+
+  function updateSignal(signalId, patch, studentId) {
+    var sig = null;
+    db.signals.forEach(function (x) { if (x.id === signalId) sig = x; });
+    if (!sig || sig.type !== 'adjustment') return Promise.resolve(false);
+    if (studentId && sig.studentId !== studentId) return Promise.resolve(false);
+
+    var order = global.CL.ADJUSTMENT_ORDER;
+    var current = sig.data.state || 'agreed';
+    if (patch.state && order.indexOf(patch.state) < order.indexOf(current)) return Promise.resolve(false);
+
+    var stamp = new Date().toISOString();
+    if (patch.state) {
+      sig.data.state = patch.state;
+      if (patch.state === 'communicated') sig.data.communicatedAt = stamp;
+      if (patch.state === 'applied') sig.data.appliedAt = stamp;
+      if (patch.state === 'reviewed') sig.data.reviewedAt = stamp;
+    }
+    if (patch.helped) sig.data.helped = patch.helped;
+    if (typeof patch.note === 'string') sig.data.note = patch.note;
+    write();
+    emit();
+    return Promise.resolve(true);
+  }
+
   /* -------------------------------------------------- pattern recognition
    *
    * "Patterns go unrecognised." The loop's job is to notice when independent
@@ -2354,10 +3171,13 @@ a.btn:hover { text-decoration: none; }
     var sources = {};
     var evidence = [];
 
-    var heavy = recent.filter(function (s) { return s.type === 'checkin' && (s.data.load >= 4 || s.data.fuel <= 2); });
+    var heavy = recent.filter(function (s) {
+      return s.type === 'checkin' &&
+        (s.data.load >= 4 || s.data.fuel <= 2 || s.data.compared === 'harder');
+    });
     if (heavy.length >= 3) {
       sources.student = true;
-      evidence.push(heavy.length + ' check-ins at high load or low fuel');
+      evidence.push(heavy.length + ' check-ins at low fuel or harder than usual');
     }
     var lowObs = recent.filter(function (s) { return s.type === 'observation' && s.data.engagement <= 2; });
     if (lowObs.length >= 1) {
@@ -2394,6 +3214,50 @@ a.btn:hover { text-decoration: none; }
       });
     }
 
+    /* What changed around them, on a wider window than the rest.
+     *
+     * Mirrors server/src/patterns.js, and for the same reason: circumstance
+     * PRECEDES what it explains, so a set change twelve days ago is exactly
+     * the reason for this week's dip. Deliberately not counted as a source —
+     * a room move is not evidence about a boy, and letting it raise the count
+     * would manufacture patterns out of school logistics. */
+    var changeSince = startOfDaysAgo(21);
+    var changes = db.signals.filter(function (s) {
+      return s.studentId === studentId && s.type === 'environment' &&
+        new Date(s.at) >= changeSince;
+    });
+    if (changes.length && (count >= 2 || heavy.length >= 2)) {
+      found.push({
+        kind: 'circumstance',
+        severity: 'none',
+        title: changes.length === 1
+          ? 'Something changed around them recently'
+          : changes.length + ' things changed around them recently',
+        detail: changes.map(function (s) { return s.data.kind; }).join(' · ') +
+          ' — worth asking about before anything else. Circumstance is the part a school can change.',
+        sources: ['environment']
+      });
+    }
+
+    /* An adjustment agreed and never applied. Nobody is at fault for this and
+     * nobody notices it, which is exactly what a system should watch for. */
+    var stalled = db.signals.filter(function (s) {
+      return s.studentId === studentId && s.type === 'adjustment' &&
+        ['agreed', 'communicated'].indexOf(s.data.state || 'agreed') > -1 &&
+        new Date(s.at) < startOfDaysAgo(14);
+    });
+    if (stalled.length) {
+      found.push({
+        kind: 'stalled',
+        severity: 'warning',
+        title: stalled.length === 1
+          ? 'An adjustment agreed a fortnight ago is not yet in place'
+          : stalled.length + ' adjustments agreed a fortnight ago are not yet in place',
+        detail: stalled.map(function (s) { return s.data.what; }).filter(Boolean).join(' · '),
+        sources: ['coordinator']
+      });
+    }
+
     /* Silence is also a signal. */
     var last = db.signals
       .filter(function (s) { return s.studentId === studentId && s.type === 'checkin'; })
@@ -2418,7 +3282,7 @@ a.btn:hover { text-decoration: none; }
 
   /* -------------------------------------------------------------- writes */
 
-  function addSignal(type, studentId, authorId, authorRole, data, severity) {
+  function addSignalQuietly(type, studentId, authorId, authorRole, data, severity) {
     var sig = {
       id: 's' + Date.now() + Math.floor(Math.random() * 1000),
       type: type, studentId: studentId, authorId: authorId, authorRole: authorRole,
@@ -2426,6 +3290,11 @@ a.btn:hover { text-decoration: none; }
     };
     db.signals.push(sig);
     write();
+    return sig;
+  }
+
+  function addSignal(type, studentId, authorId, authorRole, data, severity) {
+    var sig = addSignalQuietly(type, studentId, authorId, authorRole, data, severity);
     emit();
     return sig;
   }
@@ -2499,6 +3368,8 @@ a.btn:hover { text-decoration: none; }
     checkins: checkins, checkinSeries: checkinSeries, streak: streak, checkedInToday: checkedInToday,
     wins: wins, digest: digest, patterns: patterns,
     concerns: concerns, help: help, organisation: organisation, setLens: setLens,
+    updateSignal: updateSignal, pressFindMe: pressFindMe,
+    findMePresses: findMePresses, acknowledgeFindMe: acknowledgeFindMe,
     raiseConcern: raiseConcern, acknowledgeConcern: acknowledgeConcern,
     addSignal: addSignal, addWin: addWin, saveDigest: saveDigest,
     dayKey: dayKey, daysAgo: daysAgo
@@ -2527,11 +3398,44 @@ a.btn:hover { text-decoration: none; }
     return n;
   }
 
-  /* Signal-strength chart: fuel and load over the window, with a marker rail
-   * underneath showing when other people contributed. The rail is the point:
-   * it puts the boy's own trace and everyone else's fragments on one time base. */
+  /* What this chart draws is decided by the LENS, not by this file.
+   *
+   * It used to hardcode fuel and load, which meant a boy on the flexibility,
+   * autonomy or transitions lens produced y(undefined) — NaN in the path
+   * data — and a chart that silently drew nothing. The lenses were being
+   * recorded and could not be seen, which is close to the worst kind of bug:
+   * everything looks like it works, and the boys who most needed a different
+   * question were the ones whose week was invisible.
+   *
+   * So: read the lens off the points, draw its numeric items, and let a lens
+   * added next year work without touching this function. Items that are not
+   * numbers (a choice, like "harder than usual") are not lines — they go on
+   * the rail underneath, where categorical things belong. */
+  function seriesFor(checkins) {
+    var CL = global.CL;
+    var lensId = null;
+    for (var i = 0; i < checkins.length; i++) {
+      if (checkins[i].lens) { lensId = checkins[i].lens; break; }
+    }
+    var lens = (CL.LENSES && CL.LENSES[lensId]) || (CL.LENSES && CL.LENSES.standard);
+    var items = (lens && lens.items) || [];
+    var scales = items.filter(function (it) { return it.type !== 'choice'; });
+    var choices = items.filter(function (it) { return it.type === 'choice'; });
+    /* Only draw a series something actually answered, so a lens change
+     * part-way through a window does not leave a broken line behind it. */
+    scales = scales.filter(function (it) {
+      return checkins.some(function (c) { return typeof c[it.key] === 'number'; });
+    });
+    return { lens: lens, scales: scales, choices: choices };
+  }
+
+  /* Signal-strength chart: whatever the lens asked over the window, with a
+   * marker rail underneath showing when other people contributed. The rail is
+   * the point: it puts the boy's own trace and everyone else's fragments on
+   * one time base. */
   function trend(checkins, markers, opts) {
     opts = opts || {};
+    var S = seriesFor(checkins);
     /* r leaves room for the two direct labels sitting past the last point. */
     var W = 720, H = 260, PAD = { t: 18, r: 52, b: 54, l: 34 };
     var railY = H - 34;
@@ -2550,7 +3454,8 @@ a.btn:hover { text-decoration: none; }
 
     var svg = s('svg', {
       viewBox: '0 0 ' + W + ' ' + H, class: 'chart-svg',
-      role: 'img', 'aria-label': 'Fuel and load over the last ' + n + ' check-ins, each rated 1 to 5'
+      role: 'img', 'aria-label': S.scales.map(function (it) { return it.short || it.key; }).join(' and ') +
+        ' over the last ' + n + ' check-ins, each rated 1 to 5'
     });
 
     /* gridlines + axis */
@@ -2561,25 +3466,38 @@ a.btn:hover { text-decoration: none; }
       svg.appendChild(t);
     });
 
+    /* A gap in the data breaks the line rather than drawing a straight one
+     * across it. A boy who did not check in for three days did not glide
+     * smoothly between two moods, and a chart should not say he did. */
     function path(key) {
       var d = '';
-      checkins.forEach(function (c, i) { d += (i ? ' L' : 'M') + x(i) + ' ' + y(c[key]); });
-      return d;
+      var pen = false;
+      checkins.forEach(function (c, i) {
+        if (typeof c[key] !== 'number') { pen = false; return; }
+        d += (pen ? ' L' : ' M') + x(i) + ' ' + y(c[key]);
+        pen = true;
+      });
+      return d.trim();
     }
 
-    ['fuel', 'load'].forEach(function (key, si) {
+    S.scales.forEach(function (item, si) {
+      var key = item.key;
       svg.appendChild(s('path', { d: path(key), class: 'line series-' + (si + 1) }));
       checkins.forEach(function (c, i) {
+        if (typeof c[key] !== 'number') return;
         svg.appendChild(s('circle', { cx: x(i), cy: y(c[key]), r: 4.5, class: 'pt series-' + (si + 1) }));
       });
-      /* direct label at the last point */
-      var last = checkins[n - 1];
-      var lab = s('text', {
-        x: x(n - 1) + 8, y: y(last[key]) + 4,
-        class: 'direct-label series-' + (si + 1) + '-ink'
-      });
-      lab.textContent = key === 'fuel' ? 'Fuel' : 'Load';
-      svg.appendChild(lab);
+      /* direct label at the last point that has one */
+      for (var li = n - 1; li >= 0; li--) {
+        if (typeof checkins[li][key] !== 'number') continue;
+        var lab = s('text', {
+          x: x(li) + 8, y: y(checkins[li][key]) + 4,
+          class: 'direct-label series-' + (si + 1) + '-ink'
+        });
+        lab.textContent = item.short || item.key;
+        svg.appendChild(lab);
+        break;
+      }
     });
 
     /* date ticks, thinned so they never collide */
@@ -2632,12 +3550,21 @@ a.btn:hover { text-decoration: none; }
       tip.hidden = false;
       tip.innerHTML = '';
       tip.appendChild(el('strong', { text: global.CL.ui.dayName(c.at) + ' ' + global.CL.ui.dateShort(c.at) }));
-      tip.appendChild(el('span', { class: 'tt-row' }, [
-        el('i', { class: 'sw series-1' }), 'Fuel ' + c.fuel + '/5'
-      ]));
-      tip.appendChild(el('span', { class: 'tt-row' }, [
-        el('i', { class: 'sw series-2' }), 'Load ' + c.load + '/5'
-      ]));
+      S.scales.forEach(function (item, si) {
+        if (typeof c[item.key] !== 'number') return;
+        tip.appendChild(el('span', { class: 'tt-row' }, [
+          el('i', { class: 'sw series-' + (si + 1) }),
+          (item.short || item.key) + ' ' + c[item.key] + '/5'
+        ]));
+      });
+      S.choices.forEach(function (item) {
+        var v = c[item.key];
+        if (v == null) return;
+        var chosen = (item.options || []).filter(function (o) { return o.value === v; })[0];
+        tip.appendChild(el('span', { class: 'tt-row' }, [
+          (item.short || item.key) + ': ' + (chosen ? chosen.label.toLowerCase() : v)
+        ]));
+      });
       if (c.intention) tip.appendChild(el('span', { class: 'tt-note', text: '"' + c.intention + '"' }));
       var left = (x(i) / W) * r.width;
       tip.style.left = Math.max(8, Math.min(r.width - 8, left)) + 'px';
@@ -2655,30 +3582,41 @@ a.btn:hover { text-decoration: none; }
     }, 'quiet');
 
     wrap.appendChild(el('div', { class: 'chart-foot' }, [
-      el('div', { class: 'legend' }, [
-        el('span', { class: 'legend-item' }, [el('i', { class: 'sw series-1' }), 'Fuel — self-rated 1 to 5']),
-        el('span', { class: 'legend-item' }, [el('i', { class: 'sw series-2' }), 'Load — how heavy the day feels, 1 to 5'])
-      ]),
+      el('div', { class: 'legend' }, S.scales.map(function (item, si) {
+        return el('span', { class: 'legend-item' }, [
+          el('i', { class: 'sw series-' + (si + 1) }),
+          (item.short || item.key) + ' — ' +
+            (item.ends ? item.ends[0].toLowerCase() + ' to ' + item.ends[1].toLowerCase() : '1 to 5')
+        ]);
+      })),
       toggle
     ]));
     wrap.appendChild(tableWrap);
     return wrap;
   }
 
+  /* The table is the accessible equivalent of the chart, so it is built from
+   * the same lens rather than from a second list of columns that could drift
+   * away from it. */
   function buildTable(points) {
+    var S = seriesFor(points);
+    var cols = S.scales.concat(S.choices);
+    var cell = function (c, item) {
+      var v = c[item.key];
+      if (v == null) return '';
+      if (item.type !== 'choice') return String(v);
+      var chosen = (item.options || []).filter(function (o) { return o.value === v; })[0];
+      return chosen ? chosen.label : String(v);
+    };
     var rows = points.slice().reverse().map(function (c) {
-      return el('tr', {}, [
-        el('td', { text: global.CL.ui.dateShort(c.at) }),
-        el('td', { text: String(c.fuel) }),
-        el('td', { text: String(c.load) }),
-        el('td', { text: c.intention || '' })
-      ]);
+      return el('tr', {}, [el('td', { text: global.CL.ui.dateShort(c.at) })]
+        .concat(cols.map(function (item) { return el('td', { text: cell(c, item) }); }))
+        .concat([el('td', { text: c.intention || '' })]));
     });
     return el('table', { class: 'data-table' }, [
-      el('thead', {}, [el('tr', {}, [
-        el('th', { text: 'Date' }), el('th', { text: 'Fuel' }),
-        el('th', { text: 'Load' }), el('th', { text: 'Intention' })
-      ])]),
+      el('thead', {}, [el('tr', {}, [el('th', { text: 'Date' })]
+        .concat(cols.map(function (item) { return el('th', { text: item.short || item.key }); }))
+        .concat([el('th', { text: 'Intention' })]))]),
       el('tbody', {}, rows)
     ]);
   }
@@ -2745,6 +3683,20 @@ a.btn:hover { text-decoration: none; }
     return CL.terms(org.terms, student && student.pronouns);
   }
 
+  /* Role labels are terminology, not strings. CL.ROLES[r].label holds a
+   * placeholder like '{Pupil}' or '{PastoralLead}' precisely so a school can
+   * decide what its own people are called — which means it must never be
+   * printed raw. Some cards are shared with panels that get no ctx, so fall
+   * back to whatever the store knows about the organisation. */
+  function roleLabel(r, t) {
+    var label = CL.ROLES[r] ? CL.ROLES[r].label : r;
+    if (!t) {
+      var org = (store && store.organisation && store.organisation()) || {};
+      t = CL.terms(org.terms, null);
+    }
+    return t.cap(label);
+  }
+
   /* Several cards render nothing when there is nothing to say (no open
    * concerns, no patterns). appendChild(null) throws, so every optional card
    * goes through here rather than relying on each call site to remember. */
@@ -2754,20 +3706,29 @@ a.btn:hover { text-decoration: none; }
   }
 
   /* ================================================================ STUDENT
-   * His tool, framed as a personal performance instrument. No mention of who
-   * else is watching, because that framing is what kills adoption. */
+   * His tool, framed as his own instrument rather than as a form he fills in
+   * for the school.
+   *
+   * On telling him who reads it: the earlier version said nothing, on the
+   * theory that "everyone can see this" kills adoption. That theory is right
+   * about VAGUENESS and wrong about PRECISION. A boy who is told nothing
+   * assumes the worst and writes accordingly; a boy told exactly who reads
+   * each part usually finds the answer reassuring, because for most of it the
+   * answer is nobody. So every section now carries an ⓘ saying where it goes,
+   * and the written notes let him decide that himself. */
 
   VIEWS.student = function (root, ctx) {
     /* His record id, which is not his login id once a coordinator has created
      * him rather than the seed. */
     var sid = ctx.viewer.studentId || ctx.viewer.personId;
     var st = store.student(sid);
+    var t = T(ctx, st);
     var done = store.checkedInToday(sid);
     var series = store.checkinSeries(sid, ctx.viewer, 14);
 
     root.appendChild(hero(
       'Morning, ' + st.name.split(' ')[0] + '.',
-      done ? 'Done for today. Come back tomorrow.' : 'Thirty seconds. Three things. Then get on with your day.'
+      done ? 'Done for today. Come back tomorrow.' : 'A minute or two. Then get on with your day.'
     ));
 
     /* Before anything else he might type into. A boy needs to know who reads
@@ -2781,62 +3742,159 @@ a.btn:hover { text-decoration: none; }
     ]));
 
     /* --- check-in --- */
+    /*
+     * Built from the LENS, not hardcoded.
+     *
+     * This form used to ask for Fuel and Load whatever lens a boy was on, so
+     * choosing the sensory or flexibility lens changed the label on his
+     * profile and nothing he was actually asked. The lens was a setting with
+     * no effect — which is worse than not offering one, because somebody
+     * chose it with him and believed it had done something.
+     */
+    var lens = CL.LENSES[(st.profile && st.profile.lens) || 'standard'] || CL.LENSES.standard;
+
     if (!done) {
-      var state = { fuel: 0, load: 0, intention: '' };
+      var answers = {};
       var form = el('div', { class: 'checkin' });
+      var qNodes = [];
 
-      form.appendChild(el('div', { class: 'q' }, [
-        el('label', { text: '1. How charged are you today?' }),
-        ui.scale('Fuel', 0, function (v) { state.fuel = v; redraw(); }, ['Running on empty', 'Fully charged'])
-      ]));
-      form.appendChild(el('div', { class: 'q' }, [
-        el('label', { text: '2. How heavy does today feel?' }),
-        ui.scale('Load', 0, function (v) { state.load = v; redraw(); }, ['Light', 'A lot on'])
-      ]));
-      var input = el('input', {
-        class: 'text-input', type: 'text', maxlength: '90',
-        placeholder: 'e.g. Start prep at 7, not 9.',
-        oninput: function () { state.intention = this.value; }
+      lens.items.forEach(function (item, i) {
+        var q = el('div', { class: 'q' });
+        q.appendChild(el('label', { text: (i + 1) + '. ' + item.label }));
+        q.appendChild(controlFor(item));
+        form.appendChild(q);
+        qNodes.push({ item: item, node: q });
       });
-      form.appendChild(el('div', { class: 'q' }, [
-        el('label', { text: '3. One thing today that is yours.' }),
-        input
-      ]));
 
-      var submit = btn('Log it', function () {
-        if (!state.fuel || !state.load) { ui.toast('Tap a number for both scales.'); return; }
-        ui.after(store.addSignal('checkin', sid, sid, 'student', {
-          fuel: state.fuel, load: state.load, intention: state.intention.trim(), tags: []
-        }), function () {
-          ui.toast('Logged. Streak is ' + store.streak(sid) + '.');
-        });
-      }, 'primary');
-      form.appendChild(submit);
+      function controlFor(item) {
+        if (item.type === 'choice') {
+          /* Not a 1-5. Nobody knows whether today is a 3 or a 4; everybody
+           * knows whether it is harder than usual. */
+          var row = el('div', { class: 'choices' });
+          (item.options || []).forEach(function (o) {
+            row.appendChild(el('button', {
+              type: 'button',
+              class: 'choice' + (answers[item.key] === o.value ? ' is-on' : ''),
+              'aria-pressed': answers[item.key] === o.value ? 'true' : 'false',
+              text: o.label,
+              onclick: function () { answers[item.key] = o.value; redraw(); }
+            }));
+          });
+          return row;
+        }
+        return ui.scale(item.short || item.key, answers[item.key] || 0,
+          function (v) { answers[item.key] = v; redraw(); }, item.ends);
+      }
 
       function redraw() {
-        var body = form.parentNode;
-        if (body) { /* re-render scales to reflect selection */
-          var qs = form.querySelectorAll('.q');
-          rebuildScale(qs[0], 'Fuel', state.fuel, function (v) { state.fuel = v; redraw(); }, ['Running on empty', 'Fully charged']);
-          rebuildScale(qs[1], 'Load', state.load, function (v) { state.load = v; redraw(); }, ['Light', 'A lot on']);
-        }
+        qNodes.forEach(function (q) {
+          var label = q.node.firstChild;
+          ui.clear(q.node);
+          q.node.appendChild(label);
+          q.node.appendChild(controlFor(q.item));
+        });
       }
+
+      /* The two written questions.
+       *
+       * "One thing today that is yours" was a blank box with no direction, and
+       * a blank box gets you nothing or gets you something nobody can act on.
+       * These ask for a specific kind of answer, say plainly who will read it,
+       * and let him decide that per note — because the quality of what a boy
+       * writes depends almost entirely on his knowing where it goes. */
+      var notes = {};
+      CL.NOTE_PROMPT_ORDER.forEach(function (pid, i) {
+        var prompt = CL.NOTE_PROMPTS[pid];
+        notes[pid] = { text: '', share: prompt.defaultShare };
+
+        var shareRow = el('div', { class: 'share-row' });
+        var whoLine = el('p', { class: 'share-who' });
+
+        function drawShare() {
+          ui.clear(shareRow);
+          CL.NOTE_SHARE_ORDER.forEach(function (sid2) {
+            var opt = CL.NOTE_SHARE[sid2];
+            shareRow.appendChild(el('button', {
+              type: 'button',
+              class: 'share-opt' + (notes[pid].share === sid2 ? ' is-on' : ''),
+              'aria-pressed': notes[pid].share === sid2 ? 'true' : 'false',
+              text: t(opt.label),
+              onclick: function () { notes[pid].share = sid2; drawShare(); }
+            }));
+          });
+          var cur = CL.NOTE_SHARE[notes[pid].share];
+          whoLine.textContent = t(cur.who) + ' ' + t(cur.blurb);
+        }
+        drawShare();
+
+        form.appendChild(el('div', { class: 'q note-q' }, [
+          el('label', {}, [
+            el('span', { text: (lens.items.length + 1 + i) + '. ' + prompt.label }),
+            ui.info('Who reads this', [
+              t(prompt.hint),
+              { who: 'Shared with your team', what: t(CL.NOTE_SHARE.team.who) },
+              { who: t.cap('Just your {pastoralLead}'), what: t(CL.NOTE_SHARE.pastoral.who) },
+              { who: 'Just you', what: t(CL.NOTE_SHARE.private.who) },
+              'Your teachers and your parents never read these, whatever you pick.'
+            ])
+          ]),
+          el('p', { class: 'note-hint', text: t(prompt.hint) }),
+          el('textarea', { class: 'text-input', rows: '3', maxlength: '600',
+            placeholder: prompt.placeholder,
+            oninput: function () { notes[pid].text = this.value; } }),
+          shareRow,
+          whoLine
+        ]));
+      });
+
+      /* Said once, near the button, in the plainest words available. This is
+       * the sentence that decides whether a boy writes something useful. */
+      form.appendChild(el('p', { class: 'flag-line tone-info', text: t(
+        'Worth sharing if you can. Your {pastoralLead}, the {coordinator} and anyone ' +
+        'working with you read these, and they can only help with what they know about. ' +
+        'Write it the way you would say it to them.') }));
+
+      form.appendChild(btn('Log it', function () {
+        var missing = lens.items.filter(function (it) { return answers[it.key] == null; });
+        if (missing.length) { ui.toast('Answer all ' + lens.items.length + ' before logging.'); return; }
+        var payload = { lens: lens.id, tags: [] };
+        lens.items.forEach(function (it) { payload[it.key] = answers[it.key]; });
+        CL.NOTE_PROMPT_ORDER.forEach(function (pid) {
+          var text = String(notes[pid].text || '').trim();
+          if (text) payload[pid] = { text: text, share: notes[pid].share };
+        });
+        ui.after(store.addSignal('checkin', sid, sid, 'student', payload), function () {
+          ui.toast('Logged. Streak is ' + store.streak(sid) + '.');
+        });
+      }, 'primary'));
 
       root.appendChild(card({
         title: 'Your check-in',
-        sub: 'This is yours. It is not a test and nobody is marking it.'
+        sub: 'This is yours. It is not a test and nobody is marking it.',
+        action: ui.info('What happens to your check-in', [
+          'The numbers go to your ' + t('{pastoralLead}') + ', the ' + t('{coordinator}') +
+            ' and anyone clinical working with you. Your parents see the numbers too.',
+          'Your teachers see nothing except, on a harder-than-usual day, a note saying it ' +
+            'is a harder morning. No number, no words.',
+          'What you write is separate, and you choose where each one goes.',
+          'Nobody is watching this as it arrives. If you need somebody now, use the button above.'
+        ])
       }, [
-        el('p', { class: 'flag-line tone-info', text: CL.PURPOSE.notMonitored }),
+        el('p', { class: 'flag-line tone-info', text: t(CL.PURPOSE.notMonitored) }),
         form
       ]));
     } else {
       var today = series[series.length - 1];
       root.appendChild(card({ title: 'Today, done' }, [
         el('p', { class: 'lead', text: today && today.intention ? '"' + today.intention + '"' : 'Logged.' }),
-        el('div', { class: 'inline-stats' }, [
-          pill('Fuel ' + (today ? today.fuel : '-') + '/5', 'neutral'),
-          pill('Load ' + (today ? today.load : '-') + '/5', 'neutral')
-        ])
+        el('div', { class: 'inline-stats' }, lens.items.map(function (it) {
+          var v = today ? today[it.key] : null;
+          if (it.type === 'choice') {
+            var chosen = (it.options || []).filter(function (o) { return o.value === v; })[0];
+            return pill((it.short || it.key) + ': ' + (chosen ? chosen.label.toLowerCase() : '-'), 'neutral');
+          }
+          return pill((it.short || it.key) + ' ' + (v == null ? '-' : v) + '/5', 'neutral');
+        }))
       ]));
     }
 
@@ -2844,7 +3902,7 @@ a.btn:hover { text-decoration: none; }
       title: 'Your fortnight',
       sub: 'Nobody grades this. It is here so you can see your own shape.'
     }, [
-      el('p', { class: 'note', text: CL.PURPOSE.noClinicalClaim }),
+      el('p', { class: 'note', text: t(CL.PURPOSE.noClinicalClaim) }),
       charts.streakStrip(series, store),
       charts.trend(series, [])
     ]));
@@ -2882,6 +3940,97 @@ a.btn:hover { text-decoration: none; }
       el('span', { class: 'help-detail', text: H.emergency.detail })
     ]));
 
+    /* ------------------------------------------------- the two red buttons
+     *
+     * Two, because they ask for two different things and the difference is
+     * what a boy should DO.
+     *
+     *   Emergency — stop where you are, go to your room, stay there. Staff
+     *               come to him. He is not sent walking a dark school looking
+     *               for an adult, and whoever responds has a door to knock on
+     *               rather than a building to search.
+     *   Find me   — he is all right to walk. Here is who is on duty, where,
+     *               and their number.
+     *
+     * Neither exists until the school has named somebody actually on duty. A
+     * button that summons nobody is worse than no button, so an unconfigured
+     * organisation gets the phone numbers and the ordinary request instead.
+     */
+    var org = store.organisation() || {};
+    var onCall = org.onCall || org.on_call || null;
+
+    if (onCall && onCall.who && onCall.contact) {
+      var pressed = el('div', {});
+
+      function press(levelId) {
+        var lvl = CL.URGENCY_LEVELS[levelId];
+        return function () {
+          ui.after(store.pressFindMe(sid, { level: levelId }), function (r) {
+            var oc = (r && r.onCall) || onCall;
+            ui.clear(pressed);
+
+            var lines = [];
+            /* The instruction comes FIRST, in the imperative, before any
+             * explanation. A frightened adolescent can follow "go to your
+             * room"; they cannot follow a paragraph. */
+            lines.push(el('strong', { text: (r && r.instruction) || lvl.heading }));
+
+            if (levelId === 'emergency') {
+              lines.push(el('p', { text: 'You do not have to explain anything to anyone on the way.' }));
+              /* "so has your housemaster" — the subject is the adult, who is
+               * always singular, not the pupil. Agreeing this with his
+               * pronoun set produced "so have your housemaster". */
+              lines.push(el('p', { text: oc.who + ' has been told, and so has your ' +
+                t('{pastoralLead}') + '.' }));
+            } else {
+              lines.push(el('p', { class: 'findme-contact', text: oc.who }));
+              lines.push(el('p', { text: oc.where }));
+            }
+
+            lines.push(el('p', { class: 'findme-contact', text: oc.contact }));
+            lines.push(el('p', { text: oc.hours }));
+            lines.push(el('p', { class: 'flag-line tone-warning',
+              text: (r && r.doNotWait) ||
+                'If you are in danger right now, call 999. That works whether or not this app does.' }));
+
+            pressed.appendChild(el('div', { class: 'findme-sent findme-sent-' + levelId }, lines));
+          });
+        };
+      }
+
+      var buttons = el('div', { class: 'findme-wrap' }, [
+        el('button', {
+          type: 'button', class: 'findme findme-emergency',
+          onclick: press('emergency')
+        }, [CL.URGENCY_LEVELS.emergency.button]),
+        el('p', { class: 'findme-blurb', text: CL.URGENCY_LEVELS.emergency.blurb }),
+
+        el('button', {
+          type: 'button', class: 'findme findme-urgent',
+          onclick: press('findme')
+        }, [CL.URGENCY_LEVELS.findme.button]),
+        el('p', { class: 'findme-blurb', text: CL.URGENCY_LEVELS.findme.blurb }),
+
+        el('p', { class: 'findme-who' }, [
+          el('span', { text: 'On now: ' + onCall.who + ' · ' + onCall.where + ' · ' + onCall.contact +
+                             '. ' + onCall.hours + '.' }),
+          ui.info('What these buttons do', [
+            'Both write down that you pressed, and tell whoever is on duty plus your ' +
+              t('{pastoralLead}') + ' and the ' + t('{coordinator}') + '. Not your teachers.',
+            { who: 'Emergency', what: 'Go to ' + (onCall.safePlace || 'your own room') +
+              ' and stay there. Someone comes to you. Use it if you should not be walking about.' },
+            { who: 'Find me', what: 'You go to them. Use it if you are all right to walk.' },
+            'Neither one sends anybody by itself. This is a screen, and a screen cannot walk ' +
+              'down a corridor \u2014 so go, or call the number.',
+            { who: 'Your parents', what: 'Not told, unless you say so.' },
+            'If you are in danger right now, call 999. That always works and does not need this app.'
+          ])
+        ]),
+        pressed
+      ]);
+      body.push(buttons);
+    }
+
     /* Asking a member of staff to find him. */
     var ask = { note: '', urgency: 'today', tellParents: false };
     var sent = el('div', {});
@@ -2906,7 +4055,17 @@ a.btn:hover { text-decoration: none; }
       onchange: function () { ask.tellParents = this.checked; } });
 
     var askPanel = el('details', { class: 'help-ask' }, [
-      el('summary', { text: 'Ask someone at school to find me' }),
+      el('summary', {}, [
+        el('span', { text: 'Ask someone at school to talk to me' }),
+        ui.info('What happens to this', [
+          'It goes to your ' + t('{pastoralLead}') + ' and the ' + t('{coordinator}') + ', and to ' +
+            'anyone clinical working with you.',
+          { who: 'Your teachers', what: 'Never see this. Not the fact of it, not a word of it.' },
+          { who: 'Your parents', what: 'Only if you tick the box below.' },
+          'Nobody is watching the screen for this. They see it when they next look, which is ' +
+            'usually the same day. If it cannot wait, use the numbers here or find any adult.'
+        ])
+      ]),
       el('div', { class: 'help-ask-body' }, [
         noteBox,
         el('div', { class: 'q' }, [el('label', { text: 'How soon?' }), urgHolder]),
@@ -3026,6 +4185,155 @@ a.btn:hover { text-decoration: none; }
     }, [ui.timelineList(store.timeline(sid, ctx.viewer, { sinceDays: 21, limit: 12 }), store)]));
   };
 
+  /* =============================================== adjustments and context
+   *
+   * Two cards shared by every role that can see them, rather than written
+   * three times in three views and drifting apart. What each ROLE may do with
+   * them is decided here in one place; what each role may SEE is decided in
+   * project(), as always.
+   */
+
+  /* What is in place for this boy, and how far each thing has actually got.
+   *
+   * The board is deliberately readable by the boy himself. An adjustment he
+   * is entitled to but does not know about is not an adjustment, it is a
+   * secret, and a boy who cannot say "I am supposed to get five extra
+   * minutes" cannot ask for it when the adult forgets. */
+  function adjustmentsCard(ctx, sid) {
+    var t = T(ctx, store.student(sid));
+    var role = ctx.viewer.role;
+    var items = store.timeline(sid, ctx.viewer, { sinceDays: 365, types: ['adjustment'] });
+
+    /* Who may move a thing along. A teacher marks "in place", because they
+     * are the only person who can honestly report that it is happening in the
+     * room. A pupil moves nothing: this is a record of what adults did. */
+    var mayAdvance = ['teacher', 'housemaster', 'coordinator', 'clinician', 'therapist'].indexOf(role) > -1;
+    var mayCreate = ['housemaster', 'coordinator', 'clinician', 'therapist'].indexOf(role) > -1;
+
+    function stateRow(v) {
+      var at = CL.ADJUSTMENT_ORDER.indexOf(v.state);
+      return el('div', { class: 'states' }, CL.ADJUSTMENT_ORDER.map(function (id, i) {
+        return el('span', {
+          class: 'state' + (i <= at ? ' is-done' : '') + (i === at ? ' is-now' : ''),
+          text: CL.ADJUSTMENT_STATES[id].label
+        });
+      }));
+    }
+
+    function advance(v) {
+      var i = CL.ADJUSTMENT_ORDER.indexOf(v.state);
+      if (i < 0 || i >= CL.ADJUSTMENT_ORDER.length - 1) return null;
+      var next = CL.ADJUSTMENT_ORDER[i + 1];
+      return btn(CL.ADJUSTMENT_STATES[next].label, function () {
+        var patch = { state: next };
+        if (next === 'applied') patch.appliedAt = new Date().toISOString();
+        if (next === 'reviewed') patch.reviewedAt = new Date().toISOString();
+        ui.after(store.updateSignal(v.id, patch, sid), function () {
+          ui.toast('Marked ' + CL.ADJUSTMENT_STATES[next].label.toLowerCase() + '.');
+        });
+      }, 'quiet');
+    }
+
+    var body = [];
+    if (!items.length) {
+      body.push(ui.empty(mayCreate
+        ? 'Nothing recorded yet. An adjustment written down is one somebody can be reminded of.'
+        : 'Nothing recorded yet.'));
+    }
+    items.forEach(function (v) {
+      var row = el('div', { class: 'adj' + (v.state === 'agreed' || v.state === 'communicated' ? ' adj-open' : '') }, [
+        el('strong', { text: v.headline }),
+        stateRow(v),
+        v.body ? el('p', { class: 'note', text: v.body }) : null,
+        el('div', { class: 'adj-foot' }, [
+          v.helpedLabel ? pill('Helped: ' + v.helpedLabel, v.helped === 'yes' ? 'good' : 'muted') : null,
+          mayAdvance ? advance(v) : null
+        ].filter(Boolean))
+      ].filter(Boolean));
+      body.push(row);
+    });
+
+    if (mayCreate) {
+      var draft = { what: '', note: '' };
+      body.push(el('div', { class: 'q' }, [
+        el('label', { text: 'Add an adjustment' }),
+        el('input', { class: 'text-input', type: 'text', maxlength: '160',
+          placeholder: 'What should happen. e.g. Five extra minutes to start written work.',
+          oninput: function () { draft.what = this.value; } })
+      ]));
+      /* No "why" field, and that is the design. What to do travels to a
+       * teacher; why stays in the clinical record. */
+      body.push(el('p', { class: 'note', text:
+        t('What to do, never why. A teacher does not need a diagnosis to give {them} five extra minutes, ' +
+          'and the reason belongs in the clinical record.') }));
+      body.push(btn('Record it', function () {
+        if (!draft.what.trim()) { ui.toast('Say what the adjustment is.'); return; }
+        ui.after(store.addSignal('adjustment', sid, ctx.viewer.personId, role, {
+          what: draft.what.trim(), state: 'agreed', agreedAt: new Date().toISOString(),
+          helped: 'tooEarly', note: '', forRoles: ['teacher']
+        }), function () { ui.toast('Recorded as agreed. Now somebody has to pass it on.'); });
+      }, 'primary'));
+    }
+
+    return card({
+      title: 'What is in place',
+      sub: 'Agreed is not the same as happening. This is how far each one has actually got.'
+    }, body);
+  }
+
+  /* What changed around him. A fact about a building and a timetable, which
+   * is why everybody attached can see it and why it carries no severity. */
+  function environmentCard(ctx, sid) {
+    var role = ctx.viewer.role;
+    var items = store.timeline(sid, ctx.viewer, { sinceDays: 60, types: ['environment'] });
+    var mayWrite = ['teacher', 'housemaster', 'coordinator'].indexOf(role) > -1;
+
+    var body = [];
+    body.push(el('p', { class: 'note', text:
+      'A school cannot change how a boy feels. It can change his room, his timetable and who ' +
+      'teaches him. Recording that is what lets a dip be read against what caused it.' }));
+
+    if (!items.length) body.push(ui.empty('Nothing recorded in the last two months.'));
+    items.forEach(function (v) {
+      body.push(el('div', { class: 'env-row' }, [
+        pill(v.headline, 'muted'),
+        el('span', { class: 'env-when', text: v.when || ui.dateShort(v.at) }),
+        v.body ? el('span', { class: 'env-note', text: v.body }) : null
+      ].filter(Boolean)));
+    });
+
+    if (mayWrite) {
+      var draft = { kind: 'timetable', note: '', from: '', staffOnly: false };
+      var kindSel = el('select', { class: 'text-input', onchange: function () { draft.kind = this.value; } },
+        CL.ENVIRONMENT_ORDER.map(function (k) {
+          return el('option', { value: k, text: CL.ENVIRONMENT_KINDS[k].label });
+        }));
+      body.push(el('div', { class: 'grid grid-2' }, [
+        el('div', { class: 'q' }, [el('label', { text: 'What changed' }), kindSel]),
+        el('div', { class: 'q' }, [el('label', { text: 'From when' }),
+          el('input', { class: 'text-input', type: 'date',
+            oninput: function () { draft.from = this.value; } })])
+      ]));
+      body.push(el('div', { class: 'q' }, [el('label', { text: 'Detail, if it helps' }),
+        el('input', { class: 'text-input', type: 'text', maxlength: '160',
+          placeholder: 'e.g. Moved from the Wyatt room to the annexe.',
+          oninput: function () { draft.note = this.value; } })]));
+      /* The one exception to "everybody sees it": a staff change before it is
+       * announced is somebody else's employment matter. */
+      var soBox = el('input', { type: 'checkbox', onchange: function () { draft.staffOnly = this.checked; } });
+      body.push(el('label', { class: 'check' }, [soBox,
+        el('span', { text: 'Staff only for now — not yet announced' })]));
+      body.push(btn('Record the change', function () {
+        ui.after(store.addSignal('environment', sid, ctx.viewer.personId, role, {
+          kind: draft.kind, from: draft.from || null, until: null,
+          note: draft.note.trim(), staffOnly: draft.staffOnly
+        }), function () { ui.toast('Recorded.'); });
+      }));
+    }
+
+    return card({ title: 'What changed around him', sub: 'Circumstance, not character.' }, body);
+  }
+
   /* ============================================================ HOUSEMASTER
    * The full pastoral picture and, crucially, the pattern view. */
 
@@ -3035,6 +4343,7 @@ a.btn:hover { text-decoration: none; }
     var t = T(ctx, st);
 
     root.appendChild(hero(st.name + (st.house ? ' · ' + st.house : ''), t('Everything the loop holds on {them}, in one place.')));
+    add(root, urgentCard(ctx));
     add(root, concernsCard(ctx));
     add(root, patternCard(sid));
 
@@ -3055,6 +4364,8 @@ a.btn:hover { text-decoration: none; }
     var actBox = el('input', { class: 'text-input', type: 'text', oninput: function () { note.action = this.value; }, placeholder: 'What you did about it.' });
     var shareBox = el('input', { type: 'checkbox', id: 'share-parent', onchange: function () { note.shareWithParent = this.checked; } });
 
+    add(root, adjustmentsCard(ctx, sid));
+    add(root, environmentCard(ctx, sid));
     add(root, lensCard(ctx, st, sid));
 
     root.appendChild(card({ title: 'Pastoral note' }, [
@@ -3232,6 +4543,7 @@ a.btn:hover { text-decoration: none; }
   VIEWS.coordinator = function (root, ctx) {
     var t = T(ctx, null);
     root.appendChild(hero('The loop', t('Every {pupil}, every source, and the things that need a person today.')));
+    add(root, urgentCard(ctx));
     add(root, concernsCard(ctx));
 
     /* Roll: attention first, alphabetical never. */
@@ -3284,7 +4596,7 @@ a.btn:hover { text-decoration: none; }
             var i = b.to.indexOf(r);
             if (i > -1) b.to.splice(i, 1); else b.to.push(r);
             drawTo();
-          }, text: CL.ROLES[r].label
+          }, text: roleLabel(r, t)
         }));
       });
     }
@@ -3357,6 +4669,64 @@ a.btn:hover { text-decoration: none; }
 
   /* Boys who have asked for a person. Above the charts, always, because a
    * request from a child outranks any trend on this page. */
+  /* Somebody pressed a button asking for a person, now.
+   *
+   * Sits above everything, including the concerns queue, and does not collapse
+   * or hide. An emergency reads as an emergency: where he was told to go, how
+   * long it has been, and one button to say a human has it. Nothing else on a
+   * pastoral screen outranks this.
+   */
+  function urgentCard(ctx) {
+    var t = T(ctx, null);
+    var list = (store.findMePresses ? store.findMePresses() : [])
+      .filter(function (p) { return !p.acknowledgedAt; });
+    if (!list.length) return null;
+
+    var anyEmergency = list.some(function (p) { return p.level === 'emergency'; });
+
+    return card({
+      class: 'card-emergency',
+      title: anyEmergency
+        ? (list.length === 1 ? 'Emergency button pressed' : list.length + ' pressed for someone now')
+        : t('A {pupil} is asking to be found'),
+      sub: 'Before anything else on this page, and before anything else today.'
+    }, list.map(function (p) {
+      var outcome = '';
+      var emergency = p.level === 'emergency';
+      return el('div', { class: 'concern' + (emergency ? ' concern-emergency' : '') }, [
+        el('div', { class: 'concern-top' }, [
+          el('strong', { text: p.studentName || t('A {pupil}') }),
+          pill(emergency ? 'EMERGENCY' : 'find me', emergency ? 'serious' : 'warning'),
+          el('span', { class: 'sig-when', text: ui.ago(p.at) })
+        ]),
+        /* The single most useful line for whoever is responding: where he was
+         * told to go. They walk to a door instead of searching a building. */
+        /* Quoted, not paraphrased. The safe place is stored as the school
+         * wrote it FOR THE BOY ("your own room"), so re-using it in a staff
+         * sentence produced "Told to go to your own room". Quoting it fixes
+         * the person and is more useful anyway: whoever responds sees the
+         * exact words on his screen. */
+        emergency && p.safePlace
+          ? el('p', { class: 'concern-where',
+              text: 'He was told: \u201cGo to ' + p.safePlace + ' now, and stay there.\u201d' +
+                    (p.house ? '  \u2014 ' + p.house : '') })
+          : null,
+        p.note ? el('p', { class: 'concern-note', text: p.note })
+               : el('p', { class: 'concern-note empty', text: 'Nothing written. They just pressed it.' }),
+        el('div', { class: 'row' }, [
+          el('input', { class: 'text-input', type: 'text',
+            placeholder: t('What you did. Who went to {them}.'),
+            oninput: function () { outcome = this.value; } }),
+          btn('I have gone to them', function () {
+            ui.after(store.acknowledgeFindMe(p.id, outcome), function () {
+              ui.toast('Marked as picked up.');
+            });
+          }, 'primary')
+        ])
+      ].filter(Boolean));
+    }));
+  }
+
   function concernsCard(ctx) {
     var t = T(ctx, null);
     var open = store.concerns().filter(function (c) { return !c.acknowledgedAt; });
@@ -3469,7 +4839,7 @@ a.btn:hover { text-decoration: none; }
         el('strong', { text: p.title }),
         el('p', { text: p.detail }),
         el('div', { class: 'pattern-sources' }, p.sources.map(function (r) {
-          return pill(CL.ROLES[r] ? CL.ROLES[r].label : r, 'muted');
+          return pill(roleLabel(r), 'muted');
         }))
       ]);
     })));
@@ -3479,7 +4849,7 @@ a.btn:hover { text-decoration: none; }
 
   function permissionsPanel() {
     var head = el('tr', {}, [el('th', { text: 'Signal' })].concat(
-      CL.ROLE_ORDER.map(function (r) { return el('th', { text: CL.ROLES[r].label }); })
+      CL.ROLE_ORDER.map(function (r) { return el('th', { text: roleLabel(r) }); })
     ));
     var body = CL.MATRIX.map(function (row) {
       return el('tr', {}, [el('td', { text: CL.SIGNAL_TYPES[row.type].label })].concat(
@@ -3528,7 +4898,7 @@ a.btn:hover { text-decoration: none; }
       role: null,
       title: 'A five minute walkthrough',
       body: [
-        'This is a working prototype of The Connected Loop. Everything in it is fictional: three invented boys, an invented fortnight.',
+        'This is a working prototype of The Connected Loop. Everything in it is fictional: three invented boys, an invented fortnight, an invented rota.',
         'The proposal says the problem is not the quality of any single intervention, but that nobody holds the whole picture. This shows what holding it would look like.',
         'Six people, six different views of the same boy. Take them in this order and the argument assembles itself.'
       ],
@@ -3538,14 +4908,34 @@ a.btn:hover { text-decoration: none; }
       role: 'student',
       title: '1. Theo, who is at the centre',
       body: [
-        'His own page. Thirty seconds, three questions, and a streak that belongs to him.',
-        'Notice what comes first: Talk to someone, above the check-in. He is told plainly that nobody reads this as it arrives, and given four numbers that are staffed at three in the morning.',
-        'Notice also what is absent. No list of who is watching. A boy who experiences this as monitoring stops writing true answers, and then it is worth nothing to anybody.'
+        'His own page. Two taps if that is all he has in him, and both written questions optional.',
+        'Notice what comes first, above everything: two red buttons. Then four numbers that are staffed at three in the morning. He is told plainly that nobody reads the check-in as it arrives.',
+        'Notice the small ⓘ beside each section. Tap one. Every part of this page will tell him exactly who reads it — because a boy told nothing assumes the worst, and a boy told precisely usually finds the answer is "almost nobody".'
+      ]
+    },
+    {
+      role: 'student',
+      title: '2. The two buttons, and why there are two',
+      body: [
+        'Emergency: go to your room and stay there. Someone comes to him. He is not sent walking a dark school looking for an adult, and whoever responds has a door to knock on instead of a building to search.',
+        'Find me: he is all right to walk, so he gets a name, a place and a phone number and goes to them.',
+        'Neither says "help is on its way". A web page cannot walk down a corridor, and that is not a thing to guess at to a frightened fourteen-year-old. It says what it actually did — wrote it down, told these people — and repeats 999 every time.',
+        'Neither button appears at all until a school has filled in who is on duty, where, a number and the hours. A button that summons nobody is worse than no button.'
+      ]
+    },
+    {
+      role: 'student',
+      title: '3. What he chooses to share',
+      body: [
+        '"What do you need today?" and "Anything on your mind you cannot sort out?" — replacing a blank box that got blank answers.',
+        'Under each, three buttons: his whole team, just his housemaster, or just him. He picks again every day, because what is fine to share on Tuesday may not be on Wednesday.',
+        'Just me does not mean invisible, and the page says so in his words. A school cannot offer a child unmonitored storage — that is exactly where a disclosure lands that nobody reads. So staff can see that he wrote something and kept it, never what it says. His housemaster then has a reason to go and ask him, which is how that conversation should happen anyway.',
+        'No written note reaches a teacher or a parent, at any setting, ever.'
       ]
     },
     {
       role: 'teacher',
-      title: '2. Mr Hartley, who has thirty seconds',
+      title: '4. Mr Hartley, who has thirty seconds',
       body: [
         'A teacher between lessons gets one page, one flag, one box.',
         'He sees that this is a harder morning than usual. He does not see the numbers behind it, or a word Theo wrote.',
@@ -3554,7 +4944,7 @@ a.btn:hover { text-decoration: none; }
     },
     {
       role: 'parent',
-      title: '3. Theo’s mother, who knows things the school does not',
+      title: '5. Theo’s mother, who knows things the school does not',
       body: [
         'The proposal’s sharpest line is that parents hold the most detailed longitudinal knowledge and sit entirely outside the loop.',
         'So this is two-way. A weekly digest comes to her; an early signal from her goes straight to the coordinator and the housemaster.',
@@ -3563,7 +4953,7 @@ a.btn:hover { text-decoration: none; }
     },
     {
       role: 'clinician',
-      title: '4. Dr Rahim, and the gap nobody has closed',
+      title: '6. Dr Rahim, and the gap nobody has closed',
       body: [
         'This is the clinical bridge, and the part of the proposal with no equivalent anywhere.',
         'Log a milestone and choose how far it travels. At “Coordinator only” the housemaster learns that something changed and nothing more. Raise it to “pastoral team” and your written summary appears for him, and a single adjustment line for teachers.',
@@ -3572,7 +4962,7 @@ a.btn:hover { text-decoration: none; }
     },
     {
       role: 'housemaster',
-      title: '5. Mr Bromley, who sees the shape',
+      title: '7. Mr Bromley, who sees the shape',
       body: [
         'The pattern view puts Theo’s own trace and everyone else’s contributions on one time base.',
         'The markers along the bottom are the moments other people noticed something. Hover one.',
@@ -3580,11 +4970,22 @@ a.btn:hover { text-decoration: none; }
       ]
     },
     {
+      role: 'housemaster',
+      title: '8. What changed around him, and what we did about it',
+      body: [
+        'Scroll to "What is in place". One adjustment has gone all the way to reviewed and is working. The other was agreed a fortnight ago and has not left the meeting it was agreed in — which is the commonest failure in school support and the one nobody currently notices.',
+        'There is no box for WHY. What to do travels to a teacher; the reason stays in the clinical record. A teacher does not need a diagnosis to give a boy five extra minutes, and the absence of the field is what guarantees they are never sent one.',
+        'Below it, "What changed around him": a Maths set change twelve days ago, assessment week nine days ago. A school cannot change how a boy feels. It can change his room, his timetable and who teaches him.',
+        'Look back at the pattern view. Those changes are the ◇ markers sitting on the same time base as the dip.'
+      ]
+    },
+    {
       role: 'coordinator',
-      title: '6. Ms Aluko, and the argument',
+      title: '9. Ms Aluko, and the argument',
       body: [
         'Here it is: converging signals from three independent sources inside six days.',
         'Four low check-ins Theo told no one about. An engagement drop only Ms Vane saw. An early signal only his mother saw. Nobody in the current arrangement could see all three.',
+        'Underneath it, in grey rather than red: two things changed around him recently. That is context, not evidence — recording a room change can never manufacture a pattern about a child, and there is a test that proves it does not.',
         'It raises a prompt for a person to act on. It never decides anything, sends anything, or scores him. That boundary is deliberate and it is what keeps this out of medical device regulation.'
       ]
     },
@@ -3592,7 +4993,8 @@ a.btn:hover { text-decoration: none; }
       role: null,
       title: 'What this is not',
       body: [
-        'Not a diagnostic tool. Not treatment. Not monitoring. Not an emergency service. Nothing here screens, scores or classifies a child.',
+        'Not a diagnostic tool. Not treatment. Not monitoring. Nothing here screens, scores or classifies a child.',
+        'Not an emergency service either, and the emergency button does not change that. It writes a record and names whoever is on duty. It cannot make a person appear, and it says so on the screen every single time, next to 999.',
         'Two decisions in it are really the school’s, not the software’s: whether a boy’s own written words should reach his parents, and what he can see of his own record.',
         'Those are the two I most want you to disagree with me about. “Two questions for you” in the sidebar puts them to you directly, and copies your answers out as text you can email.'
       ],
@@ -3657,11 +5059,22 @@ a.btn:hover { text-decoration: none; }
   function open() { state.open = true; state.i = 0; render(); }
   function close() { state.open = false; markDone(); render(); }
 
-  /* Offered on a first visit, and always available from the sidebar. */
+  /* Offered on a first visit, and always available from the sidebar.
+   *
+   * ?tour=1 opens it whatever the browser remembers. The landing page is an
+   * introduction TO the guide, so somebody who has just pressed "Start the
+   * walkthrough" must get the walkthrough — not a silent app because they
+   * happened to look at this once a fortnight ago. ?tour=0 is the escape
+   * hatch for the person who wants to look around on their own. */
   function init() {
     var btn = document.getElementById('btn-tour');
     if (btn) btn.addEventListener('click', open);
-    if (!done()) setTimeout(open, 400);
+
+    var asked = null;
+    try { asked = new URLSearchParams(global.location.search).get('tour'); } catch (e) { /* old browser */ }
+
+    if (asked === '0') { markDone(); return; }
+    if (asked === '1' || !done()) setTimeout(open, 400);
   }
 
   CL.tour = { open: open, close: close, init: init, render: render };
