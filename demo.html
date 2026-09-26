@@ -1063,7 +1063,21 @@ a.btn:hover { text-decoration: none; }
  * Findable in a second, never the loudest thing on the page. Red carries the
  * meaning; size does not have to.
  */
-.emg { margin: 2px 0 4px; }
+/* Pinned to the top of the sidebar. The sidebar scrolls — six role tabs in
+ * the demo overflow any laptop shorter than about 780px — and an emergency
+ * button you have to scroll a column to reach is not an emergency button.
+ *
+ * The sticky goes on the HOST, not on .emg inside it: a sticky element can
+ * only travel within its own containing block, and .emg's parent is exactly
+ * its own height, so there would be nowhere to stick to. */
+#emergency-host {
+  position: sticky; top: 0; z-index: 5;
+  background: var(--surface);
+}
+.emg {
+  margin: 0 0 4px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--hairline-2);
+}
 .emg-btn {
   display: block; width: 100%;
   min-height: 46px; padding: 11px 16px;
@@ -1244,15 +1258,17 @@ a.btn:hover { text-decoration: none; }
   </div>
 
   <aside class="side">
+    <!-- First in the sidebar, and pinned there.
+         It was last, under the role list and the context block, where it sat
+         at the very bottom of a column that overflows on any laptop shorter
+         than about 780px. It was technically on screen and nobody could find
+         it, which for an emergency button is the same as not being there. -->
+    <div id="emergency-host"></div>
     <div>
       <p class="side-label">Sign in as</p>
       <nav id="role-nav" aria-label="Role"></nav>
     </div>
     <div id="role-context"></div>
-    <!-- The emergency button, for a pupil. Rendered here rather than in the
-         main column so it is always reachable and never the first thing a boy
-         reads when he opens his own page. -->
-    <div id="emergency-host"></div>
     <div class="side-links">
       <button class="btn btn-quiet" type="button" id="btn-tour">Walk me through it</button>
       <button class="btn btn-quiet" type="button" id="btn-feedback">Two questions for you</button>
